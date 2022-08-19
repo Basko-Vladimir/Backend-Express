@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 
-enum resolutions {
+enum EResolutions {
 	P144 = "P144",
 	P240 = "P240",
 	P360 = "P360",
@@ -10,37 +10,48 @@ enum resolutions {
 	P1440 = "P1440"
 }
 
-export let videos = [
-	{
-		id: 1,
-		title: "Lesson - 01",
-		author: "Ivan Petrov",
-		canBeDownloaded: true,
-		minAgeRestriction: 12,
-		createdAt: "2022-08-19T14:00:11.641Z",
-		publicationDate: "2022-08-19T14:00:11.641Z",
-		availableResolutions: [resolutions.P240, resolutions.P144, resolutions.P1080]
-	},
-	{
-		id: 2,
-		title: "Lesson - 02",
-		author: "Sergey Gorovoy",
-		canBeDownloaded: true,
-		minAgeRestriction: 18,
-		createdAt: "2022-08-15T14:00:11.641Z",
-		publicationDate: "2022-08-17T14:00:11.641Z",
-		availableResolutions: [resolutions.P720, resolutions.P1080]
-	},
-	{
-		id: 3,
-		title: "Lesson - 03",
-		author: "Anrew Kislyak",
-		canBeDownloaded: true,
-		minAgeRestriction: 0,
-		createdAt: "2022-07-12T14:00:11.641Z",
-		publicationDate: "2022-07-14T14:00:11.641Z",
-		availableResolutions: [resolutions.P144, resolutions.P480, resolutions.P1440]
-	}
+interface IVideo {
+	id: number;
+	title: string;
+	author: string;
+	canBeDownloaded: boolean;
+	minAgeRestriction: number | null;
+	createdAt: string;
+	publicationDate: string;
+	availableResolutions: EResolutions[];
+}
+
+export let videos: IVideo[] = [
+	// {
+	// 	id: 1,
+	// 	title: "Lesson - 01",
+	// 	author: "Ivan Petrov",
+	// 	canBeDownloaded: true,
+	// 	minAgeRestriction: 12,
+	// 	createdAt: "2022-08-19T14:00:11.641Z",
+	// 	publicationDate: "2022-08-19T14:00:11.641Z",
+	// 	availableResolutions: [resolutions.P240, resolutions.P144, resolutions.P1080]
+	// },
+	// {
+	// 	id: 2,
+	// 	title: "Lesson - 02",
+	// 	author: "Sergey Gorovoy",
+	// 	canBeDownloaded: true,
+	// 	minAgeRestriction: 18,
+	// 	createdAt: "2022-08-15T14:00:11.641Z",
+	// 	publicationDate: "2022-08-17T14:00:11.641Z",
+	// 	availableResolutions: [resolutions.P720, resolutions.P1080]
+	// },
+	// {
+	// 	id: 3,
+	// 	title: "Lesson - 03",
+	// 	author: "Anrew Kislyak",
+	// 	canBeDownloaded: true,
+	// 	minAgeRestriction: 0,
+	// 	createdAt: "2022-07-12T14:00:11.641Z",
+	// 	publicationDate: "2022-07-14T14:00:11.641Z",
+	// 	availableResolutions: [resolutions.P144, resolutions.P480, resolutions.P1440]
+	// }
 ];
 
 export const clearVideos = () => videos = [];
@@ -90,10 +101,10 @@ videosRouter.post("/", (req: Request, res: Response) => {
 	} else {
 		const newVideo = {
 			id: Date.now(),
-			canBeDownloaded: true,
-			minAgeRestriction: 0,
-			createdAt: "2022-08-19T14:00:11.641Z",
-			publicationDate: "2022-08-19T14:00:11.641Z",
+			canBeDownloaded: false,
+			minAgeRestriction: null,
+			createdAt: "2022-08-20T14:00:11.641Z",
+			publicationDate: "2022-08-20T14:00:11.641Z",
 			title,
 			author,
 			availableResolutions

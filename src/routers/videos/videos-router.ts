@@ -96,7 +96,7 @@ videosRouter.put("/:id", (req: Request, res: Response) => {
 	}
 	
 	const errorMessages = [];
-	const minAgeRestriction = +req.body.minAgeRestriction;
+	const minAgeRestriction = req.body.minAgeRestriction;
 	const {title, author, publicationDate, availableResolutions, canBeDownloaded } = req.body;
 	
 	if (!title || typeof title !== "string" || !title.trim() || title.length > 40) {
@@ -107,22 +107,22 @@ videosRouter.put("/:id", (req: Request, res: Response) => {
 		const error = { message: "Entered author value is not correct!", field: "author"};
 		errorMessages.push(error);
 	}
-	// if (availableResolutions && (!Array.isArray(availableResolutions) || !availableResolutions.length )) {
-	// 	const error = { message: "Incorrect value of available resolutions", field: "availableResolutions"};
-	// 	errorMessages.push(error);
-	// }
-	// if (typeof publicationDate !== "string") {
-	// 	const error = { message: "Incorrect type of Date", field: "publicationDate"};
-	// 	errorMessages.push(error);
-	// }
-	// if (typeof canBeDownloaded !== "boolean") {
-	// 	const error = { message: "Incorrect type of canBeDownloaded field", field: "canBeDownloaded"};
-	// 	errorMessages.push(error);
-	// }
-	// if (isNaN(minAgeRestriction) || minAgeRestriction > 18 || minAgeRestriction < 1) {
-	// 	const error = { message: "Entered age is not correct", field: "minAgeRestriction"};
-	// 	errorMessages.push(error);
-	// }
+	if (availableResolutions && (!Array.isArray(availableResolutions) || !availableResolutions.length )) {
+		const error = { message: "Incorrect value of available resolutions", field: "availableResolutions"};
+		errorMessages.push(error);
+	}
+	if (typeof publicationDate !== "string") {
+		const error = { message: "Incorrect type of Date", field: "publicationDate"};
+		errorMessages.push(error);
+	}
+	if (typeof canBeDownloaded !== "boolean") {
+		const error = { message: "Incorrect type of canBeDownloaded field", field: "canBeDownloaded"};
+		errorMessages.push(error);
+	}
+	if (minAgeRestriction && (Number(minAgeRestriction) > 18 || Number(minAgeRestriction) < 1)) {
+		const error = { message: "Entered age is not correct", field: "minAgeRestriction"};
+		errorMessages.push(error);
+	}
 	
 	if (errorMessages.length) {
 		res.status(400).send(errorMessages);

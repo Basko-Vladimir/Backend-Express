@@ -25,6 +25,11 @@ interface IVideo {
 export let videos: IVideo[] = [];
 
 export const clearVideos = () => videos = [];
+
+const areAllResolutionsMatched = (resolutions: EResolutions[]): boolean => {
+	return resolutions.some(item => !Object.keys(EResolutions).includes(item));
+};
+
 export const videosRouter = Router({});
 
 videosRouter.get("/", (req: Request, res: Response) => {
@@ -64,7 +69,7 @@ videosRouter.post("/", (req: Request, res: Response) => {
 		const error = { message: "Entered author value is not correct!", field: "author"};
 		errorsMessages.push(error);
 	}
-	if (availableResolutions && (!Array.isArray(availableResolutions) || !availableResolutions.length)) {
+	if (!Array.isArray(availableResolutions) || !availableResolutions.length || areAllResolutionsMatched(availableResolutions)) {
 		const error = { message: "Incorrect value of available resolutions", field: "availableResolutions"};
 		errorsMessages.push(error);
 	}
@@ -108,7 +113,7 @@ videosRouter.put("/:id", (req: Request, res: Response) => {
 		const error = { message: "Entered author value is not correct!", field: "author"};
 		errorsMessages.push(error);
 	}
-	if (availableResolutions && (!Array.isArray(availableResolutions) || !availableResolutions.length )) {
+	if (!Array.isArray(availableResolutions) || !availableResolutions.length || areAllResolutionsMatched(availableResolutions)) {
 		const error = { message: "Incorrect value of available resolutions", field: "availableResolutions"};
 		errorsMessages.push(error);
 	}

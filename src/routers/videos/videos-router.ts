@@ -128,7 +128,7 @@ videosRouter.put("/:id", (req: Request, res: Response) => {
 		res.status(400).send(errorMessages);
 	} else {
 		videos = videos.map(item => {
-			if (item.id === req.body.id) {
+			if (item.id === +req.params.id) {
 				return {
 					...item,
 					publicationDate,

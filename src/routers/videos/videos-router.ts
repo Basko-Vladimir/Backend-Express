@@ -30,7 +30,7 @@ export let videos: IVideo[] = [
 	// 	minAgeRestriction: 12,
 	// 	createdAt: "2022-08-19T14:00:11.641Z",
 	// 	publicationDate: "2022-08-19T14:00:11.641Z",
-	// 	availableResolutions: [resolutions.P240, resolutions.P144, resolutions.P1080]
+	// 	availableResolutions: [EResolutions.P240, EResolutions.P144, EResolutions.P1080]
 	// },
 	// {
 	// 	id: 2,
@@ -40,7 +40,7 @@ export let videos: IVideo[] = [
 	// 	minAgeRestriction: 18,
 	// 	createdAt: "2022-08-15T14:00:11.641Z",
 	// 	publicationDate: "2022-08-17T14:00:11.641Z",
-	// 	availableResolutions: [resolutions.P720, resolutions.P1080]
+	// 	availableResolutions: [EResolutions.P720, EResolutions.P1080]
 	// },
 	// {
 	// 	id: 3,
@@ -50,12 +50,11 @@ export let videos: IVideo[] = [
 	// 	minAgeRestriction: 0,
 	// 	createdAt: "2022-07-12T14:00:11.641Z",
 	// 	publicationDate: "2022-07-14T14:00:11.641Z",
-	// 	availableResolutions: [resolutions.P144, resolutions.P480, resolutions.P1440]
+	// 	availableResolutions: [EResolutions.P144, EResolutions.P480, EResolutions.P1440]
 	// }
 ];
 
 export const clearVideos = () => videos = [];
-
 export const videosRouter = Router({});
 
 videosRouter.get("/", (req: Request, res: Response) => {
@@ -65,16 +64,22 @@ videosRouter.get("/", (req: Request, res: Response) => {
 videosRouter.get("/:id", (req: Request, res: Response) => {
 	const expectedVideo = videos.find(video => video.id === +req.params.id);
 	
-	!expectedVideo || !req.params.id
-		? res.send(404)
-		: res.status(200).send(expectedVideo);
+	if (!expectedVideo || !req.params.id) {
+		res.send(404)
+	} else {
+		res.status(200).send(expectedVideo);
+	}
 });
 
 videosRouter.delete("/:id", (req: Request, res: Response) => {
 	const expectedVideoId = videos.findIndex(video => video.id === +req.params.id);
-	const statusCode = expectedVideoId === -1 || !req.params.id ? 404 : 204;
 	
-	res.send(statusCode);
+	if (!req.params.id || expectedVideoId === -1) {
+		res.send(404);
+	} else {
+		videos.splice(expectedVideoId, 1);
+		res.send(204);
+	}
 });
 
 videosRouter.post("/", (req: Request, res: Response) => {

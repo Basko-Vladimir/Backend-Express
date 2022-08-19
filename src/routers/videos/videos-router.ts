@@ -93,7 +93,7 @@ videosRouter.put("/:id", (req: Request, res: Response) => {
 	const expectedVideo = videos.find(video => video.id === +req.params.id);
 	
 	if (!req.params.id || !expectedVideo) {
-		res.status(404);
+		res.send(404);
 		return;
 	}
 	
@@ -145,7 +145,7 @@ videosRouter.put("/:id", (req: Request, res: Response) => {
 				videos.splice(index, 1, newVideo);
 			}
 		});
-		res.status(204);
+		res.send(204);
 	}
 });
 

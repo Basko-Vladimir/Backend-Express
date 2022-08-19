@@ -104,7 +104,7 @@ videosRouter.post("/", (req: Request, res: Response) => {
 			canBeDownloaded: false,
 			minAgeRestriction: null,
 			createdAt: "2022-08-20T14:00:11.641Z",
-			publicationDate: "2022-08-20T14:00:11.641Z",
+			publicationDate: "2022-08-21T14:00:11.641Z",
 			title,
 			author,
 			availableResolutions

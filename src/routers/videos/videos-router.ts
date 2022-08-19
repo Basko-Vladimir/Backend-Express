@@ -53,19 +53,17 @@ videosRouter.delete("/:id", (req: Request, res: Response) => {
 
 videosRouter.post("/", (req: Request, res: Response) => {
 	const errorMessages = [];
-	const title = req.body.title.trim();
-	const author = req.body.author.trim();
-	const availableResolutions = req.body.availableResolutions;
+	const {title, author, availableResolutions } = req.body;
 	
-	if (!title || typeof title !== "string" || title.length > 40) {
+	if (!title || typeof title !== "string" || !title.trim() || title.length > 40) {
 		const error = { message: "Entered title is not correct!", field: "title"};
 		errorMessages.push(error);
 	}
-	if (!author || typeof author !== "string" || author.length > 20) {
+	if (!author || typeof author !== "string" || !author.trim() || author.length > 20) {
 		const error = { message: "Entered author value is not correct!", field: "author"};
 		errorMessages.push(error);
 	}
-	if (availableResolutions && (!Array.isArray(availableResolutions) || !availableResolutions.length )) {
+	if (availableResolutions && (!Array.isArray(availableResolutions) || !availableResolutions.length)) {
 		const error = { message: "Incorrect value of available resolutions", field: "availableResolutions"};
 		errorMessages.push(error);
 	}

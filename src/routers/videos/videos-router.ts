@@ -69,7 +69,7 @@ videosRouter.post("/", (req: Request, res: Response) => {
 	}
 	
 	if (errorMessages.length) {
-		res.status(400).send(errorMessages);
+		res.status(400).send({errorMessages});
 	} else {
 		const newVideo = {
 			id: Date.now(),
@@ -125,7 +125,7 @@ videosRouter.put("/:id", (req: Request, res: Response) => {
 	}
 	
 	if (errorMessages.length) {
-		res.status(400).send(errorMessages);
+		res.status(400).send({errorMessages});
 	} else {
 		videos = videos.map(item => {
 			if (item.id === +req.params.id) {

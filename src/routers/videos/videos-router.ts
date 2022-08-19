@@ -127,21 +127,20 @@ videosRouter.put("/:id", (req: Request, res: Response) => {
 	if (errorMessages.length) {
 		res.status(400).send(errorMessages);
 	} else {
-		const newVideo = {
-			id: +req.params.id,
-			createdAt: "2022-08-19T14:00:11.641Z",
-			publicationDate,
-			canBeDownloaded,
-			minAgeRestriction,
-			title,
-			author,
-			availableResolutions
-		};
-		
-		videos.forEach((item, index) => {
-			if (item.id === newVideo.id) {
-				videos.splice(index, 1, newVideo);
+		videos = videos.map(item => {
+			if (item.id === req.body.id) {
+				return {
+					...item,
+					publicationDate,
+					canBeDownloaded,
+					minAgeRestriction,
+					title,
+					author,
+					availableResolutions
+				};
 			}
+			
+			return item;
 		});
 		res.send(204);
 	}

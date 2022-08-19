@@ -52,24 +52,24 @@ videosRouter.delete("/:id", (req: Request, res: Response) => {
 });
 
 videosRouter.post("/", (req: Request, res: Response) => {
-	const errorMessages = [];
+	const errorsMessages = [];
 	const {title, author, availableResolutions } = req.body;
 	
 	if (!title || typeof title !== "string" || !title.trim() || title.length > 40) {
 		const error = { message: "Entered title is not correct!", field: "title"};
-		errorMessages.push(error);
+		errorsMessages.push(error);
 	}
 	if (!author || typeof author !== "string" || !author.trim() || author.length > 20) {
 		const error = { message: "Entered author value is not correct!", field: "author"};
-		errorMessages.push(error);
+		errorsMessages.push(error);
 	}
 	if (availableResolutions && (!Array.isArray(availableResolutions) || !availableResolutions.length)) {
 		const error = { message: "Incorrect value of available resolutions", field: "availableResolutions"};
-		errorMessages.push(error);
+		errorsMessages.push(error);
 	}
 	
-	if (errorMessages.length) {
-		res.status(400).send({errorMessages});
+	if (errorsMessages.length) {
+		res.status(400).send({errorMessages: errorsMessages});
 	} else {
 		const newVideo = {
 			id: Date.now(),
@@ -95,37 +95,37 @@ videosRouter.put("/:id", (req: Request, res: Response) => {
 		return;
 	}
 	
-	const errorMessages = [];
+	const errorsMessages = [];
 	const minAgeRestriction = req.body.minAgeRestriction;
 	const {title, author, publicationDate, availableResolutions, canBeDownloaded } = req.body;
 	
 	if (!title || typeof title !== "string" || !title.trim() || title.length > 40) {
 		const error = { message: "Entered title is not correct!", field: "title"};
-		errorMessages.push(error);
+		errorsMessages.push(error);
 	}
 	if (!author || typeof author !== "string" || !author.trim() || author.length > 20) {
 		const error = { message: "Entered author value is not correct!", field: "author"};
-		errorMessages.push(error);
+		errorsMessages.push(error);
 	}
 	if (availableResolutions && (!Array.isArray(availableResolutions) || !availableResolutions.length )) {
 		const error = { message: "Incorrect value of available resolutions", field: "availableResolutions"};
-		errorMessages.push(error);
+		errorsMessages.push(error);
 	}
 	if (typeof publicationDate !== "string") {
 		const error = { message: "Incorrect type of Date", field: "publicationDate"};
-		errorMessages.push(error);
+		errorsMessages.push(error);
 	}
 	if (typeof canBeDownloaded !== "boolean") {
 		const error = { message: "Incorrect type of canBeDownloaded field", field: "canBeDownloaded"};
-		errorMessages.push(error);
+		errorsMessages.push(error);
 	}
 	if (minAgeRestriction && (Number(minAgeRestriction) > 18 || Number(minAgeRestriction) < 1)) {
 		const error = { message: "Entered age is not correct", field: "minAgeRestriction"};
-		errorMessages.push(error);
+		errorsMessages.push(error);
 	}
 	
-	if (errorMessages.length) {
-		res.status(400).send({errorMessages});
+	if (errorsMessages.length) {
+		res.status(400).send({errorMessages: errorsMessages});
 	} else {
 		videos = videos.map(item => {
 			if (item.id === +req.params.id) {

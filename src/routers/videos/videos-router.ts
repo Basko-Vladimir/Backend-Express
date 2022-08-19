@@ -21,38 +21,7 @@ interface IVideo {
 	availableResolutions: EResolutions[];
 }
 
-export let videos: IVideo[] = [
-	// {
-	// 	id: 1,
-	// 	title: "Lesson - 01",
-	// 	author: "Ivan Petrov",
-	// 	canBeDownloaded: true,
-	// 	minAgeRestriction: 12,
-	// 	createdAt: "2022-08-19T14:00:11.641Z",
-	// 	publicationDate: "2022-08-19T14:00:11.641Z",
-	// 	availableResolutions: [EResolutions.P240, EResolutions.P144, EResolutions.P1080]
-	// },
-	// {
-	// 	id: 2,
-	// 	title: "Lesson - 02",
-	// 	author: "Sergey Gorovoy",
-	// 	canBeDownloaded: true,
-	// 	minAgeRestriction: 18,
-	// 	createdAt: "2022-08-15T14:00:11.641Z",
-	// 	publicationDate: "2022-08-17T14:00:11.641Z",
-	// 	availableResolutions: [EResolutions.P720, EResolutions.P1080]
-	// },
-	// {
-	// 	id: 3,
-	// 	title: "Lesson - 03",
-	// 	author: "Anrew Kislyak",
-	// 	canBeDownloaded: true,
-	// 	minAgeRestriction: 0,
-	// 	createdAt: "2022-07-12T14:00:11.641Z",
-	// 	publicationDate: "2022-07-14T14:00:11.641Z",
-	// 	availableResolutions: [EResolutions.P144, EResolutions.P480, EResolutions.P1440]
-	// }
-];
+export let videos: IVideo[] = [];
 
 export const clearVideos = () => videos = [];
 export const videosRouter = Router({});
@@ -123,23 +92,20 @@ videosRouter.post("/", (req: Request, res: Response) => {
 videosRouter.put("/:id", (req: Request, res: Response) => {
 	const expectedVideo = videos.find(video => video.id === +req.params.id);
 	
-	if (!expectedVideo || !req.params.id) {
+	if (!req.params.id || !expectedVideo) {
 		res.status(404);
 		return;
 	}
 	
 	const errorMessages = [];
-	const title = req.body.title.trim();
-	const author = req.body.author.trim();
-	const publicationDate = req.body.publicationDate.trim();
 	const minAgeRestriction = +req.body.minAgeRestriction;
-	const { availableResolutions, canBeDownloaded }  = req.body;
+	const {title, author, publicationDate, availableResolutions, canBeDownloaded } = req.body;
 	
-	if (!title || typeof title !== "string" || title.length > 40) {
+	if (!title || typeof title !== "string" || !title.trim() || title.length > 40) {
 		const error = { message: "Entered title is not correct!", field: "title"};
 		errorMessages.push(error);
 	}
-	if (!author || typeof author !== "string" || author.length > 20) {
+	if (!author || typeof author !== "string" || !author.trim() || author.length > 20) {
 		const error = { message: "Entered author value is not correct!", field: "author"};
 		errorMessages.push(error);
 	}

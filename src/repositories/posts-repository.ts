@@ -7,10 +7,10 @@ export const postsRepository = {
 	getAllPosts() {
 		return posts;
 	},
-	getPostById(id: string) {
+	getPostById(id: number) {
 		return posts.find(item => item.id === id);
 	},
-	deletePost(id: string) {
+	deletePost(id: number) {
 		const post = posts.find(item => item.id === id);
 		
 		if (!post) {
@@ -27,7 +27,7 @@ export const postsRepository = {
 		const { shortDescription, content, title, bloggerId } = postData;
 		const bloggerName = bloggersRepository.getBloggerById(bloggerId)?.name;
 		const newPost: IPost = {
-			id: String(Date.now()),
+			id: Date.now(),
 			bloggerName: bloggerName || "",
 			shortDescription,
 			content,
@@ -39,7 +39,7 @@ export const postsRepository = {
 		
 		return newPost;
 	},
-	updatePost(postId: string, postData: IPostData) {
+	updatePost(postId: number, postData: IPostData) {
 		const { shortDescription, content, title, bloggerId } = postData;
 		
 		posts = posts.map(item => item.id === postId

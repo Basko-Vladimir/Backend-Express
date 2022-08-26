@@ -3,7 +3,7 @@ import {IBaseEntity} from "./common";
 export interface IPostData {
 	shortDescription: string;
 	content: string;
-	bloggerId: string;
+	bloggerId: number;
 	title: string;
 }
 

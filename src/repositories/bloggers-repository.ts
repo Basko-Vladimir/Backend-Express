@@ -1,23 +1,19 @@
 import { IBlogger } from "../interfaces/bloggers-interfaces";
 
 
-let bloggers: IBlogger[] = [{
-	id: "bloggerId-1",
-	name: "Dimych",
-	youtubeUrl: "https://www.youtube.com/c/ITKAMASUTRA"
-}];
+let bloggers: IBlogger[] = [];
 
 export const bloggersRepository = {
 	getAllBloggers() {
 		return bloggers;
 	},
-	getBloggerById(id: string) {
+	getBloggerById(id: number) {
 		return bloggers.find(item => item.id === id);
 	},
 	deleteAllBloggers () {
 		bloggers = [];
 	},
-	deleteBlogger(id: string) {
+	deleteBlogger(id: number) {
 		const blogger = bloggers.find(item => item.id === id);
 		
 		if (!blogger) {
@@ -29,7 +25,7 @@ export const bloggersRepository = {
 	},
 	createBlogger(name: string, youtubeUrl: string) {
 		const newBlogger: IBlogger = {
-			id: String(Date.now()),
+			id: Date.now(),
 			youtubeUrl,
 			name
 		};
@@ -37,7 +33,7 @@ export const bloggersRepository = {
 		bloggers.push(newBlogger);
 		return newBlogger;
 	},
-	updateBlogger(id: string, name: string, youtubeUrl: string) {
+	updateBlogger(id: number, name: string, youtubeUrl: string) {
 		bloggers = bloggers.map(item => item.id === id
 			? {...item, name, youtubeUrl }
 			: item

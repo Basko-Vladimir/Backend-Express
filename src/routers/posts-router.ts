@@ -19,7 +19,7 @@ postsRouter.get(
 	checkExistingId,
 	validationRequestErrors,
 	(req: Request<{id: string}>, res:Response) => {
-		const post = postsRepository.getPostById(req.params.id);
+		const post = postsRepository.getPostById(+req.params.id);
 		post ? res.status(200).send(post) : res.send(404);
 	}
 );
@@ -30,7 +30,7 @@ postsRouter.delete(
 	checkExistingId,
 	validationRequestErrors,
 	(req: Request<{id: string}>, res: Response) => {
-		const isDeleted = postsRepository.deletePost(req.params.id);
+		const isDeleted = postsRepository.deletePost(+req.params.id);
 		isDeleted ? res.send(204) : res.send(404);
 	}
 );
@@ -53,7 +53,7 @@ postsRouter.put(
 	checkPostRequestBody,
 	validationRequestErrors,
 	(req: Request<{id: string}, {}, IPostData>, res: Response) => {
-		postsRepository.updatePost(req.params.id, req.body) ? res.send(204) : res.send(404);
+		postsRepository.updatePost(+req.params.id, req.body) ? res.send(204) : res.send(404);
 	}
 );
 

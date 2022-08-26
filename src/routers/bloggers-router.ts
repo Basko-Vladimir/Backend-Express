@@ -13,7 +13,7 @@ bloggersRouter.get("/", (req: Request, res: Response) => {
 });
 
 bloggersRouter.get("/:id", (req: Request<{id: string}>, res: Response) => {
-	const blogger = bloggersRepository.getBloggerById(req.params.id);
+	const blogger = bloggersRepository.getBloggerById(+req.params.id);
 	blogger ? res.status(200).send(blogger) : res.send(404);
 });
 
@@ -23,7 +23,7 @@ bloggersRouter.delete(
 	checkExistingId,
 	validationRequestErrors,
 	(req: Request<{id: string}>, res: Response) => {
-		bloggersRepository.deleteBlogger(req.params.id) ? res.send(204) : res.send(404);
+		bloggersRepository.deleteBlogger(+req.params.id) ? res.send(204) : res.send(404);
 	}
 );
 
@@ -45,7 +45,7 @@ bloggersRouter.put(
 	checkBloggerRequestBody,
 	validationRequestErrors,
 	(req: Request<{id: string}, {}, {name: string, youtubeUrl: string}>, res: Response) => {
-		bloggersRepository.updateBlogger(req.params.id, req.body.name, req.body.youtubeUrl)
+		bloggersRepository.updateBlogger(+req.params.id, req.body.name, req.body.youtubeUrl)
 		 	? res.send(204)
 			: res.send(404);
 	}

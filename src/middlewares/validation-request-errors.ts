@@ -6,7 +6,7 @@ export const validationRequestErrors = (req: Request, res: Response, next: NextF
 	const errors = validationResult(req).formatWith(errorFormatter);
 	
 	if (!errors.isEmpty()) {
-		res.status(400).json({ errors: errors.array() });
+		res.status(400).json({ errorsMessages: errors.array() });
 	} else {
 		next();
 	}

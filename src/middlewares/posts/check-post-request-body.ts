@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import {bloggersRepository} from "../../repositories/bloggers-repository";
+import {memoryBloggersRepository} from "../../repositories/bloggers-repository";
 
 export const checkPostRequestBody = [
 	body("title")
@@ -14,7 +14,7 @@ export const checkPostRequestBody = [
 	body("bloggerId")
 		.exists().withMessage("You didn't provide 'bloggerId' field")
 		.custom(value => {
-			 if (!bloggersRepository.getBloggerById(value)) {
+			 if (!memoryBloggersRepository.getBloggerById(value)) {
 				 throw new Error(`Blogger with id "${value}" does not exist`);
 			 }
 			 return value;

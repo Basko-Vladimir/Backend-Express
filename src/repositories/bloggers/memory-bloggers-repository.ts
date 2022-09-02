@@ -1,10 +1,9 @@
-import { IBlogger } from "../interfaces/bloggers-interfaces";
-
+import { IBlogger } from "../../interfaces/bloggers-interfaces";
 
 let bloggers: IBlogger[] = [];
 
-export const bloggersRepository = {
-	getAllBloggers() {
+export const memoryBloggersRepository = {
+	async getAllBloggers() {
 		return bloggers;
 	},
 	getBloggerById(id: number) {

@@ -1,9 +1,9 @@
-import {IPost, IPostData} from "../interfaces/posts-interfaces";
-import { bloggersRepository } from "./bloggers-repository";
+import {IPost, IPostData} from "../../interfaces/posts-interfaces";
+import { memoryBloggersRepository } from "../bloggers/memory-bloggers-repository";
 
 let posts: IPost[] = [];
 
-export const postsRepository = {
+export const memoryPostsRepository = {
 	getAllPosts() {
 		return posts;
 	},
@@ -25,7 +25,7 @@ export const postsRepository = {
 	},
 	createPost(postData: IPostData) {
 		const { shortDescription, content, title, bloggerId } = postData;
-		const bloggerName = bloggersRepository.getBloggerById(bloggerId)?.name;
+		const bloggerName = memoryBloggersRepository.getBloggerById(bloggerId)?.name;
 		const newPost: IPost = {
 			id: Date.now(),
 			bloggerName: bloggerName || "",

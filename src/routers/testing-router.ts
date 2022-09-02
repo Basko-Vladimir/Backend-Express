@@ -1,9 +1,9 @@
 import { Request, Response, Router } from "express";
-import { testingRepository } from "../repositories/testing-repository";
+import { memoryTestingRepository } from "../repositories/testing/memory-testing-repository";
 
 export const testingRouter = Router({});
 
 testingRouter.delete("/all-data", (req: Request, res: Response) => {
-	testingRepository.deleteAllData();
+	memoryTestingRepository.deleteAllData();
 	res.status(204).send("All data is deleted");
 });

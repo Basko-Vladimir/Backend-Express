@@ -1,16 +1,16 @@
 import {IPost, IPostData} from "../../interfaces/posts-interfaces";
-import { memoryBloggersRepository } from "../bloggers/memory-bloggers-repository";
+import { bloggersRepository } from "../bloggers/bloggers-repository";
 
 let posts: IPost[] = [];
 
-export const memoryPostsRepository = {
-	getAllPosts() {
+export const postsRepository = {
+	async getAllPosts(): Promise<IPost[]> {
 		return posts;
 	},
-	getPostById(id: number) {
+	async getPostById(id: number): Promise<IPost | undefined>  {
 		return posts.find(item => item.id === id);
 	},
-	deletePost(id: number) {
+	async deletePost(id: number): Promise<boolean> {
 		const post = posts.find(item => item.id === id);
 		
 		if (!post) {
@@ -20,15 +20,15 @@ export const memoryPostsRepository = {
 			return true;
 		}
 	},
-	deleteAllPosts() {
+	async deleteAllPosts(): Promise<void> {
 		posts = [];
 	},
-	createPost(postData: IPostData) {
+	async createPost(postData: IPostData): Promise<IPost> {
 		const { shortDescription, content, title, bloggerId } = postData;
-		const bloggerName = memoryBloggersRepository.getBloggerById(bloggerId)?.name;
+		const blogger = await bloggersRepository.getBloggerById(bloggerId);
 		const newPost: IPost = {
 			id: Date.now(),
-			bloggerName: bloggerName || "",
+			bloggerName: blogger?.name || "",
 			shortDescription,
 			content,
 			title,
@@ -39,7 +39,7 @@ export const memoryPostsRepository = {
 		
 		return newPost;
 	},
-	updatePost(postId: number, postData: IPostData) {
+	async updatePost(postId: number, postData: IPostData): Promise<IPost | undefined> {
 		const { shortDescription, content, title, bloggerId } = postData;
 		
 		posts = posts.map(item => item.id === postId

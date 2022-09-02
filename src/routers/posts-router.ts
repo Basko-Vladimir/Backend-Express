@@ -1,15 +1,15 @@
 import { Router, Response, Request } from "express";
 import { checkExistingId } from "../middlewares/check-excisting-id";
 import { validationRequestErrors } from "../middlewares/validation-request-errors";
-import { memoryPostsRepository } from "../repositories/posts/memory-posts-repository";
+import { postsRepository } from "../repositories/posts/memory-posts-repository";
 import { checkAuthorization } from "../middlewares/check-authorization";
 import { checkPostRequestBody } from "../middlewares/posts/check-post-request-body";
 import { IPostData } from "../interfaces/posts-interfaces";
 
 export const postsRouter = Router({});
 
-postsRouter.get("/", (req: Request, res: Response) => {
-	const posts = memoryPostsRepository.getAllPosts();
+postsRouter.get("/", async (req: Request, res: Response) => {
+	const posts = await postsRepository.getAllPosts();
 	res.status(200).send(posts);
 });
 
@@ -17,8 +17,8 @@ postsRouter.get(
 	"/:id",
 	checkExistingId,
 	validationRequestErrors,
-	(req: Request<{id: string}>, res:Response) => {
-		const post = memoryPostsRepository.getPostById(+req.params.id);
+	async (req: Request<{id: string}>, res:Response) => {
+		const post = await postsRepository.getPostById(+req.params.id);
 		post ? res.status(200).send(post) : res.send(404);
 	}
 );
@@ -28,8 +28,8 @@ postsRouter.delete(
 	checkAuthorization,
 	checkExistingId,
 	validationRequestErrors,
-	(req: Request<{id: string}>, res: Response) => {
-		const isDeleted = memoryPostsRepository.deletePost(+req.params.id);
+	async (req: Request<{id: string}>, res: Response) => {
+		const isDeleted = await postsRepository.deletePost(+req.params.id);
 		isDeleted ? res.send(204) : res.send(404);
 	}
 );
@@ -39,8 +39,8 @@ postsRouter.post(
 	checkAuthorization,
 	checkPostRequestBody,
 	validationRequestErrors,
-	(req: Request<{}, {}, IPostData>, res: Response) => {
-		const newPost = memoryPostsRepository.createPost(req.body);
+	async (req: Request<{}, {}, IPostData>, res: Response) => {
+		const newPost = await postsRepository.createPost(req.body);
 		res.status(201).send(newPost);
 	}
 );
@@ -51,8 +51,8 @@ postsRouter.put(
 	checkExistingId,
 	checkPostRequestBody,
 	validationRequestErrors,
-	(req: Request<{id: string}, {}, IPostData>, res: Response) => {
-		memoryPostsRepository.updatePost(+req.params.id, req.body) ? res.send(204) : res.send(404);
+	async (req: Request<{id: string}, {}, IPostData>, res: Response) => {
+		await postsRepository.updatePost(+req.params.id, req.body) ? res.send(204) : res.send(404);
 	}
 );
 

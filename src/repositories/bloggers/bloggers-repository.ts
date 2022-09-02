@@ -2,17 +2,17 @@ import { IBlogger } from "../../interfaces/bloggers-interfaces";
 
 let bloggers: IBlogger[] = [];
 
-export const memoryBloggersRepository = {
-	async getAllBloggers() {
+export const bloggersRepository = {
+	async getAllBloggers(): Promise<IBlogger[]> {
 		return bloggers;
 	},
-	getBloggerById(id: number) {
+	async getBloggerById(id: number): Promise<IBlogger | undefined> {
 		return bloggers.find(item => item.id === id);
 	},
-	deleteAllBloggers () {
+	async deleteAllBloggers(): Promise<void> {
 		bloggers = [];
 	},
-	deleteBlogger(id: number) {
+	async deleteBlogger(id: number): Promise<boolean> {
 		const blogger = bloggers.find(item => item.id === id);
 		
 		if (!blogger) {
@@ -22,7 +22,7 @@ export const memoryBloggersRepository = {
 			return true;
 		}
 	},
-	createBlogger(name: string, youtubeUrl: string) {
+	async createBlogger(name: string, youtubeUrl: string): Promise<IBlogger> {
 		const newBlogger: IBlogger = {
 			id: Date.now(),
 			youtubeUrl,
@@ -32,7 +32,11 @@ export const memoryBloggersRepository = {
 		bloggers.push(newBlogger);
 		return newBlogger;
 	},
-	updateBlogger(id: number, name: string, youtubeUrl: string) {
+	async updateBlogger(
+		id: number,
+		name: string,
+		youtubeUrl: string
+	): Promise<IBlogger | undefined> {
 		bloggers = bloggers.map(item => item.id === id
 			? {...item, name, youtubeUrl }
 			: item

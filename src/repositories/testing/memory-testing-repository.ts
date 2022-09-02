@@ -1,9 +1,9 @@
-import { memoryPostsRepository } from "../posts/memory-posts-repository";
-import { memoryBloggersRepository } from "../bloggers/memory-bloggers-repository";
+import { postsRepository } from "../posts/memory-posts-repository";
+import { bloggersRepository } from "../bloggers/bloggers-repository";
 
-export const memoryTestingRepository = {
-	deleteAllData() {
-		memoryBloggersRepository.deleteAllBloggers();
-		memoryPostsRepository.deleteAllPosts();
+export const testingRepository = {
+	async deleteAllData(): Promise<void> {
+		await bloggersRepository.deleteAllBloggers();
+		await postsRepository.deleteAllPosts();
 	}
 };

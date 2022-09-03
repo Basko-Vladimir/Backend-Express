@@ -37,12 +37,12 @@ export const bloggersRepository = {
 		id: string,
 		name: string,
 		youtubeUrl: string
-	): Promise<IBlogger | null> {
+	): Promise<boolean> {
 		bloggers = bloggers.map(item => item.id === id
 			? {...item, name, youtubeUrl }
 			: item
 		);
 		
-		return bloggers.find(item => item.id === id) || null;
+		return Boolean(bloggers.find(item => item.id === id));
 	}
 }

@@ -1,5 +1,5 @@
 import {IPost, IPostData} from "../../interfaces/posts-interfaces";
-import { bloggersRepository } from "../bloggers/memory-bloggers-repository";
+import { bloggersRepository } from "../bloggers/db-bloggers-repository";
 
 let posts: IPost[] = [];
 

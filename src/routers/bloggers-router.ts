@@ -1,5 +1,5 @@
 import { Request,Response, Router } from "express";
-import { bloggersRepository } from "../repositories/bloggers/memory-bloggers-repository";
+import { bloggersRepository } from "../repositories/bloggers/db-bloggers-repository";
 import { checkExistingId } from "../middlewares/check-excisting-id";
 import { validationRequestErrors } from "../middlewares/validation-request-errors";
 import { checkAuthorization } from "../middlewares/check-authorization";

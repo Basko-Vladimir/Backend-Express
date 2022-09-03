@@ -24,7 +24,7 @@ export const bloggersRepository = {
 			name
 		};
 		
-		await bloggersCollection.insertOne(newBlogger);
+		await bloggersCollection.insertOne({...newBlogger});
 		return newBlogger;
 	},
 	async updateBlogger(id: string, name: string, youtubeUrl: string): Promise<boolean> {

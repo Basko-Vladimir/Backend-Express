@@ -14,8 +14,9 @@ export const postsRepository = {
 		const { deletedCount } = await postsCollection.deleteOne({id});
 		return Boolean(deletedCount);
 	},
-	async deleteAllPosts(): Promise<DeleteResult> {
-		return postsCollection.deleteMany({});
+	async deleteAllPosts(): Promise<void> {
+		await postsCollection.deleteMany({});
+		return
 	},
 	async createPost(postData: IPostData): Promise<IPost> {
 		const { shortDescription, content, title, bloggerId } = postData;

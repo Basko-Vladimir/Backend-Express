@@ -3,7 +3,11 @@ import { bloggersRepository } from "../bloggers/db-bloggers-repository";
 import { DeleteResult } from "mongodb";
 
 export const testingRepository = {
-	async deleteAllData(): Promise<DeleteResult[]> {
-		return Promise.all([bloggersRepository.deleteAllBloggers(), postsRepository.deleteAllPosts()]);
+	async deleteAllData(): Promise<void> {
+		// return Promise.all([bloggersRepository.deleteAllBloggers(), postsRepository.deleteAllPosts()]);
+		await bloggersRepository.deleteAllBloggers();
+		await postsRepository.deleteAllPosts();
+		
+		return;
 	}
 };

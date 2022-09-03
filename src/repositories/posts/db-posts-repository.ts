@@ -5,10 +5,10 @@ import {postsCollection} from "../db";
 
 export const postsRepository = {
 	async getAllPosts(): Promise<IPost[]> {
-		return postsCollection.find({}).toArray();
+		return postsCollection.find({}).project<IPost>({_id: 0}).toArray();
 	},
 	async getPostById(id: string): Promise<IPost | null>  {
-		return postsCollection.findOne({id});
+		return postsCollection.findOne({id}, {projection: {_id: 0}});
 	},
 	async deletePost(id: string): Promise<boolean> {
 		const { deletedCount } = await postsCollection.deleteOne({id});

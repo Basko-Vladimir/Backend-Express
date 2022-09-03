@@ -4,10 +4,10 @@ import {bloggersCollection} from "../db";
 
 export const bloggersRepository = {
 	async getAllBloggers(): Promise<IBlogger[]> {
-		return bloggersCollection.find({}).toArray();
+		return bloggersCollection.find().project<IBlogger>({_id: 0}).toArray();
 	},
 	async getBloggerById(id: string): Promise<IBlogger | null> {
-		return bloggersCollection.findOne({id});
+		return bloggersCollection.findOne({id}, {projection: {_id: 0}});
 	},
 	async deleteAllBloggers(): Promise<void> {
 		await bloggersCollection.deleteMany({});

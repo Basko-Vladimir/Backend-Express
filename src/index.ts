@@ -3,8 +3,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { bloggersRouter } from "./routers/bloggers-router";
 import { postsRouter } from "./routers/posts-router";
-import {testingRouter} from "./routers/testing-router";
-import {runDb} from "./repositories/db";
+import { testingRouter } from "./routers/testing-router";
+import { runDb } from "./repositories/db";
 
 const PORT = process.env.PORT || 5000;
 

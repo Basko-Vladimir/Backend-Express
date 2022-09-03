@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 import {IBlogger} from "../interfaces/bloggers-interfaces";
 import {IPost} from "../interfaces/posts-interfaces";
 
-const mongoUri = process.env.MONGO_URI || "mongodb://0.0.0.0";
+const mongoUri = process.env.MONGO_URI || "mongodb+srv://Vladimir:BaVlaG_192115@cluster0.nqlqdla.mongodb.net/?retryWrites=true&w=majority";
 
 const client = new MongoClient(mongoUri);
 const db = client.db("homework3");

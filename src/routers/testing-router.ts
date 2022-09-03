@@ -5,5 +5,5 @@ export const testingRouter = Router({});
 
 testingRouter.delete("/all-data", async (req: Request, res: Response) => {
 	await testingRepository.deleteAllData();
-	return res.sendStatus(204);
+	res.sendStatus(204);
 });

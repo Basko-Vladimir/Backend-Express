@@ -1,3 +1,4 @@
+import { DeleteResult } from "mongodb";
 import { IBlogger } from "../../interfaces/bloggers-interfaces";
 import {bloggersCollection} from "../db";
 
@@ -8,8 +9,8 @@ export const bloggersRepository = {
 	async getBloggerById(id: string): Promise<IBlogger | null> {
 		return bloggersCollection.findOne({id});
 	},
-	async deleteAllBloggers(): Promise<void> {
-		await bloggersCollection.deleteMany({});
+	async deleteAllBloggers(): Promise<DeleteResult> {
+		return bloggersCollection.deleteMany({});
 	},
 	async deleteBlogger(id: string): Promise<boolean> {
 		const { deletedCount } = await bloggersCollection.deleteOne({id});

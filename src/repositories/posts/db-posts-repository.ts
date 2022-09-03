@@ -1,3 +1,4 @@
+import { DeleteResult } from "mongodb";
 import {IPost, IPostData} from "../../interfaces/posts-interfaces";
 import { bloggersRepository } from "../bloggers/db-bloggers-repository";
 import {postsCollection} from "../db";
@@ -13,8 +14,8 @@ export const postsRepository = {
 		const { deletedCount } = await postsCollection.deleteOne({id});
 		return Boolean(deletedCount);
 	},
-	async deleteAllPosts(): Promise<void> {
-		await postsCollection.deleteMany({});
+	async deleteAllPosts(): Promise<DeleteResult> {
+		return postsCollection.deleteMany({});
 	},
 	async createPost(postData: IPostData): Promise<IPost> {
 		const { shortDescription, content, title, bloggerId } = postData;

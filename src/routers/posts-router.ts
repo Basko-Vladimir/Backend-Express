@@ -18,7 +18,7 @@ postsRouter.get(
 	checkExistingId,
 	validationRequestErrors,
 	async (req: Request<{id: string}>, res:Response) => {
-		const post = await postsRepository.getPostById(+req.params.id);
+		const post = await postsRepository.getPostById(req.params.id);
 		post ? res.status(200).send(post) : res.send(404);
 	}
 );
@@ -29,7 +29,7 @@ postsRouter.delete(
 	checkExistingId,
 	validationRequestErrors,
 	async (req: Request<{id: string}>, res: Response) => {
-		const isDeleted = await postsRepository.deletePost(+req.params.id);
+		const isDeleted = await postsRepository.deletePost(req.params.id);
 		isDeleted ? res.send(204) : res.send(404);
 	}
 );
@@ -52,7 +52,7 @@ postsRouter.put(
 	checkPostRequestBody,
 	validationRequestErrors,
 	async (req: Request<{id: string}, {}, IPostData>, res: Response) => {
-		await postsRepository.updatePost(+req.params.id, req.body) ? res.send(204) : res.send(404);
+		await postsRepository.updatePost(req.params.id, req.body) ? res.send(204) : res.send(404);
 	}
 );
 

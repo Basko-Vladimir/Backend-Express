@@ -1,5 +1,5 @@
 import {IPost, IPostData} from "../../interfaces/posts-interfaces";
-import { bloggersRepository } from "../bloggers/bloggers-repository";
+import { bloggersRepository } from "../bloggers/memory-bloggers-repository";
 
 let posts: IPost[] = [];
 
@@ -7,10 +7,10 @@ export const postsRepository = {
 	async getAllPosts(): Promise<IPost[]> {
 		return posts;
 	},
-	async getPostById(id: number): Promise<IPost | undefined>  {
-		return posts.find(item => item.id === id);
+	async getPostById(id: string): Promise<IPost | null>  {
+		return posts.find(item => item.id === id) || null;
 	},
-	async deletePost(id: number): Promise<boolean> {
+	async deletePost(id: string): Promise<boolean> {
 		const post = posts.find(item => item.id === id);
 		
 		if (!post) {
@@ -27,8 +27,9 @@ export const postsRepository = {
 		const { shortDescription, content, title, bloggerId } = postData;
 		const blogger = await bloggersRepository.getBloggerById(bloggerId);
 		const newPost: IPost = {
-			id: Date.now(),
+			id: String(Date.now()),
 			bloggerName: blogger?.name || "",
+			createdAt: new Date().toISOString(),
 			shortDescription,
 			content,
 			title,
@@ -39,7 +40,7 @@ export const postsRepository = {
 		
 		return newPost;
 	},
-	async updatePost(postId: number, postData: IPostData): Promise<IPost | undefined> {
+	async updatePost(postId: string, postData: IPostData): Promise<IPost | null> {
 		const { shortDescription, content, title, bloggerId } = postData;
 		
 		posts = posts.map(item => item.id === postId
@@ -47,6 +48,6 @@ export const postsRepository = {
 			: item
 		);
 		
-		return posts.find(item => item.id === postId);
+		return posts.find(item => item.id === postId) || null;
 	}
 }

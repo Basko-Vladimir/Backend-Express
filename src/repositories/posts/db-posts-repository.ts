@@ -1,27 +1,20 @@
 import {IPost, IPostData} from "../../interfaces/posts-interfaces";
 import { bloggersRepository } from "../bloggers/db-bloggers-repository";
-
-let posts: IPost[] = [];
+import {postsCollection} from "../db";
 
 export const postsRepository = {
 	async getAllPosts(): Promise<IPost[]> {
-		return posts;
+		return postsCollection.find({}).toArray();
 	},
 	async getPostById(id: string): Promise<IPost | null>  {
-		return posts.find(item => item.id === id) || null;
+		return postsCollection.findOne({id});
 	},
 	async deletePost(id: string): Promise<boolean> {
-		const post = posts.find(item => item.id === id);
-		
-		if (!post) {
-			return false;
-		} else {
-			posts = posts.filter(item => item.id !== id);
-			return true;
-		}
+		const { deletedCount } = await postsCollection.deleteOne({id});
+		return Boolean(deletedCount);
 	},
 	async deleteAllPosts(): Promise<void> {
-		posts = [];
+		await postsCollection.deleteMany({});
 	},
 	async createPost(postData: IPostData): Promise<IPost> {
 		const { shortDescription, content, title, bloggerId } = postData;
@@ -36,18 +29,13 @@ export const postsRepository = {
 			bloggerId
 		};
 		
-		posts.push(newPost);
-		
+		await postsCollection.insertOne(newPost);
 		return newPost;
 	},
 	async updatePost(id: string, postData: IPostData): Promise<boolean> {
 		const { shortDescription, content, title, bloggerId } = postData;
 		
-		posts = posts.map(item => item.id === id
-			? {...item, shortDescription, content, title, bloggerId}
-			: item
-		);
-		
-		return Boolean(posts.find(item => item.id === id));
+		const { matchedCount } = await postsCollection.updateOne({id}, {$set: {shortDescription, content, title, bloggerId}});
+		return Boolean(matchedCount);
 	}
 }

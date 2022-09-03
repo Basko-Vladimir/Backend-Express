@@ -1,7 +1,7 @@
 import { Router, Response, Request } from "express";
 import { checkExistingId } from "../middlewares/check-excisting-id";
 import { validationRequestErrors } from "../middlewares/validation-request-errors";
-import { postsRepository } from "../repositories/posts/memory-posts-repository";
+import { postsRepository } from "../repositories/posts/db-posts-repository";
 import { checkAuthorization } from "../middlewares/check-authorization";
 import { checkPostRequestBody } from "../middlewares/posts/check-post-request-body";
 import { IPostData } from "../interfaces/posts-interfaces";

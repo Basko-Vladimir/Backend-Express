@@ -30,7 +30,7 @@ export const postsRepository = {
 			bloggerId
 		};
 		
-		await postsCollection.insertOne(newPost);
+		await postsCollection.insertOne({...newPost});
 		return newPost;
 	},
 	async updatePost(id: string, postData: IPostData): Promise<boolean> {

@@ -1,4 +1,3 @@
-// import { DeleteResult } from "mongodb";
 import { IBlogger } from "../../interfaces/bloggers-interfaces";
 import {bloggersCollection} from "../db";
 

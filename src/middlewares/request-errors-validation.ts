@@ -1,9 +1,10 @@
 import {ValidationError, validationResult} from "express-validator";
 import {Request, NextFunction, Response} from "express";
 import {ErrorModel} from "../models/errors-models";
+import {ApiError} from "../classes/errors";
 
 export const requestErrorsValidation = (req: Request, res: Response, next: NextFunction) => {
-	const errorFormatter = ({ msg, param }: ValidationError): ErrorModel => ({message: msg, field: param});
+	const errorFormatter = ({ msg, param }: ValidationError): ErrorModel => (new ApiError(msg, param));
 	const errors = validationResult(req).formatWith(errorFormatter);
 	
 	if (errors.isEmpty()) {

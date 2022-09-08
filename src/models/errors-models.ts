@@ -1,4 +1,4 @@
-export interface ErrorModel {
+export interface ErrorOutputModel {
 	message: string;
 	field: string;
 }

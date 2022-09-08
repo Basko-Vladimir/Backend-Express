@@ -1,1 +1,0 @@
-export type EntityWithoutId<T> = Omit<T, "id" | "_id">;

@@ -5,7 +5,7 @@ const validCredentials = "Basic YWRtaW46cXdlcnR5";
 
 export const checkAuthorization = [
 	header("authorization")
-		.exists().withMessage("You are not authorized!")
+		.exists().bail().withMessage("You are not authorized!")
 		.equals(validCredentials).withMessage("Incorrect Login or Password"),
 	(req: Request, res: Response, next: NextFunction) => validationResult(req).isEmpty()
 		? next()

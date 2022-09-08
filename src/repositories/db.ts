@@ -1,7 +1,8 @@
 import {MongoClient} from "mongodb";
 import {DataBaseError} from "../classes/errors";
 import {Blog} from "../classes/blogs";
-import {EntityWithoutId} from "../interfaces/common";
+import {EntityWithoutId} from "../interfaces/common-interfaces";
+import {Post} from "../classes/posts";
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://Vladimir:BaVlaG_192115@cluster0.nqlqdla.mongodb.net/?retryWrites=true&w=majority";
 
@@ -9,7 +10,7 @@ const client = new MongoClient(MONGO_URI);
 const db = client.db("homework4")
 
 export const blogsCollection = db.collection<EntityWithoutId<Blog>>("blogs");
-export const postsCollection = db.collection("posts");
+export const postsCollection = db.collection<EntityWithoutId<Post>>("posts");
 
 export async function runDb() {
 	try {

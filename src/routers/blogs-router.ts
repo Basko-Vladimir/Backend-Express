@@ -1,20 +1,28 @@
-import {Router, Request, Response} from "express";
-import {BlogsQueryParamsModel, BlogViewModel, CreateBlogModel, UpdateBlogModel} from "../models/blog-models";
+import {Request, Response, Router} from "express";
 import {blogsService} from "../services/blogs-service";
-import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interfaces/blogs";
+import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interfaces/common-interfaces";
 import {checkAuthorization} from "../middlewares/check-authorization";
 import {blogRequestBodyValidation} from "../middlewares/blogs/blog-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
-import {IdParamModel} from "../models/common";
 import {getErrorStatus} from "../utils/errors-utils";
+import {countSkipValue, parseQueryParamsValues, setSortValue} from "../utils/query-params-utils";
+import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models";
+import {BlogOutputModel} from "../models/blogs/output-models";
+import {CreateBlogInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
+import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 
 export const blogsRouter = Router({});
 
 blogsRouter.get(
 	"/",
-	async (req: TypedRequestQuery<BlogsQueryParamsModel>, res: Response<BlogViewModel[]>) => {
+	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<BlogOutputModel[]>) => {
 		try {
-			const blogs = await blogsService.getAllBlogs();
+			const { sortBy, sortDirection, pageNumber, pageSize, searchNameTerm } = parseQueryParamsValues(req.query);
+			const skip = countSkipValue(pageNumber, pageSize);
+			const sortSetting = setSortValue(sortBy, sortDirection);
+			const searchNameTermValue = searchNameTerm || "";
+			const blogs = await queryBlogsRepository.getAllBlogs(skip, pageSize, sortSetting, searchNameTermValue);
+			
 			res.status(200).send(blogs)
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
@@ -23,9 +31,9 @@ blogsRouter.get(
 
 blogsRouter.get(
 	"/:id",
-	async (req: TypedRequestParams<IdParamModel>, res: Response<BlogViewModel>) => {
+	async (req: TypedRequestParams<ParamIdInputModel>, res: Response<BlogOutputModel>) => {
 		try {
-			const blog = await blogsService.getBlogById(req.params.id);
+			const blog = await queryBlogsRepository.getBlogById(req.params.id);
 			res.status(200).send(blog);
 		}
 		catch (error) {
@@ -38,9 +46,10 @@ blogsRouter.post(
 	checkAuthorization,
 	blogRequestBodyValidation,
 	requestErrorsValidation,
-	async (req: TypedRequestBody<CreateBlogModel>, res: Response<BlogViewModel>) => {
+	async (req: TypedRequestBody<CreateBlogInputModel>, res: Response<BlogOutputModel>) => {
 		try {
-			const newBlog = await blogsService.createBlog(req.body);
+			const createdBlogId = await blogsService.createBlog(req.body);
+			const newBlog = await queryBlogsRepository.getBlogById(createdBlogId);
 			res.status(201).send(newBlog);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
@@ -52,7 +61,7 @@ blogsRouter.put(
 	checkAuthorization,
 	blogRequestBodyValidation,
 	requestErrorsValidation,
-	async (req: Request<IdParamModel, {}, UpdateBlogModel>, res: Response) => {
+	async (req: Request<ParamIdInputModel, {}, UpdateBlogInputModel>, res: Response) => {
 		try {
 			await blogsService.updateBlog(req.params.id, req.body);
 			res.sendStatus(204);
@@ -65,7 +74,7 @@ blogsRouter.delete(
 	"/:id",
 	checkAuthorization,
 	requestErrorsValidation,
-	async(req: TypedRequestParams<IdParamModel>, res: Response) => {
+	async(req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
 		try {
 			await blogsService.deleteBlog(req.params.id);
 			res.sendStatus(204);
@@ -73,3 +82,30 @@ blogsRouter.delete(
 			res.sendStatus(getErrorStatus(error));
 		}
 	});
+
+// blogsRouter.post(
+// 	"/:blogId/posts",
+// 	checkAuthorization,
+// 	checkPostRequestBody,
+// 	requestErrorsValidation,
+// 	async (req: Request<ParamBlogIdInputModel, {}, CreatePostModel>, res: Response<PostViewModel>) => {
+// 		try {
+// 			const post = await blogsService.createPostByBlogId(req.params.blogId, req.body);
+// 			res.status(201).send(post);
+// 		} catch (error) {
+// 			res.sendStatus(getErrorStatus(error));
+// 		}
+// 	});
+//
+// blogsRouter.get(
+// 	"/:blogId/posts",
+// 	async (req: Request<ParamBlogIdInputModel, {}, {}, InputPostsQueryParamsModel>, res: Response<PostViewModel[]>) => {
+// 		try {
+// 			const queries = setQueryParamsValues<OutputPostQueriesParams>(req.query);
+// 			const blogId = req.params.blogId;
+// 			const posts = await blogsService.getAllPostsByBlogId(queries, blogId);
+// 			res.status(200).send(posts);
+// 		} catch (error) {
+// 			res.sendStatus(getErrorStatus(error));
+// 		}
+// 	});

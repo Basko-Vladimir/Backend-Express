@@ -2,7 +2,7 @@ import {blogsCollection} from "../db";
 import { DataBaseError } from "../../classes/errors";
 import {SortSetting} from "../../interfaces/common-interfaces";
 import {BlogOutputModel} from "../../models/blogs/output-models";
-import {getFilterByDbId, mapDbBlogToBlogOutputModel} from "../../utils/mappers";
+import {getFilterByDbId, mapDbBlogToBlogOutputModel} from "../mappers-utils";
 
 export const queryBlogsRepository = {
 	async getAllBlogs(

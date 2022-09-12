@@ -1,9 +1,9 @@
 import {blogsCollection} from "../db";
 import {DataBaseError} from "../../classes/errors";
 import {EntityWithoutId} from "../../interfaces/common-interfaces";
-import {DbBlog} from "./interfaces";
+import {DbBlog} from "../interfaces";
 import {UpdateBlogInputModel} from "../../models/blogs/input-models";
-import {getFilterByDbId} from "../../utils/mappers";
+import {getFilterByDbId} from "../mappers-utils";
 
 export const blogsRepository = {
 	// async getBlogById(_id: ObjectId): Promise<Blog> {

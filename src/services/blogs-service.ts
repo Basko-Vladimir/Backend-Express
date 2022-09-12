@@ -3,7 +3,7 @@ import {Blog} from "../classes/blogs";
 import {CreateBlogInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
 
 export const blogsService = {
-	async createBlog(data: CreateBlogInputModel): Promise<string> {
+		async createBlog(data: CreateBlogInputModel): Promise<string> {
 		const { name, youtubeUrl } = data;
 		const blogData = new Blog(name, youtubeUrl);
 
@@ -18,9 +18,9 @@ export const blogsService = {
 		return blogsRepository.deleteBlog(id);
 	},
 	
-	async deleteAllBlogs(): Promise<void> {
-		return blogsRepository.deleteAllBlogs();
-	},
+	// async deleteAllBlogs(): Promise<void> {
+	// 	return blogsRepository.deleteAllBlogs();
+	// },
 	
 	// async createPostByBlogId(blogId: string, postData: Omit<CreatePostModel, "blogId">): Promise<PostViewModel> {
 	// 	return await postsService.createPost({...postData, blogId});

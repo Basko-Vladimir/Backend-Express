@@ -1,4 +1,4 @@
-import {ErrorOutputModel} from "../models/errors-models";
+import {ApiErrorOutputModel} from "../models/errors-models";
 
 export class DataBaseError extends Error {
 	constructor(message?: string) {
@@ -10,7 +10,7 @@ export class DataBaseError extends Error {
 	}
 }
 
-export class ApiError implements ErrorOutputModel {
+export class ApiError implements ApiErrorOutputModel {
 	message: string;
 	field: string;
 	

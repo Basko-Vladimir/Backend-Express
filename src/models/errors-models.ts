@@ -1,4 +1,4 @@
-export interface ErrorOutputModel {
+export interface ApiErrorOutputModel {
 	message: string;
 	field: string;
 }

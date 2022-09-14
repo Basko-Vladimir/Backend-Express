@@ -10,7 +10,7 @@ export const mapDbBlogToBlogOutputModel = (blog: DbBlog): BlogOutputModel => {
 		id: String(blog._id),
 		name: blog.name,
 		youtubeUrl: blog.youtubeUrl,
-		createdAt: String(blog.createdAt)
+		createdAt: blog.createdAt.toISOString()
 	}
 };
 
@@ -22,6 +22,6 @@ export const mapDbPostToPostOutputModel = (post: DbPost): PostOutputModel => {
 		content: post.content,
 		blogId: String(post.blogId),
 		blogName: post.blogName,
-		createdAt: String(post.createdAt)
+		createdAt: post.createdAt.toISOString()
 	}
 };

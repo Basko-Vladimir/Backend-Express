@@ -8,7 +8,7 @@ export class Post {
 	content: string;
 	blogName: string;
 	blogId: ObjectId;
-	createdAt: string;
+	createdAt: Date;
 	
 	
 	constructor ({
@@ -19,6 +19,6 @@ export class Post {
 			this.shortDescription = shortDescription;
 			this.blogName = blogName;
 			this.blogId = blogId;
-			this.createdAt = new Date().toISOString();
+			this.createdAt = new Date();
 		}
 }

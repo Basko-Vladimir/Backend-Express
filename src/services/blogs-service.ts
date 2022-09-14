@@ -1,6 +1,9 @@
 import {blogsRepository} from "../repositories/blogs/blogs-repository";
 import {Blog} from "../classes/blogs";
-import {CreateBlogInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
+import {CreateBlogInputModel, CreateBlogPostInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
+import {NotFoundError} from "../classes/errors";
+import {postsService} from "./posts-service";
+import {PostOutputModel} from "../models/posts/output-models";
 
 export const blogsService = {
 	async getBlogById(id: string): Promise<Blog | null> {
@@ -22,15 +25,28 @@ export const blogsService = {
 		return blogsRepository.deleteBlog(id);
 	},
 	
-	// async deleteAllBlogs(): Promise<void> {
-	// 	return blogsRepository.deleteAllBlogs();
-	// },
-	
-	// async createPostByBlogId(blogId: string, postData: Omit<CreatePostModel, "blogId">): Promise<PostViewModel> {
-	// 	return await postsService.createPost({...postData, blogId});
-	// },
-	//
+	async createPostByBlogId(blogId: string, createPostData: CreateBlogPostInputModel): Promise<string> {
+		const blog = await blogsRepository.getBlogById(blogId);
+		
+		if (!blog) throw new NotFoundError();
+		
+		const { title, content, shortDescription } = createPostData;
+		const postData: Omit<PostOutputModel, "id" | "createdAt"> = {
+			blogId,
+			title,
+			content,
+			shortDescription,
+			blogName: blog.name
+		};
+		
+		return postsService.createPost(postData);
+	},
+
 	// async getAllPostsByBlogId(queryParams: OutputPostQueriesParams, blogId: string): Promise<PostViewModel[]> {
 	// 	return postsService.getPosts(queryParams, blogId);
 	// }
+	
+	// async deleteAllBlogs(): Promise<void> {
+	// 	return blogsRepository.deleteAllBlogs();
+	// },
 };

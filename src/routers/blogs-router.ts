@@ -7,8 +7,16 @@ import {requestErrorsValidation} from "../middlewares/request-errors-validation"
 import {getErrorStatus, countSkipValue, parseQueryParamsValues, setSortValue} from "./utils";
 import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models";
 import {BlogOutputModel} from "../models/blogs/output-models";
-import {CreateBlogInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
+import {
+	CreateBlogInputModel,
+	CreateBlogPostInputModel,
+	ParamBlogIdInputModel,
+	UpdateBlogInputModel
+} from "../models/blogs/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
+import {checkBlogPostRequestBody} from "../middlewares/blogs/blog-post-request-body-validation";
+import {PostOutputModel} from "../models/posts/output-models";
+import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
 
 export const blogsRouter = Router({});
 
@@ -82,20 +90,21 @@ blogsRouter.delete(
 		}
 	});
 
-// blogsRouter.post(
-// 	"/:blogId/posts",
-// 	checkAuthorization,
-// 	checkPostRequestBody,
-// 	requestErrorsValidation,
-// 	async (req: Request<ParamBlogIdInputModel, {}, CreatePostModel>, res: Response<PostViewModel>) => {
-// 		try {
-// 			const post = await blogsService.createPostByBlogId(req.params.blogId, req.body);
-// 			res.status(201).send(post);
-// 		} catch (error) {
-// 			res.sendStatus(getErrorStatus(error));
-// 		}
-// 	});
-//
+blogsRouter.post(
+	"/:blogId/posts",
+	checkAuthorization,
+	checkBlogPostRequestBody,
+	requestErrorsValidation,
+	async (req: Request<ParamBlogIdInputModel, {}, CreateBlogPostInputModel>, res: Response<PostOutputModel>) => {
+		try {
+			const postId = await blogsService.createPostByBlogId(req.params.blogId, req.body);
+			const post = await queryPostsRepository.getPostById(postId);
+			res.status(201).send(post);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	});
+
 // blogsRouter.get(
 // 	"/:blogId/posts",
 // 	async (req: Request<ParamBlogIdInputModel, {}, {}, InputPostsQueryParamsModel>, res: Response<PostViewModel[]>) => {

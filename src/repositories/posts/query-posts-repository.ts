@@ -1,7 +1,7 @@
 import {postsCollection} from "../db";
 import {getFilterByDbId, mapDbPostToPostOutputModel} from "../mappers-utils";
 import { DataBaseError } from "../../classes/errors";
-import { SortSetting } from "../../interfaces/common-interfaces";
+import { SortSetting } from "../interfaces";
 import {PostOutputModel} from "../../models/posts/output-models";
 
 export const queryPostsRepository = {

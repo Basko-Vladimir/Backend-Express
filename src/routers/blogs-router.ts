@@ -4,8 +4,7 @@ import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interf
 import {checkAuthorization} from "../middlewares/check-authorization";
 import {blogRequestBodyValidation} from "../middlewares/blogs/blog-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
-import {getErrorStatus} from "../utils/errors-utils";
-import {countSkipValue, parseQueryParamsValues, setSortValue} from "../utils/query-params-utils";
+import {getErrorStatus, countSkipValue, parseQueryParamsValues, setSortValue} from "./utils";
 import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models";
 import {BlogOutputModel} from "../models/blogs/output-models";
 import {CreateBlogInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";

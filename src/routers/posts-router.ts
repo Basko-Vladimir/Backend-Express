@@ -1,8 +1,7 @@
 import {Request, Response, Router} from "express";
-import {getErrorStatus} from "../utils/errors-utils";
+import {getErrorStatus, countSkipValue, parseQueryParamsValues, setSortValue} from "./utils";
 import {postsService} from "../services/posts-service";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interfaces/common-interfaces";
-import {countSkipValue, parseQueryParamsValues, setSortValue} from "../utils/query-params-utils";
 import {checkAuthorization} from "../middlewares/check-authorization";
 import {checkPostRequestBody} from "../middlewares/posts/post-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";

@@ -41,12 +41,8 @@ export const blogsService = {
 		
 		return postsService.createPost(postData);
 	},
-
-	// async getAllPostsByBlogId(queryParams: OutputPostQueriesParams, blogId: string): Promise<PostViewModel[]> {
-	// 	return postsService.getPosts(queryParams, blogId);
-	// }
 	
-	// async deleteAllBlogs(): Promise<void> {
-	// 	return blogsRepository.deleteAllBlogs();
-	// },
+	async deleteAllBlogs(): Promise<void> {
+		return blogsRepository.deleteAllBlogs();
+	},
 };

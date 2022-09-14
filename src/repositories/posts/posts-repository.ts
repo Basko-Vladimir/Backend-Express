@@ -31,7 +31,7 @@ export const postsRepository = {
 		if (!deletedCount) throw new NotFoundError();
 	},
 
-	// async deleteAllPosts(): Promise<void> {
-	// 	await postsCollection.deleteMany({});
-	// }
+	async deleteAllPosts(): Promise<void> {
+		await postsCollection.deleteMany({});
+	}
 };

@@ -34,7 +34,7 @@ export const blogsRepository = {
 		if (!deletedCount) throw new NotFoundError();
 	},
 	
-	// async deleteAllBlogs(): Promise<void> {
-	// 	await blogsCollection.deleteMany({});
-	// }
+	async deleteAllBlogs(): Promise<void> {
+		await blogsCollection.deleteMany({});
+	}
 };

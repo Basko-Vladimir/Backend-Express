@@ -1,7 +1,7 @@
 import {postsCollection} from "../db";
 import {getFilterByDbId, mapDbPostToPostOutputModel} from "../mappers-utils";
-import { DataBaseError } from "../../classes/errors";
 import { SortSetting } from "../interfaces";
+import {NotFoundError} from "../../classes/errors";
 import {PostOutputModel} from "../../models/posts/output-models";
 
 export const queryPostsRepository = {
@@ -20,15 +20,15 @@ export const queryPostsRepository = {
 			
 			return blogs.map(mapDbPostToPostOutputModel);
 		} catch {
-			throw new DataBaseError();
+			throw new NotFoundError();
 		}
 	},
 	
 	async getPostById(id: string): Promise<PostOutputModel> {
-		const blog = await postsCollection.findOne(getFilterByDbId(id));
+		const post = await postsCollection.findOne(getFilterByDbId(id));
 		
-		if (!blog) throw new DataBaseError();
+		if (!post) throw new NotFoundError();
 		
-		return mapDbPostToPostOutputModel(blog);
+		return mapDbPostToPostOutputModel(post);
 	}
 };

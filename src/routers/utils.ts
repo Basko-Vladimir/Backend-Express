@@ -1,7 +1,7 @@
 import {SortDirection, SortSetting} from "../repositories/interfaces";
 import {SortByField} from "../interfaces/enums";
 import {QueryParamsInputModel, QueryParamsOutputModel} from "../models/common-models";
-import {DataBaseError} from "../classes/errors";
+import {NotFoundError} from "../classes/errors";
 
 export const parseQueryParamsValues = (
 	defaultValues: QueryParamsInputModel
@@ -28,5 +28,5 @@ export const setSortValue = (sortBy: SortByField, sortDirection: SortDirection):
 };
 
 export const getErrorStatus = (error: unknown): number => {
-	return error instanceof DataBaseError ? 500 : 404;
+	return error instanceof NotFoundError ? 404 : 500;
 };

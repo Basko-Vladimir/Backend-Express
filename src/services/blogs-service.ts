@@ -3,7 +3,11 @@ import {Blog} from "../classes/blogs";
 import {CreateBlogInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
 
 export const blogsService = {
-		async createBlog(data: CreateBlogInputModel): Promise<string> {
+	async getBlogById(id: string): Promise<Blog | null> {
+		return blogsRepository.getBlogById(id);
+	},
+	
+	async createBlog(data: CreateBlogInputModel): Promise<string> {
 		const { name, youtubeUrl } = data;
 		const blogData = new Blog(name, youtubeUrl);
 

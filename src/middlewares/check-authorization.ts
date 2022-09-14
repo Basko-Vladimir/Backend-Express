@@ -9,5 +9,5 @@ export const checkAuthorization = [
 		.equals(validCredentials).withMessage("Incorrect Login or Password"),
 	(req: Request, res: Response, next: NextFunction) => validationResult(req).isEmpty()
 		? next()
-		: res.status(401).json({ errors: validationResult(req).array() })
+		: res.status(401).json({ errors: validationResult(req).array()})
 ];

@@ -1,23 +1,20 @@
 import {blogsCollection} from "../db";
-import {DataBaseError} from "../../classes/errors";
-import {EntityWithoutId} from "../../interfaces/common-interfaces";
 import {DbBlog} from "../interfaces";
-import {UpdateBlogInputModel} from "../../models/blogs/input-models";
 import {getFilterByDbId} from "../mappers-utils";
+import {NotFoundError} from "../../classes/errors";
+import {EntityWithoutId} from "../../interfaces/common-interfaces";
+import {UpdateBlogInputModel} from "../../models/blogs/input-models";
+import { Blog } from "../../classes/blogs";
 
 export const blogsRepository = {
-	// async getBlogById(_id: ObjectId): Promise<Blog> {
-	// 	const blog = await blogsCollection.findOne({_id});
-	//
-	// 	if (!blog) throw new DataBaseError();
-	//
-	// 	return blog;
-	// },
+	async getBlogById(id: string): Promise<Blog | null> {
+		return await blogsCollection.findOne(getFilterByDbId(id));
+	},
 	
 	async createBlog(blogData: EntityWithoutId<DbBlog>): Promise<string> {
 		const { insertedId } = await blogsCollection.insertOne(blogData);
 		
-		if (!insertedId) throw new DataBaseError();
+		if (!insertedId) throw new NotFoundError();
 		
 		return String(insertedId);
 	},
@@ -28,16 +25,16 @@ export const blogsRepository = {
 			{$set: {...data}}
 		);
 		
-		if (!matchedCount) throw new DataBaseError();
+		if (!matchedCount) throw new NotFoundError();
 	},
 	
 	async deleteBlog(id: string): Promise<void> {
 		const { deletedCount } = await blogsCollection.deleteOne(getFilterByDbId(id));
 		
-		if (!deletedCount) throw new DataBaseError();
+		if (!deletedCount) throw new NotFoundError();
 	},
 	
-	async deleteAllBlogs(): Promise<void> {
-		await blogsCollection.deleteMany({});
-	}
+	// async deleteAllBlogs(): Promise<void> {
+	// 	await blogsCollection.deleteMany({});
+	// }
 };

@@ -48,8 +48,8 @@ blogsRouter.post(
 	async (req: TypedRequestBody<CreateBlogInputModel>, res: Response<BlogOutputModel>) => {
 		try {
 			const createdBlogId = await blogsService.createBlog(req.body);
-			const newBlog = await queryBlogsRepository.getBlogById(createdBlogId);
-			res.status(201).send(newBlog);
+			const createdBlog = await queryBlogsRepository.getBlogById(createdBlogId);
+			res.status(201).send(createdBlog);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}

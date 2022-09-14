@@ -1,8 +1,8 @@
 import {blogsCollection} from "../db";
-import { DataBaseError } from "../../classes/errors";
 import {SortSetting} from "../interfaces";
-import {BlogOutputModel} from "../../models/blogs/output-models";
 import {getFilterByDbId, mapDbBlogToBlogOutputModel} from "../mappers-utils";
+import {NotFoundError} from "../../classes/errors";
+import {BlogOutputModel} from "../../models/blogs/output-models";
 
 export const queryBlogsRepository = {
 	async getAllBlogs(
@@ -21,14 +21,14 @@ export const queryBlogsRepository = {
 			
 			return blogs.map(mapDbBlogToBlogOutputModel);
 		} catch {
-			throw new DataBaseError();
+			throw new NotFoundError();
 		}
 	},
 	
 	async getBlogById(id: string): Promise<BlogOutputModel> {
 		const blog = await blogsCollection.findOne(getFilterByDbId(id));
 		
-		if (!blog) throw new DataBaseError();
+		if (!blog) throw new NotFoundError();
 		
 		return mapDbBlogToBlogOutputModel(blog);
 	}

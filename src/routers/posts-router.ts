@@ -10,6 +10,7 @@ import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models"
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
 import {CreatePostInputModel, UpdatePostInputModel} from "../models/posts/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
+
 export const postsRouter = Router({});
 
 postsRouter.get(

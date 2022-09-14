@@ -3,14 +3,14 @@ import {postsCollection} from "../db";
 import {DbPost} from "../interfaces";
 import {getFilterByDbId} from "../mappers-utils";
 import {PostOutputModel} from "../../models/posts/output-models";
-import { DataBaseError } from "../../classes/errors";
+import {NotFoundError} from "../../classes/errors";
 import { EntityWithoutId } from "../../interfaces/common-interfaces";
 
 export const postsRepository = {
 	async createPost(postData: EntityWithoutId<DbPost>): Promise<string> {
 		const { insertedId } = await postsCollection.insertOne(postData);
 
-		if (!insertedId) throw new DataBaseError();
+		if (!insertedId) throw new NotFoundError();
 
 		return String(insertedId);
  	},
@@ -22,13 +22,13 @@ export const postsRepository = {
 			{$set: {shortDescription, title, content, blogId: new ObjectId(blogId)}}
 		);
 
-		if (!matchedCount) throw new DataBaseError();
+		if (!matchedCount) throw new NotFoundError();
 	},
 
 	async deletePost(id: string): Promise<void> {
 		const { deletedCount } = await postsCollection.deleteOne(getFilterByDbId(id));
 
-		if (!deletedCount) throw new DataBaseError();
+		if (!deletedCount) throw new NotFoundError();
 	},
 
 	// async deleteAllPosts(): Promise<void> {

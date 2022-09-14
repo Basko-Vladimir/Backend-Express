@@ -19,3 +19,9 @@ export class ApiError implements ApiErrorOutputModel {
 		this.field = field;
 	}
 }
+
+export class NotFoundError extends Error {
+	constructor() {
+		super("Not Found");
+	}
+}

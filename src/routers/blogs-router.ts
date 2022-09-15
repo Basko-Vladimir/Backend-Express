@@ -6,7 +6,7 @@ import {blogRequestBodyValidation} from "../middlewares/blogs/blog-request-body-
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {getErrorStatus, countSkipValue, parseQueryParamsValues, setSortValue} from "./utils";
 import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models";
-import {BlogAllPostsOutputModel, BlogOutputModel} from "../models/blogs/output-models";
+import {AllBlogsOutputModel, BlogAllPostsOutputModel, BlogOutputModel} from "../models/blogs/output-models";
 import {
 	CreateBlogInputModel,
 	CreateBlogPostInputModel,
@@ -23,15 +23,16 @@ export const blogsRouter = Router({});
 
 blogsRouter.get(
 	"/",
-	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<BlogOutputModel[]>) => {
+	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<AllBlogsOutputModel>) => {
 		try {
 			const { sortBy, sortDirection, pageNumber, pageSize, searchNameTerm } = parseQueryParamsValues(req.query);
 			const skip = countSkipValue(pageNumber, pageSize);
 			const sortSetting = setSortValue(sortBy, sortDirection);
 			const searchNameTermValue = searchNameTerm || "";
-			const blogs = await queryBlogsRepository.getAllBlogs(skip, pageSize, sortSetting, searchNameTermValue);
+			const blogsOutputModel = await queryBlogsRepository
+				.getAllBlogs(skip, pageSize, pageNumber, sortSetting, searchNameTermValue);
 			
-			res.status(200).send(blogs)
+			res.status(200).send(blogsOutputModel);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}

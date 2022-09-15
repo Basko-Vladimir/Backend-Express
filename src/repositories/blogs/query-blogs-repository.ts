@@ -2,16 +2,18 @@ import {blogsCollection} from "../db";
 import {SortSetting} from "../interfaces";
 import {getFilterByDbId, mapDbBlogToBlogOutputModel} from "../mappers-utils";
 import {NotFoundError} from "../../classes/errors";
-import {BlogOutputModel} from "../../models/blogs/output-models";
+import {AllBlogsOutputModel, BlogOutputModel} from "../../models/blogs/output-models";
 
 export const queryBlogsRepository = {
 	async getAllBlogs(
 		skip: number,
 		limit: number,
+		pageNumber: number,
 		sortSetting: SortSetting,
 		searchName: string
-	): Promise<BlogOutputModel[]> {
+	): Promise<AllBlogsOutputModel> {
 		try {
+			const totalCount = await blogsCollection.countDocuments({});
 			const blogs = await blogsCollection
 				.find({name: {$regex: searchName || "", $options: "i"}})
 				.skip(skip)
@@ -19,7 +21,13 @@ export const queryBlogsRepository = {
 				.sort(sortSetting)
 				.toArray();
 			
-			return blogs.map(mapDbBlogToBlogOutputModel);
+			return {
+				pagesCount: Math.ceil(totalCount / limit),
+				page: pageNumber,
+				pageSize: limit,
+				totalCount: totalCount,
+				items: blogs.map(mapDbBlogToBlogOutputModel)
+			};
 		} catch {
 			throw new NotFoundError();
 		}

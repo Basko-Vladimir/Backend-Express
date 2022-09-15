@@ -7,6 +7,14 @@ export interface BlogOutputModel {
 	createdAt: string;
 }
 
+export interface AllBlogsOutputModel {
+	pagesCount: number;
+	page: number;
+	pageSize: number;
+	totalCount: number;
+	items: BlogOutputModel[];
+}
+
 export interface BlogAllPostsOutputModel {
 	pagesCount: number;
 	page: number;

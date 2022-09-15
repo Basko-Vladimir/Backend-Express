@@ -10,19 +10,20 @@ import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models"
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
 import {CreatePostInputModel, UpdatePostInputModel} from "../models/posts/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
+import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
 
 export const postsRouter = Router({});
 
 postsRouter.get(
 	"/",
-	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<PostOutputModel[]>) => {
+	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<BlogAllPostsOutputModel>) => {
 		try {
 			const { sortBy, sortDirection, pageNumber , pageSize } = parseQueryParamsValues(req.query);
 			const skip = countSkipValue(pageNumber, pageSize);
 			const sortSetting = setSortValue(sortBy, sortDirection);
-			const posts = await queryPostsRepository.getAllPosts(skip, pageSize, sortSetting);
+			const postsOutputModel = await queryPostsRepository.getAllPosts(skip, pageSize, pageNumber, sortSetting);
 
-			res.status(200).send(posts);
+			res.status(200).send(postsOutputModel);
 		}	catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}

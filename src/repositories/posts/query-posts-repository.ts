@@ -10,9 +10,11 @@ export const queryPostsRepository = {
 	async getAllPosts(
 		skip: number,
 		limit: number,
+		pageNumber: number,
 		sortSetting: SortSetting,
-	): Promise<PostOutputModel[]> {
+	): Promise<BlogAllPostsOutputModel> {
 		try {
+			const totalCount = await postsCollection.countDocuments();
 			const blogs = await postsCollection
 				.find({})
 				.skip(skip)
@@ -20,7 +22,13 @@ export const queryPostsRepository = {
 				.sort(sortSetting)
 				.toArray();
 			
-			return blogs.map(mapDbPostToPostOutputModel);
+			return {
+				pagesCount: Math.ceil(totalCount / limit),
+				page: pageNumber,
+				pageSize: limit,
+				totalCount: totalCount,
+				items: blogs.map(mapDbPostToPostOutputModel)
+			};
 		} catch {
 			throw new NotFoundError();
 		}

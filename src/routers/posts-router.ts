@@ -3,7 +3,7 @@ import {getErrorStatus, countSkipValue, parseQueryParamsValues, setSortValue} fr
 import {postsService} from "../services/posts-service";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interfaces/common-interfaces";
 import {checkAuthorization} from "../middlewares/check-authorization";
-import {checkPostRequestBody} from "../middlewares/posts/post-request-body-validation";
+import {postRequestFullBodyValidation} from "../middlewares/posts/post-request-full-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {PostOutputModel} from "../models/posts/output-models";
 import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models";
@@ -42,7 +42,7 @@ postsRouter.get(
 postsRouter.post(
 	"/",
 	checkAuthorization,
-	checkPostRequestBody,
+	postRequestFullBodyValidation,
 	requestErrorsValidation,
 	async (req: TypedRequestBody<CreatePostInputModel>, res: Response<PostOutputModel>) => {
 		try {
@@ -58,7 +58,7 @@ postsRouter.post(
 postsRouter.put(
 	"/:id",
 	checkAuthorization,
-	checkPostRequestBody,
+	postRequestFullBodyValidation,
 	requestErrorsValidation,
 	async (req: Request<ParamIdInputModel, {}, UpdatePostInputModel>, res: Response<void>) => {
 		try {

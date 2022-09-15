@@ -14,9 +14,10 @@ import {
 	UpdateBlogInputModel
 } from "../models/blogs/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
-import {checkBlogPostRequestBody} from "../middlewares/blogs/blog-post-request-body-validation";
+import {postBodyCommonFieldsValidation} from "../middlewares/post-body-common-fields-validation";
 import {PostOutputModel} from "../models/posts/output-models";
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
+import {blogIdParamValidation} from "../middlewares/blogs/blog-id-param-validation";
 
 export const blogsRouter = Router({});
 
@@ -93,7 +94,8 @@ blogsRouter.delete(
 blogsRouter.post(
 	"/:blogId/posts",
 	checkAuthorization,
-	checkBlogPostRequestBody,
+	blogIdParamValidation,
+	postBodyCommonFieldsValidation,
 	requestErrorsValidation,
 	async (req: Request<ParamBlogIdInputModel, {}, CreateBlogPostInputModel>, res: Response<PostOutputModel>) => {
 		try {
@@ -107,6 +109,7 @@ blogsRouter.post(
 
 blogsRouter.get(
 	"/:blogId/posts",
+	blogIdParamValidation,
 	async (
 		req: Request<ParamBlogIdInputModel, {}, {}, Omit<QueryParamsInputModel, "searchNameTerm">>,
 		res: Response<BlogAllPostsOutputModel>

@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const checkBlogPostRequestBody = [
+export const postBodyCommonFieldsValidation = [
 	body("title")
 		.exists().withMessage("You didn't provide 'title' field")
 		.trim().isLength({min: 1, max: 30}).withMessage("Name should be from 1 to 30 chars"),

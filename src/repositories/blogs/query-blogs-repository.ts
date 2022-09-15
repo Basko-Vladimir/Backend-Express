@@ -13,7 +13,8 @@ export const queryBlogsRepository = {
 		searchName: string
 	): Promise<AllBlogsOutputModel> {
 		try {
-			const totalCount = await blogsCollection.countDocuments({});
+			const totalCount = await blogsCollection
+				.countDocuments({name: {$regex: searchName || "", $options: "i"}});
 			const blogs = await blogsCollection
 				.find({name: {$regex: searchName || "", $options: "i"}})
 				.skip(skip)

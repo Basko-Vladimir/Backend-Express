@@ -1,4 +1,5 @@
 import {PostOutputModel} from "../posts/output-models";
+import {BlogSortByField, SortDirection} from "../enums";
 
 export interface BlogOutputModel {
 	id: string;
@@ -22,3 +23,12 @@ export interface BlogAllPostsOutputModel {
 	totalCount: number;
 	items: PostOutputModel[];
 }
+
+export interface BlogsQueryParamsOutputModel {
+	sortBy: BlogSortByField;
+	sortDirection: SortDirection;
+	pageNumber: number;
+	pageSize: number;
+	searchNameTerm: string;
+}
+

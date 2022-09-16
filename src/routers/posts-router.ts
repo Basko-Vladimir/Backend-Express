@@ -1,34 +1,34 @@
 import {Request, Response, Router} from "express";
-import {getErrorStatus,  parseQueryParamsValues} from "./utils";
+import {getErrorStatus} from "./utils";
 import {postsService} from "../services/posts-service";
-import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interfaces/common-interfaces";
 import {checkAuthorization} from "../middlewares/check-authorization";
 import {postRequestFullBodyValidation} from "../middlewares/posts/post-request-full-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {PostOutputModel} from "../models/posts/output-models";
-import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models";
+import {ParamIdInputModel} from "../models/common-models";
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
 import {CreatePostInputModel, UpdatePostInputModel} from "../models/posts/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
 import { countSkipValue, setSortValue } from "../repositories/utils/common-utils";
+import {TypedRequestBody, TypedRequestParams } from "../common/interfaces";
 
 export const postsRouter = Router({});
 
-postsRouter.get(
-	"/",
-	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<BlogAllPostsOutputModel>) => {
-		try {
-			const { sortBy, sortDirection, pageNumber , pageSize } = parseQueryParamsValues(req.query);
-			const skip = countSkipValue(pageNumber, pageSize);
-			const sortSetting = setSortValue(sortBy, sortDirection);
-			const postsOutputModel = await queryPostsRepository.getAllPosts(skip, pageSize, pageNumber, sortSetting);
-
-			res.status(200).send(postsOutputModel);
-		}	catch (error) {
-			res.sendStatus(getErrorStatus(error));
-		}
-	});
+// postsRouter.get(
+// 	"/",
+// 	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<BlogAllPostsOutputModel>) => {
+// 		try {
+// 			const { sortBy, sortDirection, pageNumber , pageSize } = parseQueryParamsValues(req.query);
+// 			const skip = countSkipValue(pageNumber, pageSize);
+// 			const sortSetting = setSortValue(sortBy, sortDirection);
+// 			const postsOutputModel = await queryPostsRepository.getAllPosts(skip, pageSize, pageNumber, sortSetting);
+//
+// 			res.status(200).send(postsOutputModel);
+// 		}	catch (error) {
+// 			res.sendStatus(getErrorStatus(error));
+// 		}
+// 	});
 
 postsRouter.get(
 	"/:id",

@@ -1,8 +1,8 @@
 import {MongoClient} from "mongodb";
 import {DataBaseError} from "../classes/errors";
 import {Blog} from "../classes/blogs";
-import {EntityWithoutId} from "../interfaces/common-interfaces";
 import {Post} from "../classes/posts";
+import {EntityWithoutId} from "../common/interfaces";
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://Vladimir:BaVlaG_192115@cluster0.nqlqdla.mongodb.net/?retryWrites=true&w=majority";
 

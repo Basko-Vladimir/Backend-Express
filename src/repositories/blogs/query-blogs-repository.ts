@@ -1,31 +1,30 @@
 import {blogsCollection} from "../db";
 import {getFilterByDbId, mapDbBlogToBlogOutputModel} from "../utils/mappers-utils";
-import { SortSetting } from "../interfaces/common-interfaces";
 import {NotFoundError} from "../../classes/errors";
-import {AllBlogsOutputModel, BlogOutputModel} from "../../models/blogs/output-models";
+import {AllBlogsOutputModel, BlogOutputModel, BlogsQueryParamsOutputModel} from "../../models/blogs/output-models";
+import {countSkipValue, setSortValue} from "../utils/common-utils";
 
 export const queryBlogsRepository = {
-	async getAllBlogs(
-		skip: number,
-		limit: number,
-		pageNumber: number,
-		sortSetting: SortSetting,
-		searchName: string
-	): Promise<AllBlogsOutputModel> {
+	async getAllBlogs(queryParamsData: BlogsQueryParamsOutputModel): Promise<AllBlogsOutputModel> {
 		try {
-			const totalCount = await blogsCollection
-				.countDocuments({name: {$regex: searchName || "", $options: "i"}});
+			const { sortBy, sortDirection, pageNumber, pageSize, searchNameTerm } = queryParamsData;
+			const skip = countSkipValue(pageNumber, pageSize);
+			const sortSetting = setSortValue(sortBy, sortDirection);
+			
+			const totalCount = await blogsCollection.countDocuments(
+				{name: {$regex: searchNameTerm, $options: "i"}}
+			);
 			const blogs = await blogsCollection
-				.find({name: {$regex: searchName || "", $options: "i"}})
+				.find({name: {$regex: searchNameTerm, $options: "i"}})
 				.skip(skip)
-				.limit(limit)
+				.limit(pageSize)
 				.sort(sortSetting)
 				.toArray();
 			
 			return {
-				pagesCount: Math.ceil(totalCount / limit),
+				pagesCount: Math.ceil(totalCount / pageSize),
 				page: pageNumber,
-				pageSize: limit,
+				pageSize: pageSize,
 				totalCount: totalCount,
 				items: blogs.map(mapDbBlogToBlogOutputModel)
 			};

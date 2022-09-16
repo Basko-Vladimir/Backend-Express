@@ -2,9 +2,9 @@ import {blogsCollection} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {DbBlog} from "../interfaces/blogs-interfaces";
 import {NotFoundError} from "../../classes/errors";
-import {EntityWithoutId} from "../../interfaces/common-interfaces";
 import {UpdateBlogInputModel} from "../../models/blogs/input-models";
 import { Blog } from "../../classes/blogs";
+import {EntityWithoutId} from "../../common/interfaces";
 
 export const blogsRepository = {
 	async getBlogById(id: string): Promise<Blog | null> {

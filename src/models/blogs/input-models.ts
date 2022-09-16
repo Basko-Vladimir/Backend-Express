@@ -1,4 +1,5 @@
 import {ParamsDictionary} from "express-serve-static-core";
+import {BlogSortByField, SortDirection} from "../enums";
 
 export interface CreateBlogInputModel {
 	name: string;
@@ -18,4 +19,12 @@ export interface CreateBlogPostInputModel {
 
 export interface ParamBlogIdInputModel extends ParamsDictionary {
 	blogId: string;
+}
+
+export interface BlogsQueryParamsInputModel {
+	sortBy?: BlogSortByField;
+	sortDirection?: SortDirection;
+	pageNumber?: string;
+	pageSize?: string;
+	searchNameTerm?: string;
 }

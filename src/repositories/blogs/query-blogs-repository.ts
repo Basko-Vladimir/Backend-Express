@@ -1,6 +1,6 @@
 import {blogsCollection} from "../db";
-import {SortSetting} from "../interfaces";
-import {getFilterByDbId, mapDbBlogToBlogOutputModel} from "../mappers-utils";
+import {getFilterByDbId, mapDbBlogToBlogOutputModel} from "../utils/mappers-utils";
+import { SortSetting } from "../interfaces/common-interfaces";
 import {NotFoundError} from "../../classes/errors";
 import {AllBlogsOutputModel, BlogOutputModel} from "../../models/blogs/output-models";
 

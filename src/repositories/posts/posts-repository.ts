@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import {postsCollection} from "../db";
-import {getFilterByDbId} from "../mappers-utils";
-import { DbPost } from "../repo-interfaces/posts-interfaces";
+import {getFilterByDbId} from "../utils/mappers-utils";
+import { DbPost } from "../interfaces/posts-interfaces";
 import {PostOutputModel} from "../../models/posts/output-models";
 import {NotFoundError} from "../../classes/errors";
 import { EntityWithoutId } from "../../interfaces/common-interfaces";

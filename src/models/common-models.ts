@@ -1,6 +1,6 @@
 import { ParamsDictionary } from "express-serve-static-core";
 import {SortByField} from "../interfaces/enums";
-import {SortDirection} from "../repositories/interfaces";
+import { SortDirection } from "../repositories/interfaces/common-interfaces";
 
 export interface ParamIdInputModel extends ParamsDictionary {
 	id: string;

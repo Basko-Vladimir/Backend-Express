@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import {BlogOutputModel} from "../models/blogs/output-models";
-import { PostOutputModel } from "../models/posts/output-models";
-import {DbBlog} from "./repo-interfaces/blogs-interfaces";
-import {DbPost} from "./repo-interfaces/posts-interfaces";
+import {BlogOutputModel} from "../../models/blogs/output-models";
+import { PostOutputModel } from "../../models/posts/output-models";
+import {DbBlog} from "../interfaces/blogs-interfaces";
+import {DbPost} from "../interfaces/posts-interfaces";
 
 export const getFilterByDbId = (id: string): {_id: ObjectId} => ({_id: new ObjectId(id)});
 

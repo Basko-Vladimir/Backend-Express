@@ -4,9 +4,9 @@ import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interf
 import {checkAuthorization} from "../middlewares/check-authorization";
 import {blogRequestBodyValidation} from "../middlewares/blogs/blog-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
-import {getErrorStatus, countSkipValue, parseQueryParamsValues, setSortValue} from "./utils";
 import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models";
 import {AllBlogsOutputModel, BlogAllPostsOutputModel, BlogOutputModel} from "../models/blogs/output-models";
+import {getErrorStatus, parseQueryParamsValues} from "./utils";
 import {
 	CreateBlogInputModel,
 	CreateBlogPostInputModel,
@@ -18,6 +18,7 @@ import {postBodyCommonFieldsValidation} from "../middlewares/post-body-common-fi
 import {PostOutputModel} from "../models/posts/output-models";
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
 import {blogIdParamValidation} from "../middlewares/blogs/blog-id-param-validation";
+import { countSkipValue, setSortValue } from "../repositories/utils/common-utils";
 
 export const blogsRouter = Router({});
 

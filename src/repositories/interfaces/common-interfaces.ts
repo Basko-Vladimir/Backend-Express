@@ -1,4 +1,4 @@
-import {SortByField} from "../interfaces/enums";
+import {SortByField} from "../../interfaces/enums";
 
 export enum SortDirection {
 	desc = -1,

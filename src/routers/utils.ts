@@ -1,7 +1,7 @@
-import {SortDirection, SortSetting} from "../repositories/interfaces";
 import {SortByField} from "../interfaces/enums";
 import {QueryParamsInputModel, QueryParamsOutputModel} from "../models/common-models";
 import {NotFoundError} from "../classes/errors";
+import {SortDirection} from "../repositories/interfaces/common-interfaces";
 
 export const parseQueryParamsValues = (
 	defaultValues: QueryParamsInputModel
@@ -17,14 +17,6 @@ export const parseQueryParamsValues = (
 	if ("searchNameTerm" in defaultValues) outputValues.searchNameTerm = searchNameTerm || "";
 	
 	return outputValues;
-};
-
-export const countSkipValue = (pageNumber: number, pageSize: number): number => {
-	return (pageNumber - 1) * pageSize;
-};
-
-export const setSortValue = (sortBy: SortByField, sortDirection: SortDirection): SortSetting => {
-	return {[sortBy]: sortDirection};
 };
 
 export const getErrorStatus = (error: unknown): number => {

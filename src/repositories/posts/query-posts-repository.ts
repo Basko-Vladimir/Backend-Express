@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import {postsCollection} from "../db";
-import {getFilterByDbId, mapDbPostToPostOutputModel} from "../mappers-utils";
-import { SortSetting } from "../interfaces";
+import {getFilterByDbId, mapDbPostToPostOutputModel} from "../utils/mappers-utils";
+import { SortSetting } from "../interfaces/common-interfaces";
 import {NotFoundError} from "../../classes/errors";
 import {PostOutputModel} from "../../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../../models/blogs/output-models";

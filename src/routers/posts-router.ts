@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {getErrorStatus, countSkipValue, parseQueryParamsValues, setSortValue} from "./utils";
+import {getErrorStatus,  parseQueryParamsValues} from "./utils";
 import {postsService} from "../services/posts-service";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interfaces/common-interfaces";
 import {checkAuthorization} from "../middlewares/check-authorization";
@@ -11,6 +11,7 @@ import {queryPostsRepository} from "../repositories/posts/query-posts-repository
 import {CreatePostInputModel, UpdatePostInputModel} from "../models/posts/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
+import { countSkipValue, setSortValue } from "../repositories/utils/common-utils";
 
 export const postsRouter = Router({});
 

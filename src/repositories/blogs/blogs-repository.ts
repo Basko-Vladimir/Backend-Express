@@ -1,6 +1,6 @@
 import {blogsCollection} from "../db";
-import {DbBlog} from "../interfaces";
 import {getFilterByDbId} from "../mappers-utils";
+import {DbBlog} from "../repo-interfaces/blogs-interfaces";
 import {NotFoundError} from "../../classes/errors";
 import {EntityWithoutId} from "../../interfaces/common-interfaces";
 import {UpdateBlogInputModel} from "../../models/blogs/input-models";

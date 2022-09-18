@@ -10,10 +10,10 @@ export const queryUsersRepository = {
 		const skip = countSkipValue(pageNumber, pageSize);
 		const sortSetting = setSortValue(sortBy, sortDirection);
 		
-		const searchFilter = {$and: [
+		const searchFilter = {$or: [
 			{login: {$regex: searchLoginTerm, $options: "i"}},
 			{email: {$regex: searchEmailTerm, $options: "i"}}
-		]}
+		]};
 		const totalCount =  await usersCollection.countDocuments(searchFilter);
 		const users = await usersCollection
 			.find(searchFilter)

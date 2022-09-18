@@ -13,6 +13,10 @@ export const usersRepository = {
 		return String(insertedId);
 	},
 	
+	async getUserByLogin(login: string): Promise<User | null> {
+		return usersCollection.findOne({login});
+	},
+	
 	async deleteUser(id: string): Promise<void> {
 		const { deletedCount } = await usersCollection.deleteOne(getFilterByDbId(id));
 		

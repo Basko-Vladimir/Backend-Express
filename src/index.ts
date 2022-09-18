@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser());
 
-app.use("/login", authRouter);
+app.use("/auth", authRouter);
 app.use("/blogs", blogsRouter);
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);

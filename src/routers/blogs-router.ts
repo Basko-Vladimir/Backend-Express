@@ -19,7 +19,7 @@ import {
 	UpdateBlogInputModel
 } from "../models/blogs/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
-import {postBodyCommonFieldsValidation} from "../middlewares/post-body-common-fields-validation";
+import {postBodyCommonFieldsValidation} from "../middlewares/posts/post-body-common-fields-validation";
 import {PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
 import {blogIdParamValidation} from "../middlewares/blogs/blog-id-param-validation";

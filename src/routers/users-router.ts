@@ -9,6 +9,8 @@ import { queryUsersRepository } from "../repositories/users/query-users-reposito
 import {usersService} from "../services/users-service";
 import {ParamIdInputModel} from "../models/common-models";
 import {checkAuthorization} from "../middlewares/check-authorization";
+import {userRequestBodyValidation} from "../middlewares/users/user-request-body-validation";
+import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 
 export const usersRouter = Router({});
 
@@ -35,6 +37,8 @@ usersRouter.get(
 usersRouter.post(
 	"/",
 	checkAuthorization,
+	userRequestBodyValidation,
+	requestErrorsValidation,
 	async (req: TypedRequestBody<CreateUserInputModel>, res: Response<UserOutputModel>) => {
 		try {
 			const createdUserId = await usersService.createUser(req.body);
@@ -48,6 +52,7 @@ usersRouter.post(
 usersRouter.delete(
 	"/:id",
 	checkAuthorization,
+	requestErrorsValidation,
 	async (req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
 		try {
 			await usersService.deleteUser(req.params.id);

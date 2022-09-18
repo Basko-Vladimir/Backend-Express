@@ -1,7 +1,8 @@
 import {usersCollection} from "../db";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
-import {mapDbUserToUserOutputModel} from "../utils/mappers-utils";
-import {AllUsersOutputModel, UsersQueryParamsOutputModel} from "../../models/users/output-models";
+import {getFilterByDbId, mapDbUserToUserOutputModel} from "../utils/mappers-utils";
+import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../../models/users/output-models";
+import {NotFoundError} from "../../classes/errors";
 
 export const queryUsersRepository = {
 	async getAllUsers(queryParamsData: UsersQueryParamsOutputModel ): Promise<AllUsersOutputModel> {
@@ -28,5 +29,13 @@ export const queryUsersRepository = {
 			totalCount,
 			items: users.map(mapDbUserToUserOutputModel)
 		};
+	},
+	
+	async getUserById(id: string): Promise<UserOutputModel> {
+		const user = await usersCollection.findOne(getFilterByDbId(id));
+		
+		if (!user) throw new NotFoundError();
+		
+		return mapDbUserToUserOutputModel(user);
 	}
 };

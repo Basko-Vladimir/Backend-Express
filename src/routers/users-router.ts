@@ -1,11 +1,14 @@
 import {Response, Router} from "express";
 import {getErrorStatus} from "./utils";
-import {TypedRequestQuery} from "../common/interfaces";
-import {UsersQueryParamsInputModel} from "../models/users/input-models";
-import {AllUsersOutputModel, UsersQueryParamsOutputModel} from "../models/users/output-models";
+import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
+import {CreateUserInputModel, UsersQueryParamsInputModel} from "../models/users/input-models";
+import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../models/users/output-models";
 import {SortDirection, UserSortByField} from "../models/enums";
 import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, EMPTY_SEARCH_VALUE} from "../common/constants";
 import { queryUsersRepository } from "../repositories/users/query-users-repository";
+import {usersService} from "../services/users-service";
+import {ParamIdInputModel} from "../models/common-models";
+import {checkAuthorization} from "../middlewares/check-authorization";
 
 export const usersRouter = Router({});
 
@@ -28,3 +31,29 @@ usersRouter.get(
 			res.sendStatus(getErrorStatus(err));
 		}
 	});
+
+usersRouter.post(
+	"/",
+	checkAuthorization,
+	async (req: TypedRequestBody<CreateUserInputModel>, res: Response<UserOutputModel>) => {
+		try {
+			const createdUserId = await usersService.createUser(req.body);
+			const user = await queryUsersRepository.getUserById(createdUserId);
+			res.status(201).send(user);
+		} catch (err) {
+			res.sendStatus(getErrorStatus(err));
+		}
+	});
+
+usersRouter.delete(
+	"/:id",
+	checkAuthorization,
+	async (req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
+		try {
+			await usersService.deleteUser(req.params.id);
+			res.sendStatus(204);
+		} catch (err) {
+			res.sendStatus(getErrorStatus(err));
+		}
+	});
+

@@ -25,7 +25,7 @@ export const queryBlogsRepository = {
 				pagesCount: Math.ceil(totalCount / pageSize),
 				page: pageNumber,
 				pageSize: pageSize,
-				totalCount: totalCount,
+				totalCount,
 				items: blogs.map(mapDbBlogToBlogOutputModel)
 			};
 		} catch {

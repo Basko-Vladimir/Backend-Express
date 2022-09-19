@@ -13,15 +13,13 @@ export const bearerAuthValidation = async (req: Request, res: Response, next: Ne
 	}
 	
 	const token = req.headers.authorization.split(" ")[1];
-	const tokenPayload = await jwtService.getTokenPayload(token);
+	const userId = await jwtService.getUserIdByToken(token);
 	
-	if (!tokenPayload) {
+	if (!userId) {
 		res.sendStatus(401);
 		return;
 	}
 	
-	req.context = {
-		user:  await usersService.getUserById(tokenPayload.userId)
-	};
+	req.user = await usersService.getUserById(userId);
 	next();
 };

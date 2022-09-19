@@ -11,6 +11,6 @@ export const emailExistenceValidation = body("email")
 		if (!user) throw new Error(`User with email: ${email} is not found!`);
 		if (user.emailConfirmation.isConfirmed) throw new Error(`Provided email ${email} is confirmed already!`);
 		
-		meta.req.context = {user};
+		meta.req.user = user;
 		return email;
 	});

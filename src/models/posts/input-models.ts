@@ -1,4 +1,4 @@
-import {PostSortByField, SortDirection} from "../enums";
+import {ParamsDictionary} from "express-serve-static-core";
 
 export interface CreatePostInputModel {
 	title: string;
@@ -14,9 +14,6 @@ export interface UpdatePostInputModel {
 	blogId: string;
 }
 
-export interface PostsQueryParamsInputModel {
-	sortBy?: PostSortByField;
-	sortDirection?: SortDirection;
-	pageNumber?: string;
-	pageSize?: string;
+export interface ParamPostIdInputModel extends ParamsDictionary {
+	postId: string;
 }

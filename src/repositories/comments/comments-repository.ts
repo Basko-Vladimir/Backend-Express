@@ -29,7 +29,9 @@ export class CommentsRepository {
 	}
 	
 	async deleteAllComments(): Promise<void> {
-		await commentsCollection.deleteMany({});
+		const { deletedCount } = await commentsCollection.deleteMany({});
+		
+		if (!deletedCount) throw new NotFoundError();
 	}
 	
 	async getCommentById(id: string): Promise<Comment> {

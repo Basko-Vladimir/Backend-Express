@@ -2,42 +2,29 @@ import {inject, injectable} from "inversify";
 import bcrypt from "bcrypt";
 import add from "date-fns/add";
 import {v4 as uuidv4} from "uuid";
-import {UsersService} from "./users-service";
-import {DevicesSessionsService} from "./devices-sessions-service";
 import {EmailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
-import {EntityWithoutId} from "../common/interfaces";
 import {User} from "../classes/users";
-import {NotFoundError} from "../classes/errors";
-import {DeviceSession} from "../classes/devices-sessions";
+import {UsersService} from "./users-service";
 
 @injectable()
 export class AuthService {
 	constructor(
 		@inject(UsersService) protected usersService: UsersService,
 		@inject(EmailManager) protected emailManager: EmailManager,
-		@inject(DevicesSessionsService) protected devicesSessionsService: DevicesSessionsService,
 	) {}
 	
-	async registerUser(userData: CreateUserInputModel): Promise<string> {
-		const { password } = userData;
-		const passwordSalt = await bcrypt.genSalt(10);
-		const passwordHash = await this.generateHash(password, passwordSalt);
-		
-		const createdUserId = await this.usersService.createUser(
-			userData, passwordHash, passwordSalt
-		);
+	async registerUser(userData: CreateUserInputModel): Promise<void> {
+		const createdUserId = await this.usersService.createUser(userData);
 		const createdUser = await this.usersService.getUserById(createdUserId);
 		
-		if (!createdUser) throw new NotFoundError();
-		
-		try {
-			await this.emailManager.sendRegistrationEmail(createdUser);
-			return createdUserId;
-		} catch (error) {
-			console.error(error)
-			await this.usersService.deleteUser(createdUserId);
-			throw new Error("Some error with email service, try later!")
+		if (createdUser) {
+			try {
+				return this.emailManager.sendRegistrationEmail(createdUser);
+			} catch (error) {
+				console.error(error)
+				return this.usersService.deleteUser(createdUserId);
+			}
 		}
 	}
 	
@@ -62,8 +49,8 @@ export class AuthService {
 		}
 	}
 	
-	async checkCredentials(loginOrEmail: string, password: string): Promise<string | null> {
-		const user = await this.usersService.getUserByFilter({login: loginOrEmail, email: loginOrEmail});
+	async checkCredentials(login: string, password: string): Promise<string | null> {
+		const user = await this.usersService.getUserByFilter({login});
 		
 		if (!user) return null;
 		
@@ -73,17 +60,5 @@ export class AuthService {
 	
 	async generateHash(password: string, salt: string): Promise<string> {
 		return bcrypt.hash(password, salt);
-	}
-	
-	async updateDeviceSessionData(_id: string, issuedAt: number): Promise<void> {
-		return this.devicesSessionsService.updateDeviceSession(_id, {issuedAt});
-	}
-	
-	async createDeviceSession(deviceSessionDataInputModel: EntityWithoutId<DeviceSession>): Promise<string> {
-		return this.devicesSessionsService.createDeviceSession(deviceSessionDataInputModel);
-	}
-	
-	async logout(deviceSessionId: string): Promise<void> {
-		return this.devicesSessionsService.deleteDeviceSessionById(deviceSessionId);
 	}
 }

@@ -1,7 +1,7 @@
 import {Request, Response, Router} from "express";
 import {getErrorStatus} from "./utils";
 import {postsService} from "../services/posts-service";
-import {checkAuthorization} from "../middlewares/check-authorization";
+import {basicAuthValidation} from "../middlewares/basic-auth-validation";
 import {postRequestFullBodyValidation} from "../middlewares/posts/post-request-full-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
@@ -48,7 +48,7 @@ postsRouter.get(
 
 postsRouter.post(
 	"/",
-	checkAuthorization,
+	basicAuthValidation,
 	postRequestFullBodyValidation,
 	requestErrorsValidation,
 	async (req: TypedRequestBody<CreatePostInputModel>, res: Response<PostOutputModel>) => {
@@ -64,7 +64,7 @@ postsRouter.post(
 
 postsRouter.put(
 	"/:id",
-	checkAuthorization,
+	basicAuthValidation,
 	postRequestFullBodyValidation,
 	requestErrorsValidation,
 	async (req: Request<ParamIdInputModel, {}, UpdatePostInputModel>, res: Response<void>) => {
@@ -78,7 +78,7 @@ postsRouter.put(
 
 postsRouter.delete(
 	"/:id",
-	checkAuthorization,
+	basicAuthValidation,
 	requestErrorsValidation,
 	async (req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
 		try {

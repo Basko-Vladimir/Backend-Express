@@ -3,7 +3,7 @@ import {header, validationResult} from "express-validator";
 
 const validCredentials = "Basic YWRtaW46cXdlcnR5";
 
-export const checkAuthorization = [
+export const basicAuthValidation = [
 	header("authorization")
 		.exists().bail().withMessage("You are not authorized!")
 		.equals(validCredentials).withMessage("Incorrect Login or Password"),

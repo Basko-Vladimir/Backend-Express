@@ -9,10 +9,10 @@ export const jwtService = {
 	async getUserIdByToken(token: string): Promise<string | null> {
 		try {
 			const result: any = jwt.verify(token, settings.JWT_SECRET);
-			console.log(result)
+			console.log(result) //TODO need remove this console.log later
 			return result.userId;
 		} catch {
-			return null
+			return null;
 		}
 	}
 };

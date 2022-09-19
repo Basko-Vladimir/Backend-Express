@@ -13,7 +13,7 @@ authRouter.post(
 	"/login",
 	loginCredentialsValidation,
 	requestErrorsValidation,
-	async (req: TypedRequestBody<LoginInputModel> , res: Response) => {
+	async (req: TypedRequestBody<LoginInputModel> , res: Response<string>) => {
 		try {
 			const { login, password } = req.body;
 			const userId = await usersService.checkCredentials(login, password);

@@ -21,13 +21,13 @@ export const usersService = {
 		return usersRepository.deleteAllUsers();
 	},
 	
-	async checkCredentials(login: string, password: string): Promise<boolean> {
+	async checkCredentials(login: string, password: string): Promise<string | null> {
 		const user = await usersRepository.getUserByLogin(login);
 		
-		if (!user) return false;
+		if (!user) return null;
 		
 		const hash = await this._generateHash(password, user.passwordSalt);
-		return hash === user.passwordHash;
+		return hash === user.passwordHash ? String(user._id) : null;
 	},
 	
 	async _generateHash(password: string, salt: string): Promise<string> {

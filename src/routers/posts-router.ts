@@ -7,12 +7,23 @@ import {requestErrorsValidation} from "../middlewares/request-errors-validation"
 import {PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
 import {ParamIdInputModel} from "../models/common-models";
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
-import {CreatePostInputModel, PostsQueryParamsInputModel, UpdatePostInputModel} from "../models/posts/input-models";
+import {
+	CreatePostInputModel,
+	ParamPostIdInputModel,
+	PostsQueryParamsInputModel,
+	UpdatePostInputModel
+} from "../models/posts/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery } from "../common/interfaces";
 import {PostSortByField, SortDirection} from "../models/enums";
 import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from "../common/constants";
+import {postIdParamValidation} from "../middlewares/posts/post-id-param-validation";
+import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
+import { commentRequestBodyValidation } from "../middlewares/comments/comment-request-body-validation";
+import {CreateCommentInputModel} from "../models/comments/input-models";
+import {CommentOutputModel} from "../models/comments/output-models";
+import {queryCommentsRepository} from "../repositories/comments/query-comments-repository";
 
 export const postsRouter = Router({});
 
@@ -86,5 +97,26 @@ postsRouter.delete(
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
+		}
+	});
+
+postsRouter.post(
+	"/:postId/comments",
+	bearerAuthValidation,
+	postIdParamValidation,
+	commentRequestBodyValidation,
+	requestErrorsValidation,
+	async (req: Request<ParamPostIdInputModel, {}, CreateCommentInputModel>, res: Response<CommentOutputModel>) => {
+		try {
+			const commentData: Omit<CommentOutputModel, "id" | "createdAt"> = {
+				content: req.body.content,
+				userId: String(req.user!._id),
+				userLogin: req.user!.login
+			};
+			const commentId = await postsService.createCommentByPostId(req.params.postId, commentData);
+			const comment = await queryCommentsRepository.getCommentById(commentId);
+			res.status(201).send(comment);
+		} catch (err) {
+			res.sendStatus(getErrorStatus(err));
 		}
 	});

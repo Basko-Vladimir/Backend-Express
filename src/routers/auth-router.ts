@@ -4,7 +4,7 @@ import {userRequestBodyValidation} from "../middlewares/users/user-request-body-
 import {userExistenceValidation} from "../middlewares/user-existence-validation";
 import {confirmationCodeValidation} from "../middlewares/auth/confirmation-code-validation";
 import {emailValidation} from "../middlewares/auth/email-validation";
-import {loginDataValidation} from "../middlewares/auth/loginization-data-validation";
+import {loginDataValidation} from "../middlewares/auth/login-data-validation";
 import {emailExistenceValidation} from "../middlewares/auth/email-existence-validation";
 import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
 import {iocContainer} from "../composition-root";

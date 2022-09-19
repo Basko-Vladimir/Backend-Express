@@ -1,68 +1,69 @@
 import { ObjectId } from "mongodb";
+import {injectable} from "inversify";
 import {postsCollection} from "../db";
-import {getFilterByDbId, mapDbPostToPostOutputModel} from "../mappers-utils";
-import { SortSetting } from "../interfaces";
 import {NotFoundError} from "../../classes/errors";
-import {PostOutputModel} from "../../models/posts/output-models";
+import {countSkipValue, setSortValue} from "../utils/common-utils";
+import {getFilterByDbId, mapDbPostToPostOutputModel} from "../utils/mappers-utils";
+import {PostOutputModel, PostsQueryParamsOutputModel} from "../../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../../models/blogs/output-models";
 
-export const queryPostsRepository = {
-	async getAllPosts(
-		skip: number,
-		limit: number,
-		pageNumber: number,
-		sortSetting: SortSetting,
-	): Promise<BlogAllPostsOutputModel> {
+@injectable()
+export class QueryPostsRepository {
+	async getAllPosts(queryParamsData: PostsQueryParamsOutputModel): Promise<BlogAllPostsOutputModel> {
 		try {
+			const { sortBy, sortDirection, pageNumber, pageSize } = queryParamsData;
+			const skip = countSkipValue(pageNumber, pageSize);
+			const sortSetting = setSortValue(sortBy, sortDirection);
+			
 			const totalCount = await postsCollection.countDocuments();
 			const blogs = await postsCollection
 				.find({})
 				.skip(skip)
-				.limit(limit)
+				.limit(pageSize)
 				.sort(sortSetting)
 				.toArray();
 			
 			return {
-				pagesCount: Math.ceil(totalCount / limit),
+				pagesCount: Math.ceil(totalCount / pageSize),
 				page: pageNumber,
-				pageSize: limit,
+				pageSize: pageSize,
 				totalCount: totalCount,
 				items: blogs.map(mapDbPostToPostOutputModel)
 			};
 		} catch {
 			throw new NotFoundError();
 		}
-	},
+	}
 	
 	async getAllPostsByBlogId(
-		skip: number,
-		limit: number,
-		pageNumber: number,
-		sortSetting: SortSetting,
+		queryParamsData: PostsQueryParamsOutputModel,
 		blogId: string
 	): Promise<BlogAllPostsOutputModel> {
 		try {
-			const totalCount = await postsCollection
-				.countDocuments({blogId: new ObjectId(blogId)});
+			const { sortBy, sortDirection, pageNumber, pageSize } = queryParamsData;
+			const skip = countSkipValue(pageNumber, pageSize);
+			const sortSetting = setSortValue(sortBy, sortDirection);
+			const filterByBlogId = {blogId: new ObjectId(blogId)};
 			
+			const totalCount = await postsCollection.countDocuments(filterByBlogId);
 			const posts = await postsCollection
-				.find({blogId: new ObjectId(blogId)})
+				.find(filterByBlogId)
 				.skip(skip)
-				.limit(limit)
+				.limit(pageSize)
 				.sort(sortSetting)
 				.toArray();
 			
 			return {
-				pagesCount: Math.ceil(totalCount / limit),
+				pagesCount: Math.ceil(totalCount / pageSize),
 				page: pageNumber,
-				pageSize: limit,
+				pageSize: pageSize,
 				totalCount: totalCount,
 				items: posts.map(mapDbPostToPostOutputModel)
 			};
 		} catch {
 			throw new NotFoundError();
 		}
-	},
+	}
 	
 	async getPostById(id: string): Promise<PostOutputModel> {
 		const post = await postsCollection.findOne(getFilterByDbId(id));
@@ -71,4 +72,4 @@ export const queryPostsRepository = {
 		
 		return mapDbPostToPostOutputModel(post);
 	}
-};
+}

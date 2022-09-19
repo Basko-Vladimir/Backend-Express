@@ -1,85 +1,49 @@
-import {Request, Response, Router} from "express";
-import {getErrorStatus} from "./utils";
-import {postsService} from "../services/posts-service";
-import {checkAuthorization} from "../middlewares/check-authorization";
+import {Router} from "express";
+import {basicAuthValidation} from "../middlewares/basic-auth-validation";
 import {postRequestFullBodyValidation} from "../middlewares/posts/post-request-full-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
-import {PostOutputModel} from "../models/posts/output-models";
-import {ParamIdInputModel} from "../models/common-models";
-import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
-import {CreatePostInputModel, UpdatePostInputModel} from "../models/posts/input-models";
-import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
-import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
-import { countSkipValue, setSortValue } from "../repositories/utils/common-utils";
-import {TypedRequestBody, TypedRequestParams } from "../common/interfaces";
+import {postIdParamValidation} from "../middlewares/posts/post-id-param-validation";
+import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
+import {commentRequestBodyValidation} from "../middlewares/comments/comment-request-body-validation";
+import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
+import {iocContainer} from "../composition-root";
+import {PostsController} from "../controllers/posts-controller";
 
 export const postsRouter = Router({});
+const postsController = iocContainer.resolve(PostsController);
 
-// postsRouter.get(
-// 	"/",
-// 	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<BlogAllPostsOutputModel>) => {
-// 		try {
-// 			const { sortBy, sortDirection, pageNumber , pageSize } = parseQueryParamsValues(req.query);
-// 			const skip = countSkipValue(pageNumber, pageSize);
-// 			const sortSetting = setSortValue(sortBy, sortDirection);
-// 			const postsOutputModel = await queryPostsRepository.getAllPosts(skip, pageSize, pageNumber, sortSetting);
-//
-// 			res.status(200).send(postsOutputModel);
-// 		}	catch (error) {
-// 			res.sendStatus(getErrorStatus(error));
-// 		}
-// 	});
-
-postsRouter.get(
-	"/:id",
-	async (req: TypedRequestParams<ParamIdInputModel>, res: Response<PostOutputModel>) => {
-		try {
-			const post = await queryPostsRepository.getPostById(req.params.id);
-			res.status(200).send(post);
-		} catch (error) {
-			res.sendStatus(getErrorStatus(error));
-		}
-	});
+postsRouter.get("/", commonQueryParamsSanitization, postsController.getAllPosts.bind(postsController));
+postsRouter.delete("/:id", basicAuthValidation, postsController.deletePost.bind(postsController));
+postsRouter.get("/:id", postsController.getPostById.bind(postsController));
 
 postsRouter.post(
 	"/",
-	checkAuthorization,
+	basicAuthValidation,
 	postRequestFullBodyValidation,
 	requestErrorsValidation,
-	async (req: TypedRequestBody<CreatePostInputModel>, res: Response<PostOutputModel>) => {
-		try {
-			const { name: blogName } = await queryBlogsRepository.getBlogById(req.body.blogId);
-			const createdPostId = await postsService.createPost({...req.body, blogName});
-			const post = await queryPostsRepository.getPostById(createdPostId);
-			res.status(201).send(post);
-		} catch (error) {
-			res.sendStatus(getErrorStatus(error));
-		}
-	});
+	postsController.createPost.bind(postsController)
+);
 
 postsRouter.put(
 	"/:id",
-	checkAuthorization,
+	basicAuthValidation,
 	postRequestFullBodyValidation,
 	requestErrorsValidation,
-	async (req: Request<ParamIdInputModel, {}, UpdatePostInputModel>, res: Response<void>) => {
-		try {
-			await postsService.updatePost({...req.body, ...req.params});
-			res.sendStatus(204);
-		} catch (error) {
-			res.sendStatus(getErrorStatus(error));
-		}
-	});
+	postsController.updatePost.bind(postsController)
+);
 
-postsRouter.delete(
-	"/:id",
-	checkAuthorization,
+postsRouter.post(
+	"/:postId/comments",
+	bearerAuthValidation,
+	postIdParamValidation,
+	commentRequestBodyValidation,
 	requestErrorsValidation,
-	async (req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
-		try {
-			await postsService.deletePost(req.params.id);
-			res.sendStatus(204);
-		} catch (error) {
-			res.sendStatus(getErrorStatus(error));
-		}
-	});
+	postsController.createCommentByPostId.bind(postsController)
+);
+
+postsRouter.get(
+	"/:postId/comments",
+	postIdParamValidation,
+	commonQueryParamsSanitization,
+	postsController.getAllCommentsByPostId.bind(postsController)
+);

@@ -1,6 +1,9 @@
 import {Request, Response, NextFunction} from "express";
 import {ParamBlogIdInputModel} from "../../models/blogs/input-models";
-import {blogsService} from "../../services/blogs-service";
+import {iocContainer} from "../../composition-root";
+import {BlogsService} from "../../services/blogs-service";
+
+const blogsService = iocContainer.resolve(BlogsService);
 
 export const blogIdParamValidation = async (
 	req: Request<ParamBlogIdInputModel, {}, {}, {}>,

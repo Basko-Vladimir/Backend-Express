@@ -26,8 +26,14 @@ commentsRouter.delete(
 	bearerAuthValidation,
 	async (req: TypedRequestParams<ParamCommentIdInputModel>, res: Response<void>) => {
 		try {
-			await commentsService.deleteComment(req.params.commentId);
-			res.sendStatus(204);
+			const comment = await queryCommentsRepository.getCommentById(req.params.commentId);
+			
+			if (comment.userId === String(req.user!._id)) {
+				await commentsService.deleteComment(req.params.commentId);
+				res.sendStatus(204);
+			} else {
+				res.sendStatus(403);
+			}
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}

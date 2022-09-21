@@ -1,6 +1,6 @@
 import {CommentOutputModel} from "../models/comments/output-models";
-import {Comment} from "../classes/comments";
 import {commentsRepository} from "../repositories/comments/comments-repository";
+import {Comment} from "../classes/comments";
 
 export const commentsService = {
 	async createComment(
@@ -12,4 +12,8 @@ export const commentsService = {
 		
 		return commentsRepository.createComment(newComment);
 	},
+	
+	async deleteComment(commentId: string): Promise<void> {
+		return commentsRepository.deleteComment(commentId);
+	}
 };

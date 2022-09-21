@@ -90,7 +90,6 @@ postsRouter.put(
 postsRouter.delete(
 	"/:id",
 	basicAuthValidation,
-	requestErrorsValidation,
 	async (req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
 		try {
 			await postsService.deletePost(req.params.id);

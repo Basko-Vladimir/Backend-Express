@@ -1,7 +1,7 @@
 import { Router, Response } from "express";
 import {getErrorStatus} from "./utils";
 import {TypedRequestBody} from "../common/interfaces";
-import {LoginInputModel} from "../models/auth-models";
+import {LoginInputModel, LoginOutputModel} from "../models/auth-models";
 import {usersService} from "../services/users-service";
 import {loginCredentialsValidation} from "../middlewares/auth/login-credentials-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
@@ -13,14 +13,14 @@ authRouter.post(
 	"/login",
 	loginCredentialsValidation,
 	requestErrorsValidation,
-	async (req: TypedRequestBody<LoginInputModel> , res: Response<string>) => {
+	async (req: TypedRequestBody<LoginInputModel> , res: Response<LoginOutputModel>) => {
 		try {
 			const { login, password } = req.body;
 			const userId = await usersService.checkCredentials(login, password);
 			
 			if (userId) {
 				const token = await jwtService.createJWT(userId);
-				res.status(200).send(token);
+				res.status(200).send({accessToken: token});
 			} else {
 				res.sendStatus(401);
 			}

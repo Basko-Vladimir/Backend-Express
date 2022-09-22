@@ -17,5 +17,17 @@ export const commentsRepository = {
 		const { deletedCount } = await commentsCollection.deleteOne(getFilterByDbId(id));
 		
 		if (!deletedCount) throw new NotFoundError();
+	},
+	
+	async updateComment(id: string, content: string): Promise<void> {
+		const { matchedCount } = await commentsCollection.updateOne(getFilterByDbId(id), {$set: {content}});
+		
+		if (!matchedCount) throw new NotFoundError();
+	},
+	
+	async deleteAllComments(): Promise<void> {
+		const { deletedCount } = await commentsCollection.deleteMany({});
+		
+		if (!deletedCount) throw new NotFoundError();
 	}
 };

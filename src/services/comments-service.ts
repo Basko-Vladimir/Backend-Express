@@ -15,5 +15,13 @@ export const commentsService = {
 	
 	async deleteComment(commentId: string): Promise<void> {
 		return commentsRepository.deleteComment(commentId);
+	},
+	
+	async updateComment(commentId: string, content: string): Promise<void> {
+		return commentsRepository.updateComment(commentId, content);
+	},
+	
+	async deleteAllComments(): Promise<void> {
+		return commentsRepository.deleteAllComments();
 	}
 };

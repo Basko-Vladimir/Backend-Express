@@ -23,3 +23,8 @@ export enum UserSortByField {
 	createdAt = "createdAt"
 }
 
+export enum CommentSortByField {
+	content = "content",
+	userLogin = "userLogin",
+	createdAt = "createdAt"
+}

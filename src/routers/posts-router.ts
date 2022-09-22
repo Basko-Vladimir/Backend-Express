@@ -4,7 +4,7 @@ import {postsService} from "../services/posts-service";
 import {basicAuthValidation} from "../middlewares/basic-auth-validation";
 import {postRequestFullBodyValidation} from "../middlewares/posts/post-request-full-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
-import {PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
+import {PostAllCommentsOutputModel, PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
 import {ParamIdInputModel} from "../models/common-models";
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
 import {
@@ -13,17 +13,17 @@ import {
 	PostsQueryParamsInputModel,
 	UpdatePostInputModel
 } from "../models/posts/input-models";
-import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
+import {CommentSortByField, PostSortByField, SortDirection} from "../models/enums";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
-import {TypedRequestBody, TypedRequestParams, TypedRequestQuery } from "../common/interfaces";
-import {PostSortByField, SortDirection} from "../models/enums";
+import {CommentQueryParamsInputModel, CreateCommentInputModel} from "../models/comments/input-models";
+import {CommentOutputModel, CommentQueryParamsOutputModel} from "../models/comments/output-models";
 import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from "../common/constants";
+import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
 import {postIdParamValidation} from "../middlewares/posts/post-id-param-validation";
 import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
-import { commentRequestBodyValidation } from "../middlewares/comments/comment-request-body-validation";
-import {CreateCommentInputModel} from "../models/comments/input-models";
-import {CommentOutputModel} from "../models/comments/output-models";
+import {commentRequestBodyValidation} from "../middlewares/comments/comment-request-body-validation";
 import {queryCommentsRepository} from "../repositories/comments/query-comments-repository";
+import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 
 export const postsRouter = Router({});
 
@@ -115,6 +115,30 @@ postsRouter.post(
 			const commentId = await postsService.createCommentByPostId(req.params.postId, commentData);
 			const comment = await queryCommentsRepository.getCommentById(commentId);
 			res.status(201).send(comment);
+		} catch (err) {
+			res.sendStatus(getErrorStatus(err));
+		}
+	});
+
+postsRouter.get(
+	"/:postId/comments",
+	postIdParamValidation,
+	async (
+		req: Request<ParamPostIdInputModel, {}, {}, CommentQueryParamsInputModel>,
+		res: Response<PostAllCommentsOutputModel>
+	) => {
+		try {
+			const { sortBy, sortDirection, pageSize, pageNumber } = req.query;
+			const queryParams: CommentQueryParamsOutputModel = {
+				sortBy: sortBy || CommentSortByField.createdAt,
+				sortDirection: sortDirection ? SortDirection[sortDirection] : SortDirection.desc,
+				pageNumber: Number(pageNumber) || DEFAULT_PAGE_NUMBER,
+				pageSize: Number(pageSize) || DEFAULT_PAGE_SIZE
+			};
+			const allCommentsByPostId = await queryCommentsRepository
+				.getAllCommentsByPostId(queryParams, req.params.postId);
+			
+			res.status(200).send(allCommentsByPostId);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}

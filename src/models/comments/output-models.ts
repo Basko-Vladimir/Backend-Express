@@ -1,4 +1,5 @@
-import {CommentSortByField, SortDirection} from "../enums";
+import {CommentSortByField} from "../enums";
+import {CommonQueryParamsModel} from "../common-models";
 
 export interface CommentOutputModel {
 	id: string;
@@ -8,10 +9,4 @@ export interface CommentOutputModel {
 	createdAt: string;
 }
 
-
-export interface CommentQueryParamsOutputModel {
-	sortBy: CommentSortByField;
-	sortDirection: SortDirection;
-	pageNumber: number;
-	pageSize: number;
-}
+export interface CommentQueryParamsOutputModel extends CommonQueryParamsModel<CommentSortByField> {}

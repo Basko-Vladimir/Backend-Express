@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import {blogsService} from "../services/blogs-service";
-import {checkAuthorization} from "../middlewares/check-authorization";
+import {basicAuthValidation} from "../middlewares/basic-auth-validation";
 import {blogRequestBodyValidation} from "../middlewares/blogs/blog-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {ParamIdInputModel} from "../models/common-models";
@@ -12,37 +12,32 @@ import {
 } from "../models/blogs/output-models";
 import {getErrorStatus} from "./utils";
 import {
-	BlogsQueryParamsInputModel,
 	CreateBlogInputModel,
 	CreateBlogPostInputModel,
 	ParamBlogIdInputModel,
 	UpdateBlogInputModel
 } from "../models/blogs/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
-import {postBodyCommonFieldsValidation} from "../middlewares/post-body-common-fields-validation";
-import {PostOutputModel} from "../models/posts/output-models";
+import {postBodyCommonFieldsValidation} from "../middlewares/posts/post-body-common-fields-validation";
+import {PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
 import {blogIdParamValidation} from "../middlewares/blogs/blog-id-param-validation";
-import {BlogSortByField, SortDirection} from "../models/enums";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
-import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, EMPTY_SEARCH_VALUE} from "../common/constants";
+import {EMPTY_SEARCH_VALUE} from "../common/constants";
+import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
 
 export const blogsRouter = Router({});
 
 blogsRouter.get(
 	"/",
-	async (req: TypedRequestQuery<BlogsQueryParamsInputModel>, res: Response<AllBlogsOutputModel>) => {
+	commonQueryParamsSanitization,
+	async (req: TypedRequestQuery<BlogsQueryParamsOutputModel>, res: Response<AllBlogsOutputModel>) => {
 		try {
-			const { sortBy, sortDirection, pageNumber, pageSize, searchNameTerm } = req.query;
-			const queryParamsData: BlogsQueryParamsOutputModel = {
-				sortBy: sortBy || BlogSortByField.createdAt,
-				sortDirection: sortDirection ? SortDirection[sortDirection] : SortDirection.desc,
-				pageSize: Number(pageSize) || DEFAULT_PAGE_SIZE,
-				pageNumber: Number(pageNumber) || DEFAULT_PAGE_NUMBER,
-				searchNameTerm: searchNameTerm || EMPTY_SEARCH_VALUE
-			};
-			
-			const blogsOutputModel = await queryBlogsRepository.getAllBlogs(queryParamsData);
+			const { searchNameTerm } = req.query;
+			const blogsOutputModel = await queryBlogsRepository.getAllBlogs({
+				...req.query,
+				searchNameTerm: searchNameTerm ? searchNameTerm.trim() : EMPTY_SEARCH_VALUE
+			});
 			res.status(200).send(blogsOutputModel);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
@@ -63,7 +58,7 @@ blogsRouter.get(
 
 blogsRouter.post(
 	"/",
-	checkAuthorization,
+	basicAuthValidation,
 	blogRequestBodyValidation,
 	requestErrorsValidation,
 	async (req: TypedRequestBody<CreateBlogInputModel>, res: Response<BlogOutputModel>) => {
@@ -78,7 +73,7 @@ blogsRouter.post(
 
 blogsRouter.put(
 	"/:id",
-	checkAuthorization,
+	basicAuthValidation,
 	blogRequestBodyValidation,
 	requestErrorsValidation,
 	async (req: Request<ParamIdInputModel, {}, UpdateBlogInputModel>, res: Response) => {
@@ -92,7 +87,7 @@ blogsRouter.put(
 
 blogsRouter.delete(
 	"/:id",
-	checkAuthorization,
+	basicAuthValidation,
 	requestErrorsValidation,
 	async(req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
 		try {
@@ -105,7 +100,7 @@ blogsRouter.delete(
 
 blogsRouter.post(
 	"/:blogId/posts",
-	checkAuthorization,
+	basicAuthValidation,
 	blogIdParamValidation,
 	postBodyCommonFieldsValidation,
 	requestErrorsValidation,
@@ -119,22 +114,18 @@ blogsRouter.post(
 		}
 	});
 
-// blogsRouter.get(
-// 	"/:blogId/posts",
-// 	blogIdParamValidation,
-// 	async (
-// 		req: Request<ParamBlogIdInputModel, {}, {}, Omit<QueryParamsInputModel, "searchNameTerm">>,
-// 		res: Response<BlogAllPostsOutputModel>
-// 	) => {
-// 		try {
-// 			const { sortBy, sortDirection, pageNumber, pageSize } = parseQueryParamsValues(req.query);
-// 			const skip = countSkipValue(pageNumber, pageSize);
-// 			const sortSetting = setSortValue(sortBy, sortDirection);
-// 			const allPostsByBlogId = await queryPostsRepository
-// 				.getAllPostsByBlogId(skip, pageSize, pageNumber, sortSetting, req.params.blogId);
-//
-// 			res.status(200).send(allPostsByBlogId);
-// 		} catch (error) {
-// 			res.sendStatus(getErrorStatus(error));
-// 		}
-// 	});
+blogsRouter.get(
+	"/:blogId/posts",
+	blogIdParamValidation,
+	commonQueryParamsSanitization,
+	async (
+		req: Request<ParamBlogIdInputModel, {}, {}, PostsQueryParamsOutputModel>,
+		res: Response<BlogAllPostsOutputModel>
+	) => {
+		try {
+			const allPostsByBlogId = await queryPostsRepository.getAllPostsByBlogId(req.query, req.params.blogId);
+			res.status(200).send(allPostsByBlogId);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	});

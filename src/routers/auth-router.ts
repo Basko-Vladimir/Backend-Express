@@ -4,7 +4,7 @@ import {TypedRequestBody} from "../common/interfaces";
 import {LoginInputModel, LoginOutputModel} from "../models/auth-models";
 import {loginCredentialsValidation} from "../middlewares/auth/login-credentials-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
-import {jwtService} from "../application/jwt-service";
+import {jwtService} from "../services/jwt-service";
 import {authService} from "../services/auth-service";
 
 export const authRouter = Router({});

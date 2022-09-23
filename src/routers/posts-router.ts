@@ -10,36 +10,27 @@ import {queryPostsRepository} from "../repositories/posts/query-posts-repository
 import {
 	CreatePostInputModel,
 	ParamPostIdInputModel,
-	PostsQueryParamsInputModel,
 	UpdatePostInputModel
 } from "../models/posts/input-models";
-import {CommentSortByField, PostSortByField, SortDirection} from "../models/enums";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
-import {CommentQueryParamsInputModel, CreateCommentInputModel} from "../models/comments/input-models";
+import {CreateCommentInputModel} from "../models/comments/input-models";
 import {CommentOutputModel, CommentQueryParamsOutputModel} from "../models/comments/output-models";
-import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from "../common/constants";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
 import {postIdParamValidation} from "../middlewares/posts/post-id-param-validation";
 import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
 import {commentRequestBodyValidation} from "../middlewares/comments/comment-request-body-validation";
 import {queryCommentsRepository} from "../repositories/comments/query-comments-repository";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
+import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
 
 export const postsRouter = Router({});
 
 postsRouter.get(
 	"/",
-	async (req: TypedRequestQuery<PostsQueryParamsInputModel>, res: Response<BlogAllPostsOutputModel>) => {
+	commonQueryParamsSanitization,
+	async (req: TypedRequestQuery<PostsQueryParamsOutputModel>, res: Response<BlogAllPostsOutputModel>) => {
 		try {
-			const { sortBy, sortDirection, pageNumber , pageSize } = req.query;
-			const queryParamsData: PostsQueryParamsOutputModel = {
-				sortBy: sortBy || PostSortByField.createdAt,
-				sortDirection: sortDirection ? SortDirection[sortDirection] : SortDirection.desc,
-				pageNumber: Number(pageNumber) || DEFAULT_PAGE_NUMBER,
-				pageSize: Number(pageSize) || DEFAULT_PAGE_SIZE
-			};
-			const postsOutputModel = await queryPostsRepository.getAllPosts(queryParamsData);
-
+			const postsOutputModel = await queryPostsRepository.getAllPosts(req.query);
 			res.status(200).send(postsOutputModel);
 		}	catch (error) {
 			res.sendStatus(getErrorStatus(error));
@@ -124,20 +115,14 @@ postsRouter.post(
 postsRouter.get(
 	"/:postId/comments",
 	postIdParamValidation,
+	commonQueryParamsSanitization,
 	async (
-		req: Request<ParamPostIdInputModel, {}, {}, CommentQueryParamsInputModel>,
+		req: Request<ParamPostIdInputModel, {}, {}, CommentQueryParamsOutputModel>,
 		res: Response<PostAllCommentsOutputModel>
 	) => {
 		try {
-			const { sortBy, sortDirection, pageSize, pageNumber } = req.query;
-			const queryParams: CommentQueryParamsOutputModel = {
-				sortBy: sortBy || CommentSortByField.createdAt,
-				sortDirection: sortDirection ? SortDirection[sortDirection] : SortDirection.desc,
-				pageNumber: Number(pageNumber) || DEFAULT_PAGE_NUMBER,
-				pageSize: Number(pageSize) || DEFAULT_PAGE_SIZE
-			};
 			const allCommentsByPostId = await queryCommentsRepository
-				.getAllCommentsByPostId(queryParams, req.params.postId);
+				.getAllCommentsByPostId(req.query, req.params.postId);
 			
 			res.status(200).send(allCommentsByPostId);
 		} catch (err) {

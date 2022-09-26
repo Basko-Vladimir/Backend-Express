@@ -3,11 +3,15 @@ import {authService} from "./auth-service";
 import {User} from "../classes/users";
 import {usersRepository} from "../repositories/users/users-repository";
 import {CreateUserInputModel} from "../models/users/input-models";
-import {DbUser} from "../repositories/interfaces/users-interfaces";
+import {DbUser, UserFilter} from "../repositories/interfaces/users-interfaces";
 
 export const usersService = {
-	async getUserById(userId: string): Promise<DbUser> {
+	async getUserById(userId: string): Promise<User | null> {
 		return usersRepository.getUserById(userId);
+	},
+
+	async getUserByFilter(userFilter: UserFilter): Promise<User | null> {
+		return usersRepository.getUserByFilter(userFilter);
 	},
 	
 	async createUser(userData: CreateUserInputModel): Promise<string> {

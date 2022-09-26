@@ -1,17 +1,13 @@
 import {usersCollection} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
-import {DbUser} from "../interfaces/users-interfaces";
+import {UserFilter} from "../interfaces/users-interfaces";
 import { User } from "../../classes/users";
 import {EntityWithoutId} from "../../common/interfaces";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
 
 export const usersRepository = {
-	async getUserById(id: string): Promise<DbUser> {
-		const user = await usersCollection.findOne(getFilterByDbId(id));
-		
-		if (!user) throw new NotFoundError();
-		
-		return user;
+	async getUserById(id: string): Promise<User | null> {
+		return usersCollection.findOne(getFilterByDbId(id));
 	},
 	
 	async createUser(userData: EntityWithoutId<User>): Promise<string> {
@@ -22,8 +18,13 @@ export const usersRepository = {
 		return String(insertedId);
 	},
 	
-	async getUserByLogin(login: string): Promise<User | null> {
-		return usersCollection.findOne({login});
+	async getUserByFilter(userFilter: UserFilter): Promise<User | null> {
+		return usersCollection.findOne({ $or: [
+				{email: userFilter.email},
+				{login: userFilter.login},
+				{passwordHash: userFilter.passwordHash},
+			]
+		});
 	},
 	
 	async deleteUser(id: string): Promise<void> {

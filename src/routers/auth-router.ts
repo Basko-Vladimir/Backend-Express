@@ -1,4 +1,4 @@
-import { Router, Response } from "express";
+import {Router, Response} from "express";
 import {getErrorStatus} from "./utils";
 import {TypedRequestBody} from "../common/interfaces";
 import {LoginInputModel, LoginOutputModel} from "../models/auth-models";
@@ -6,6 +6,9 @@ import {loginCredentialsValidation} from "../middlewares/auth/login-credentials-
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {jwtService} from "../services/jwt-service";
 import {authService} from "../services/auth-service";
+import {userRequestBodyValidation} from "../middlewares/users/user-request-body-validation";
+import {CreateUserInputModel} from "../models/users/input-models";
+import {userExistenceValidation} from "../middlewares/user-existence-validation";
 
 export const authRouter = Router({});
 
@@ -26,5 +29,19 @@ authRouter.post(
 			}
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err))
+		}
+	});
+
+authRouter.post(
+	"/registration",
+	userRequestBodyValidation,
+	userExistenceValidation,
+	requestErrorsValidation,
+	async (req: TypedRequestBody<CreateUserInputModel>, res: Response<void>) => {
+		try {
+			await authService.registerUser(req.body);
+			res.sendStatus(204);
+		} catch (err) {
+			res.sendStatus(getErrorStatus(err));
 		}
 	});

@@ -9,6 +9,7 @@ export const userRequestBodyValidation = [
 		.trim().isLength({min: 6, max: 20}).withMessage("Password should be from 6 to 20 chars"),
 	body("email")
 		.exists().withMessage("You didn't provide 'email' field")
+		.trim()
 		.custom(email => {
 			const isMatchedEmail = email.match(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i);
 			

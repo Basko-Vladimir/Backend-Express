@@ -6,3 +6,7 @@ export interface LoginInputModel {
 export interface LoginOutputModel {
 	accessToken: string;
 }
+
+export interface RegistrationConfirmationInputModel {
+	code: string;
+}

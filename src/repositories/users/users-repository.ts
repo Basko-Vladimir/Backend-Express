@@ -23,6 +23,7 @@ export const usersRepository = {
 				{email: userFilter.email},
 				{login: userFilter.login},
 				{passwordHash: userFilter.passwordHash},
+				{"emailConfirmation.confirmationCode": userFilter.confirmationCode }
 			]
 		});
 	},

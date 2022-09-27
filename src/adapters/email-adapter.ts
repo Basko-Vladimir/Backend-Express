@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 import {EmailInfoModel} from "../models/email-models";
-import {settings} from "../settings";
 
 export const emailAdapter = {
 	async sendEmail(messageInfo: EmailInfoModel): Promise<void> {
@@ -8,7 +7,7 @@ export const emailAdapter = {
 			service: "gmail",
 			auth: {
 				user: "dev.test.vladimir@gmail.com",
-				pass: `${settings.TEST_DEV_EMAIL_PASS}`
+				pass: `czpslaqrdtyiuuan`
 			},
 		});
 		

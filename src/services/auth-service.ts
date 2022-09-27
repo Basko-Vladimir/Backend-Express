@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import {usersService} from "./users-service";
 import {emailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
+import { User } from "../classes/users";
 
 export const authService = {
 	async registerUser(userData: CreateUserInputModel): Promise<void> {
@@ -9,14 +10,23 @@ export const authService = {
 		const createdUser = await usersService.getUserById(createdUserId);
 		
 		if (createdUser) {
-			return emailManager.sendRegistrationEmail(createdUser);
+			try {
+				return emailManager.sendRegistrationEmail(createdUser);
+			} catch (error) {
+				console.error(error)
+				return usersService.deleteUser(createdUserId);
+			}
 		}
+	},
+	
+	async confirmRegistration(user: User) {
+		return usersService.updateUserConfirmation(user);
 	},
 	
 	async checkCredentials(login: string, password: string): Promise<string | null> {
 		const user = await usersService.getUserByFilter({login});
 		
-		if (!user) return null;
+		if (!user || !user.emailConfirmation.isConfirmed) return null;
 		
 		const hash = await this.generateHash(password, user.passwordSalt);
 		return hash === user.passwordHash ? String(user._id) : null;

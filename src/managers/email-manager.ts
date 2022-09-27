@@ -10,7 +10,9 @@ export const emailManager = {
 			subject: "Test Backend Server Registration",
 			html: `<h1>Thank for your registration</h1>
        <p>To finish registration please follow the link below:
-          <a href='https://somesite.com/confirm-email?code=your_confirmation_code'>complete registration</a>
+          <a href=https://somesite.com/confirm-email?code=${userData.emailConfirmation.confirmationCode}'>
+          	Complete registration
+          </a>
       </p>`
 		};
 		

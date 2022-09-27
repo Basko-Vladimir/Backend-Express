@@ -1,7 +1,7 @@
 import {Router, Response} from "express";
 import {getErrorStatus} from "./utils";
 import {TypedRequestBody} from "../common/interfaces";
-import {LoginInputModel, LoginOutputModel} from "../models/auth-models";
+import {LoginInputModel, LoginOutputModel, RegistrationConfirmationInputModel} from "../models/auth-models";
 import {loginCredentialsValidation} from "../middlewares/auth/login-credentials-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {jwtService} from "../services/jwt-service";
@@ -9,6 +9,7 @@ import {authService} from "../services/auth-service";
 import {userRequestBodyValidation} from "../middlewares/users/user-request-body-validation";
 import {CreateUserInputModel} from "../models/users/input-models";
 import {userExistenceValidation} from "../middlewares/user-existence-validation";
+import {confirmationCodeValidation} from "../middlewares/auth/confirmation-code-validation";
 
 export const authRouter = Router({});
 
@@ -40,6 +41,19 @@ authRouter.post(
 	async (req: TypedRequestBody<CreateUserInputModel>, res: Response<void>) => {
 		try {
 			await authService.registerUser(req.body);
+			res.sendStatus(204);
+		} catch (err) {
+			res.sendStatus(getErrorStatus(err));
+		}
+	});
+
+authRouter.post(
+	"/registration-confirmation",
+	confirmationCodeValidation,
+	requestErrorsValidation,
+	async (req: TypedRequestBody<RegistrationConfirmationInputModel>, res: Response) => {
+		try {
+			await authService.confirmRegistration(req.user!);
 			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));

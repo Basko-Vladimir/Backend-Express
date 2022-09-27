@@ -12,5 +12,6 @@ export interface DbUser {
 export interface UserFilter {
 	email?: string;
 	passwordHash?: string;
-	login?: string
+	login?: string;
+	confirmationCode?: string;
 }

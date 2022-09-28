@@ -11,31 +11,46 @@ import {checkAuthorshipOfCommentUser} from "../middlewares/comments/check-author
 import {commentRequestBodyValidation} from "../middlewares/comments/comment-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 
-export const commentsRouter = Router({});
-
-commentsRouter.get(
-	"/:id",
-	async (req: TypedRequestParams<ParamIdInputModel>, res: Response<CommentOutputModel>) => {
+class CommentsController {
+	async getCommentById(req: TypedRequestParams<ParamIdInputModel>, res: Response<CommentOutputModel>) {
 		try {
 			const comment = await queryCommentsRepository.getCommentById(req.params.id);
 			res.status(200).send(comment);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}
-	});
-
-commentsRouter.delete(
-	"/:commentId",
-	bearerAuthValidation,
-	checkAuthorshipOfCommentUser,
-	async (req: TypedRequestParams<ParamCommentIdInputModel>, res: Response<void>) => {
+	}
+	
+	async deleteComment (req: TypedRequestParams<ParamCommentIdInputModel>, res: Response<void>) {
 		try {
 			await commentsService.deleteComment(req.params.commentId);
 			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}
-	});
+	}
+	
+	async updateComment (req: Request<ParamCommentIdInputModel, {}, CreateCommentInputModel>, res: Response<void>) {
+		try {
+			await commentsService.updateComment(req.params.commentId, req.body.content);
+			res.sendStatus(204);
+		} catch (err) {
+			res.sendStatus(getErrorStatus(err));
+		}
+	}
+}
+
+export const commentsRouter = Router({});
+export const commentsController = new CommentsController();
+
+commentsRouter.get("/:id", commentsController.getCommentById);
+
+commentsRouter.delete(
+	"/:commentId",
+	bearerAuthValidation,
+	checkAuthorshipOfCommentUser,
+	commentsController.deleteComment
+);
 
 commentsRouter.put(
 	"/:commentId",
@@ -43,11 +58,5 @@ commentsRouter.put(
 	checkAuthorshipOfCommentUser,
 	commentRequestBodyValidation,
 	requestErrorsValidation,
-	async (req: Request<ParamCommentIdInputModel, {}, CreateCommentInputModel>, res: Response<void>) => {
-		try {
-			await commentsService.updateComment(req.params.commentId, req.body.content);
-			res.sendStatus(204);
-		} catch (err) {
-			res.sendStatus(getErrorStatus(err));
-		}
-	});
+	commentsController.updateComment
+);

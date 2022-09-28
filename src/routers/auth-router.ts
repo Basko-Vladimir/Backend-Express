@@ -20,12 +20,8 @@ import {emailValidation} from "../middlewares/auth/email-validation";
 import {emailExistenceValidation} from "../middlewares/auth/email-existence-validation";
 import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
 
-export const authRouter = Router({});
-
-authRouter.get(
-	"/me",
-	bearerAuthValidation,
-	async (req: Request, res: Response<CurrentUserDataOutputModel>) => {
+class AuthController {
+	async getCurrentUser (req: Request, res: Response<CurrentUserDataOutputModel>) {
 		try {
 			const currentUser: CurrentUserDataOutputModel = {
 				userId: String(req.user!._id),
@@ -36,15 +32,11 @@ authRouter.get(
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error))
 		}
-	});
-
-authRouter.post(
-	"/login",
-	loginPasswordValidation,
-	requestErrorsValidation,
-	async (req: TypedRequestBody<LoginInputModel> , res: Response<LoginOutputModel>) => {
+	}
+	
+	async login (req: TypedRequestBody<LoginInputModel>, res: Response<LoginOutputModel>) {
 		try {
-			const { login, password } = req.body;
+			const {login, password} = req.body;
 			const userId = await authService.checkCredentials(login, password);
 			
 			if (userId) {
@@ -56,45 +48,61 @@ authRouter.post(
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err))
 		}
-	});
-
-authRouter.post(
-	"/registration",
-	userRequestBodyValidation,
-	userExistenceValidation,
-	requestErrorsValidation,
-	async (req: TypedRequestBody<CreateUserInputModel>, res: Response<void>) => {
+	}
+	
+	async registration (req: TypedRequestBody<CreateUserInputModel>, res: Response<void>) {
 		try {
 			await authService.registerUser(req.body);
 			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}
-	});
-
-authRouter.post(
-	"/registration-confirmation",
-	confirmationCodeValidation,
-	requestErrorsValidation,
-	async (req: TypedRequestBody<RegistrationConfirmationInputModel>, res: Response) => {
+	}
+	
+	async confirmRegistration (req: TypedRequestBody<RegistrationConfirmationInputModel>, res: Response) {
 		try {
 			await authService.confirmRegistration(req.user!);
 			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}
-	});
-
-authRouter.post(
-	"/registration-email-resending",
-	emailValidation,
-	emailExistenceValidation,
-	requestErrorsValidation,
-	async (req: TypedRequestBody<EmailResendingInputModel>, res: Response<void>) => {
+	}
+	
+	async resendRegistrationEmail (req: TypedRequestBody<EmailResendingInputModel>, res: Response<void>) {
 		try {
 			await authService.resendRegistrationEmail(req.user!);
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
+	}
+}
+
+export const authRouter = Router({});
+export const authController = new AuthController();
+
+authRouter.get("/me", bearerAuthValidation, authController.getCurrentUser);
+authRouter.post("/login", loginPasswordValidation, requestErrorsValidation, authController.login);
+
+authRouter.post(
+	"/registration",
+	userRequestBodyValidation,
+	userExistenceValidation,
+	requestErrorsValidation,
+	authController.registration
+);
+
+authRouter.post(
+	"/registration-confirmation",
+	confirmationCodeValidation,
+	requestErrorsValidation,
+	authController.confirmRegistration
+);
+
+authRouter.post(
+	"/registration-email-resending",
+	emailValidation,
+	emailExistenceValidation,
+	requestErrorsValidation,
+	authController.resendRegistrationEmail
+);

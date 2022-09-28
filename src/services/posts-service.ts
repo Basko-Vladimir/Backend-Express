@@ -6,10 +6,10 @@ import {DbPost} from "../repositories/interfaces/posts-interfaces";
 import {PostOutputModel} from "../models/posts/output-models";
 import {CommentOutputModel} from "../models/comments/output-models";
 
-export const postsService = {
+class PostsService {
 	async getPostById(id: string): Promise<DbPost | null> {
 		return postsRepository.getPostById(id);
-	},
+	}
 	
 	async createPost(
 		postData: Omit<PostOutputModel, "id" | "createdAt">,
@@ -22,21 +22,21 @@ export const postsService = {
 			blogName,
 			blogId: new ObjectId(blogId)
 		});
-
+		
 		return await postsRepository.createPost(newPostData);
-	},
-
+	}
+	
 	async updatePost(postData: Omit<PostOutputModel, "blogName" | "createdAt">): Promise<void> {
 		return postsRepository.updatePost(postData);
-	},
-
+	}
+	
 	async deletePost(id: string): Promise<void> {
 		return postsRepository.deletePost(id);
-	},
-
+	}
+	
 	async deleteAllPosts(): Promise<void> {
 		return postsRepository.deleteAllPosts();
-	},
+	}
 	
 	async createCommentByPostId(
 		postId: string,
@@ -44,4 +44,6 @@ export const postsService = {
 	): Promise<string> {
 		return commentsService.createComment(postId, commentData);
 	}
-};
+}
+
+export const postsService = new PostsService();

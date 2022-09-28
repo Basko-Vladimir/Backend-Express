@@ -12,14 +12,10 @@ import {userRequestBodyValidation} from "../middlewares/users/user-request-body-
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
 
-export const usersRouter = Router({});
-
-usersRouter.get(
-	"/",
-	commonQueryParamsSanitization,
-	async (req: TypedRequestQuery<UsersQueryParamsOutputModel>, res: Response<AllUsersOutputModel>) => {
-		try{
-			const {  searchLoginTerm, searchEmailTerm } = req.query;
+class UsersController {
+	async getAllUsers(req: TypedRequestQuery<UsersQueryParamsOutputModel>, res: Response<AllUsersOutputModel>) {
+		try {
+			const {searchLoginTerm, searchEmailTerm} = req.query;
 			const usersOutputModel = await queryUsersRepository.getAllUsers({
 				...req.query,
 				searchLoginTerm: searchLoginTerm ? searchLoginTerm.trim() : EMPTY_SEARCH_VALUE,
@@ -29,14 +25,9 @@ usersRouter.get(
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}
-	});
-
-usersRouter.post(
-	"/",
-	basicAuthValidation,
-	userRequestBodyValidation,
-	requestErrorsValidation,
-	async (req: TypedRequestBody<CreateUserInputModel>, res: Response<UserOutputModel>) => {
+	}
+	
+	async createUser(req: TypedRequestBody<CreateUserInputModel>, res: Response<UserOutputModel>) {
 		try {
 			const createdUserId = await usersService.createUser(req.body);
 			const user = await queryUsersRepository.getUserById(createdUserId);
@@ -44,17 +35,34 @@ usersRouter.post(
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}
-	});
-
-usersRouter.delete(
-	"/:id",
-	basicAuthValidation,
-	requestErrorsValidation,
-	async (req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
+	}
+	
+	async deleteUser(req: TypedRequestParams<ParamIdInputModel>, res: Response) {
 		try {
 			await usersService.deleteUser(req.params.id);
 			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}
-	});
+	}
+}
+
+export const usersRouter = Router({});
+export const usersController = new UsersController();
+
+usersRouter.get("/", commonQueryParamsSanitization, usersController.getAllUsers);
+
+usersRouter.post(
+	"/",
+	basicAuthValidation,
+	userRequestBodyValidation,
+	requestErrorsValidation,
+	usersController.createUser
+);
+
+usersRouter.delete(
+	"/:id",
+	basicAuthValidation,
+	requestErrorsValidation,
+	usersController.deleteUser
+);

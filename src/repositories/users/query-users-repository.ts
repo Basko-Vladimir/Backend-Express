@@ -4,16 +4,16 @@ import {getFilterByDbId, mapDbUserToUserOutputModel} from "../utils/mappers-util
 import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../../models/users/output-models";
 import {NotFoundError} from "../../classes/errors";
 
-export const queryUsersRepository = {
+class QueryUsersRepository {
 	async getAllUsers(queryParamsData: UsersQueryParamsOutputModel ): Promise<AllUsersOutputModel> {
 		const { sortBy, sortDirection, pageNumber, pageSize, searchEmailTerm, searchLoginTerm } = queryParamsData;
 		const skip = countSkipValue(pageNumber, pageSize);
 		const sortSetting = setSortValue(sortBy, sortDirection);
 		
 		const searchFilter = {$or: [
-			{login: {$regex: searchLoginTerm, $options: "i"}},
-			{email: {$regex: searchEmailTerm, $options: "i"}}
-		]};
+				{login: {$regex: searchLoginTerm, $options: "i"}},
+				{email: {$regex: searchEmailTerm, $options: "i"}}
+			]};
 		const totalCount =  await usersCollection.countDocuments(searchFilter);
 		const users = await usersCollection
 			.find(searchFilter)
@@ -29,7 +29,7 @@ export const queryUsersRepository = {
 			totalCount,
 			items: users.map(mapDbUserToUserOutputModel)
 		};
-	},
+	}
 	
 	async getUserById(id: string): Promise<UserOutputModel> {
 		const user = await usersCollection.findOne(getFilterByDbId(id));
@@ -38,4 +38,6 @@ export const queryUsersRepository = {
 		
 		return mapDbUserToUserOutputModel(user);
 	}
-};
+}
+
+export const queryUsersRepository = new QueryUsersRepository();

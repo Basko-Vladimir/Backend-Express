@@ -7,14 +7,14 @@ import {UserFilter} from "../repositories/interfaces/users-interfaces";
 import {usersCollection} from "../repositories/db";
 import {DataBaseError} from "../classes/errors";
 
-export const usersService = {
+class UsersService {
 	async getUserById(userId: string): Promise<User | null> {
 		return usersRepository.getUserById(userId);
-	},
+	}
 	
 	async getUserByFilter(userFilter: UserFilter): Promise<User | null> {
 		return usersRepository.getUserByFilter(userFilter);
-	},
+	}
 	
 	async createUser(userData: CreateUserInputModel): Promise<string> {
 		const {login, email, password} = userData;
@@ -23,19 +23,19 @@ export const usersService = {
 		
 		const newUser = new User(login, email, passwordSalt, passwordHash);
 		return usersRepository.createUser(newUser);
-	},
+	}
 	
 	async updateUser(userId: string, updatedField: {[key: string]: unknown}) {
 		return usersRepository.updateUser(userId, updatedField);
-	},
+	}
 	
 	async deleteUser(id: string): Promise<void> {
 		return usersRepository.deleteUser(id);
-	},
+	}
 	
 	async deleteAllUsers(): Promise<void> {
 		return usersRepository.deleteAllUsers();
-	},
+	}
 	
 	async updateUserConfirmation(user: User): Promise<void> {
 		const {matchedCount} = await usersCollection.updateOne(
@@ -46,3 +46,5 @@ export const usersService = {
 		if (!matchedCount) throw new DataBaseError();
 	}
 }
+
+export const usersService = new UsersService();

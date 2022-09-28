@@ -6,14 +6,14 @@ import {PostAllCommentsOutputModel} from "../../models/posts/output-models";
 import {NotFoundError} from "../../classes/errors";
 import {ObjectId} from "mongodb";
 
-export const queryCommentsRepository = {
+class QueryCommentsRepository {
 	async getCommentById(id: string): Promise<CommentOutputModel> {
 		const comment = await commentsCollection.findOne(getFilterByDbId(id));
 		
 		if (!comment) throw new NotFoundError();
 		
 		return mapDbCommentToCommentOutputModel(comment);
-	},
+	}
 	
 	async getAllCommentsByPostId(
 		queryParams: CommentQueryParamsOutputModel,
@@ -44,4 +44,6 @@ export const queryCommentsRepository = {
 			throw new NotFoundError();
 		}
 	}
-};
+}
+
+export const queryCommentsRepository = new QueryCommentsRepository();

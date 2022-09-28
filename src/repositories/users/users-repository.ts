@@ -5,10 +5,10 @@ import { User } from "../../classes/users";
 import {EntityWithoutId} from "../../common/interfaces";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
 
-export const usersRepository = {
+class UsersRepository {
 	async getUserById(id: string): Promise<User | null> {
 		return usersCollection.findOne(getFilterByDbId(id));
-	},
+	}
 	
 	async createUser(userData: EntityWithoutId<User>): Promise<string> {
 		const { insertedId } = await usersCollection.insertOne(userData);
@@ -16,13 +16,13 @@ export const usersRepository = {
 		if (!insertedId) throw new DataBaseError();
 		
 		return String(insertedId);
-	},
+	}
 	
 	async updateUser(userId: string, updatedField: {[key: string]: unknown}): Promise<void> {
 		const { matchedCount } = await usersCollection.updateOne(getFilterByDbId(userId), {$set: updatedField});
 		
 		if (!matchedCount) throw new DataBaseError();
-	},
+	}
 	
 	async getUserByFilter(userFilter: UserFilter): Promise<User | null> {
 		return usersCollection.findOne({ $or: [
@@ -32,15 +32,17 @@ export const usersRepository = {
 				{"emailConfirmation.confirmationCode": userFilter.confirmationCode }
 			]
 		});
-	},
+	}
 	
 	async deleteUser(id: string): Promise<void> {
 		const { deletedCount } = await usersCollection.deleteOne(getFilterByDbId(id));
 		
 		if (!deletedCount) throw new NotFoundError();
-	},
+	}
 	
 	async deleteAllUsers(): Promise<void> {
 		await usersCollection.deleteMany({});
 	}
-};
+}
+
+export const usersRepository = new UsersRepository();

@@ -3,7 +3,7 @@ import {postsService} from "./posts-service";
 import {usersService} from "./users-service";
 import {commentsService} from "./comments-service";
 
-export const testingService = {
+class TestingService {
 	async deleteAllData(): Promise<void[]> {
 		return Promise.all([
 			blogsService.deleteAllBlogs(),
@@ -12,4 +12,6 @@ export const testingService = {
 			commentsService.deleteAllComments()
 		]);
 	}
-};
+}
+
+export const testingService = new TestingService();

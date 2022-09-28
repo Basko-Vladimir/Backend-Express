@@ -26,14 +26,10 @@ import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common
 import {EMPTY_SEARCH_VALUE} from "../common/constants";
 import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
 
-export const blogsRouter = Router({});
-
-blogsRouter.get(
-	"/",
-	commonQueryParamsSanitization,
-	async (req: TypedRequestQuery<BlogsQueryParamsOutputModel>, res: Response<AllBlogsOutputModel>) => {
+class BlogsController {
+	async getAllBlogs (req: TypedRequestQuery<BlogsQueryParamsOutputModel>, res: Response<AllBlogsOutputModel>) {
 		try {
-			const { searchNameTerm } = req.query;
+			const {searchNameTerm} = req.query;
 			const blogsOutputModel = await queryBlogsRepository.getAllBlogs({
 				...req.query,
 				searchNameTerm: searchNameTerm ? searchNameTerm.trim() : EMPTY_SEARCH_VALUE
@@ -42,26 +38,18 @@ blogsRouter.get(
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-blogsRouter.get(
-	"/:id",
-	async (req: TypedRequestParams<ParamIdInputModel>, res: Response<BlogOutputModel>) => {
+	}
+	
+	async getBlogById (req: TypedRequestParams<ParamIdInputModel>, res: Response<BlogOutputModel>) {
 		try {
 			const blog = await queryBlogsRepository.getBlogById(req.params.id);
 			res.status(200).send(blog);
-		}
-		catch (error) {
+		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-blogsRouter.post(
-	"/",
-	basicAuthValidation,
-	blogRequestBodyValidation,
-	requestErrorsValidation,
-	async (req: TypedRequestBody<CreateBlogInputModel>, res: Response<BlogOutputModel>) => {
+	}
+	
+	async createBlog (req: TypedRequestBody<CreateBlogInputModel>, res: Response<BlogOutputModel>) {
 		try {
 			const createdBlogId = await blogsService.createBlog(req.body);
 			const createdBlog = await queryBlogsRepository.getBlogById(createdBlogId);
@@ -69,42 +57,27 @@ blogsRouter.post(
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-blogsRouter.put(
-	"/:id",
-	basicAuthValidation,
-	blogRequestBodyValidation,
-	requestErrorsValidation,
-	async (req: Request<ParamIdInputModel, {}, UpdateBlogInputModel>, res: Response) => {
+	}
+	
+	async updateBlog (req: Request<ParamIdInputModel, {}, UpdateBlogInputModel>, res: Response) {
 		try {
 			await blogsService.updateBlog(req.params.id, req.body);
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-blogsRouter.delete(
-	"/:id",
-	basicAuthValidation,
-	requestErrorsValidation,
-	async(req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
+	}
+	
+	async deleteBlog (req: TypedRequestParams<ParamIdInputModel>, res: Response) {
 		try {
 			await blogsService.deleteBlog(req.params.id);
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-blogsRouter.post(
-	"/:blogId/posts",
-	basicAuthValidation,
-	blogIdParamValidation,
-	postBodyCommonFieldsValidation,
-	requestErrorsValidation,
-	async (req: Request<ParamBlogIdInputModel, {}, CreateBlogPostInputModel>, res: Response<PostOutputModel>) => {
+	}
+	
+	async createPostByBlogId (req: Request<ParamBlogIdInputModel, {}, CreateBlogPostInputModel>, res: Response<PostOutputModel>) {
 		try {
 			const postId = await blogsService.createPostByBlogId(req.params.blogId, req.body);
 			const post = await queryPostsRepository.getPostById(postId);
@@ -112,20 +85,57 @@ blogsRouter.post(
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-blogsRouter.get(
-	"/:blogId/posts",
-	blogIdParamValidation,
-	commonQueryParamsSanitization,
-	async (
+	}
+	
+	async getAllPostsByBlogId(
 		req: Request<ParamBlogIdInputModel, {}, {}, PostsQueryParamsOutputModel>,
 		res: Response<BlogAllPostsOutputModel>
-	) => {
+	) {
 		try {
 			const allPostsByBlogId = await queryPostsRepository.getAllPostsByBlogId(req.query, req.params.blogId);
 			res.status(200).send(allPostsByBlogId);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
+	}
+}
+
+export const blogsRouter = Router({});
+export const blogsController = new BlogsController();
+
+blogsRouter.get("/", commonQueryParamsSanitization, blogsController.getAllBlogs);
+blogsRouter.get("/:id", blogsController.getBlogById);
+
+blogsRouter.post("/",
+	basicAuthValidation,
+	blogRequestBodyValidation,
+	requestErrorsValidation,
+	blogsController.createBlog
+);
+
+blogsRouter.put("/:id",
+	basicAuthValidation,
+	blogRequestBodyValidation,
+	requestErrorsValidation,
+	blogsController.updateBlog
+);
+
+blogsRouter.delete("/:id",
+	basicAuthValidation,
+	requestErrorsValidation,
+	blogsController.deleteBlog
+);
+
+blogsRouter.post("/:blogId/posts",
+	basicAuthValidation,
+	blogIdParamValidation,
+	postBodyCommonFieldsValidation,
+	requestErrorsValidation,
+	blogsController.createPostByBlogId
+);
+
+blogsRouter.get("/:blogId/posts",
+	blogIdParamValidation,
+	commonQueryParamsSanitization,
+	blogsController.getAllPostsByBlogId
+);

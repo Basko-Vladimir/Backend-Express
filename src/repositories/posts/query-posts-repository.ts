@@ -6,7 +6,7 @@ import {getFilterByDbId, mapDbPostToPostOutputModel} from "../utils/mappers-util
 import {PostOutputModel, PostsQueryParamsOutputModel} from "../../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../../models/blogs/output-models";
 
-export const queryPostsRepository = {
+class QueryPostsRepository {
 	async getAllPosts(queryParamsData: PostsQueryParamsOutputModel): Promise<BlogAllPostsOutputModel> {
 		try {
 			const { sortBy, sortDirection, pageNumber, pageSize } = queryParamsData;
@@ -31,7 +31,7 @@ export const queryPostsRepository = {
 		} catch {
 			throw new NotFoundError();
 		}
-	},
+	}
 	
 	async getAllPostsByBlogId(
 		queryParamsData: PostsQueryParamsOutputModel,
@@ -61,7 +61,7 @@ export const queryPostsRepository = {
 		} catch {
 			throw new NotFoundError();
 		}
-	},
+	}
 	
 	async getPostById(id: string): Promise<PostOutputModel> {
 		const post = await postsCollection.findOne(getFilterByDbId(id));
@@ -70,4 +70,6 @@ export const queryPostsRepository = {
 		
 		return mapDbPostToPostOutputModel(post);
 	}
-};
+}
+
+export const queryPostsRepository = new QueryPostsRepository();

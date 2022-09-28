@@ -23,81 +23,55 @@ import {queryCommentsRepository} from "../repositories/comments/query-comments-r
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
 
-export const postsRouter = Router({});
-
-postsRouter.get(
-	"/",
-	commonQueryParamsSanitization,
-	async (req: TypedRequestQuery<PostsQueryParamsOutputModel>, res: Response<BlogAllPostsOutputModel>) => {
+class PostsController {
+	async getAllPosts(req: TypedRequestQuery<PostsQueryParamsOutputModel>, res: Response<BlogAllPostsOutputModel>) {
 		try {
 			const postsOutputModel = await queryPostsRepository.getAllPosts(req.query);
 			res.status(200).send(postsOutputModel);
-		}	catch (error) {
+		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-postsRouter.get(
-	"/:id",
-	async (req: TypedRequestParams<ParamIdInputModel>, res: Response<PostOutputModel>) => {
+	}
+	
+	async getPostById (req: TypedRequestParams<ParamIdInputModel>, res: Response<PostOutputModel>) {
 		try {
 			const post = await queryPostsRepository.getPostById(req.params.id);
 			res.status(200).send(post);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-postsRouter.post(
-	"/",
-	basicAuthValidation,
-	postRequestFullBodyValidation,
-	requestErrorsValidation,
-	async (req: TypedRequestBody<CreatePostInputModel>, res: Response<PostOutputModel>) => {
+	}
+	
+	async createPost (req: TypedRequestBody<CreatePostInputModel>, res: Response<PostOutputModel>) {
 		try {
-			const { name: blogName } = await queryBlogsRepository.getBlogById(req.body.blogId);
+			const {name: blogName} = await queryBlogsRepository.getBlogById(req.body.blogId);
 			const createdPostId = await postsService.createPost({...req.body, blogName});
 			const post = await queryPostsRepository.getPostById(createdPostId);
 			res.status(201).send(post);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-postsRouter.put(
-	"/:id",
-	basicAuthValidation,
-	postRequestFullBodyValidation,
-	requestErrorsValidation,
-	async (req: Request<ParamIdInputModel, {}, UpdatePostInputModel>, res: Response<void>) => {
+	}
+	
+	async updatePost(req: Request<ParamIdInputModel, {}, UpdatePostInputModel>, res: Response<void>) {
 		try {
 			await postsService.updatePost({...req.body, ...req.params});
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-postsRouter.delete(
-	"/:id",
-	basicAuthValidation,
-	requestErrorsValidation,
-	async (req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
+	}
+	
+	async deletePost (req: TypedRequestParams<ParamIdInputModel>, res: Response) {
 		try {
 			await postsService.deletePost(req.params.id);
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
-	});
-
-postsRouter.post(
-	"/:postId/comments",
-	bearerAuthValidation,
-	postIdParamValidation,
-	commentRequestBodyValidation,
-	requestErrorsValidation,
-	async (req: Request<ParamPostIdInputModel, {}, CreateCommentInputModel>, res: Response<CommentOutputModel>) => {
+	}
+	
+	async createCommentByPostId(req: Request<ParamPostIdInputModel, {}, CreateCommentInputModel>, res: Response<CommentOutputModel>) {
 		try {
 			const commentData: Omit<CommentOutputModel, "id" | "createdAt"> = {
 				content: req.body.content,
@@ -110,16 +84,12 @@ postsRouter.post(
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}
-	});
-
-postsRouter.get(
-	"/:postId/comments",
-	postIdParamValidation,
-	commonQueryParamsSanitization,
-	async (
+	}
+	
+	async getAllCommentsByPostId (
 		req: Request<ParamPostIdInputModel, {}, {}, CommentQueryParamsOutputModel>,
 		res: Response<PostAllCommentsOutputModel>
-	) => {
+	) {
 		try {
 			const allCommentsByPostId = await queryCommentsRepository
 				.getAllCommentsByPostId(req.query, req.params.postId);
@@ -128,4 +98,44 @@ postsRouter.get(
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}
-	});
+	}
+}
+
+export const postsRouter = Router({});
+export const postsController = new PostsController();
+
+postsRouter.get("/", commonQueryParamsSanitization, postsController.getAllPosts);
+postsRouter.delete("/:id", basicAuthValidation, postsController.deletePost);
+postsRouter.get("/:id", postsController.getPostById);
+
+postsRouter.post(
+	"/",
+	basicAuthValidation,
+	postRequestFullBodyValidation,
+	requestErrorsValidation,
+	postsController.createPost
+);
+
+postsRouter.put(
+	"/:id",
+	basicAuthValidation,
+	postRequestFullBodyValidation,
+	requestErrorsValidation,
+	postsController.updatePost
+);
+
+postsRouter.post(
+	"/:postId/comments",
+	bearerAuthValidation,
+	postIdParamValidation,
+	commentRequestBodyValidation,
+	requestErrorsValidation,
+	postsController.createPost
+);
+
+postsRouter.get(
+	"/:postId/comments",
+	postIdParamValidation,
+	commonQueryParamsSanitization,
+	postsController.getAllCommentsByPostId
+);

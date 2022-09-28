@@ -6,9 +6,9 @@ import {emailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
 import { User } from "../classes/users";
 
-export const authService = {
+class AuthService {
 	async registerUser(userData: CreateUserInputModel): Promise<void> {
-	  const createdUserId = await usersService.createUser(userData);
+		const createdUserId = await usersService.createUser(userData);
 		const createdUser = await usersService.getUserById(createdUserId);
 		
 		if (createdUser) {
@@ -19,11 +19,11 @@ export const authService = {
 				return usersService.deleteUser(createdUserId);
 			}
 		}
-	},
+	}
 	
 	async confirmRegistration(user: User): Promise<void> {
 		return usersService.updateUserConfirmation(user);
-	},
+	}
 	
 	async resendRegistrationEmail(user: User): Promise<void> {
 		try {
@@ -40,18 +40,20 @@ export const authService = {
 		} catch (error) {
 			console.error(error);
 		}
-	},
+	}
 	
 	async checkCredentials(login: string, password: string): Promise<string | null> {
 		const user = await usersService.getUserByFilter({login});
 		
-		if (!user || !user.emailConfirmation.isConfirmed) return null;
+		if (!user) return null;
 		
 		const hash = await this.generateHash(password, user.passwordSalt);
 		return hash === user.passwordHash ? String(user._id) : null;
-	},
+	}
 	
 	async generateHash(password: string, salt: string): Promise<string> {
 		return bcrypt.hash(password, salt);
 	}
-};
+}
+
+export const authService = new AuthService();

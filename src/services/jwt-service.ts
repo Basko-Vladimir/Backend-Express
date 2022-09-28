@@ -7,10 +7,10 @@ declare module "jsonwebtoken" {
 	}
 }
 
-export const jwtService = {
+class JwtService {
 	async createJWT(userId: string): Promise<string> {
 		return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: "100d"});
-	},
+	}
 	
 	async getUserIdByToken(token: string): Promise<string | null> {
 		try {
@@ -20,4 +20,6 @@ export const jwtService = {
 			return null;
 		}
 	}
-};
+}
+
+export const jwtService = new JwtService();

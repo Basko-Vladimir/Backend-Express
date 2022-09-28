@@ -1,7 +1,8 @@
-import {Router, Response} from "express";
+import {Router, Response, Request} from "express";
 import {getErrorStatus} from "./utils";
 import {TypedRequestBody} from "../common/interfaces";
 import {
+	CurrentUserDataOutputModel,
 	EmailResendingInputModel,
 	LoginInputModel,
 	LoginOutputModel,
@@ -17,8 +18,25 @@ import {userExistenceValidation} from "../middlewares/user-existence-validation"
 import {confirmationCodeValidation} from "../middlewares/auth/confirmation-code-validation";
 import {emailValidation} from "../middlewares/auth/email-validation";
 import {emailExistenceValidation} from "../middlewares/auth/email-existence-validation";
+import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
 
 export const authRouter = Router({});
+
+authRouter.get(
+	"/me",
+	bearerAuthValidation,
+	async (req: Request, res: Response<CurrentUserDataOutputModel>) => {
+		try {
+			const currentUser: CurrentUserDataOutputModel = {
+				userId: String(req.user!._id),
+				email: req.user!.email,
+				login: req.user!.login
+			};
+			res.status(200).send(currentUser);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error))
+		}
+	});
 
 authRouter.post(
 	"/login",

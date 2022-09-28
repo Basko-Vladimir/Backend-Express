@@ -14,3 +14,9 @@ export interface RegistrationConfirmationInputModel {
 export interface EmailResendingInputModel {
 	email: string;
 }
+
+export interface CurrentUserDataOutputModel {
+	email: string;
+	login: string;
+	userId: string;
+}

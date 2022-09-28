@@ -7,7 +7,7 @@ export const confirmationCodeValidation = body("code")
 		const user = await usersRepository.getUserByFilter({confirmationCode: code});
 		const isMatchedCode = user && user.emailConfirmation.confirmationCode === code;
 		
-		if (isMatchedCode && user.emailConfirmation.isConfirmed) throw new Error("Confirmation code is confirmed already!");
+		// if (isMatchedCode && user.emailConfirmation.isConfirmed) throw new Error("Confirmation code is confirmed already!");
 		if (!isMatchedCode) throw new Error("Confirmation code is not valid!");
 		
 		meta.req.user = user;

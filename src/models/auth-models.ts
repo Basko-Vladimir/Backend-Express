@@ -10,3 +10,7 @@ export interface LoginOutputModel {
 export interface RegistrationConfirmationInputModel {
 	code: string;
 }
+
+export interface EmailResendingInputModel {
+	email: string;
+}

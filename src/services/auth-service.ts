@@ -23,6 +23,15 @@ export const authService = {
 		return usersService.updateUserConfirmation(user);
 	},
 	
+	async resendRegistrationEmail(user: User) {
+		try {
+			await emailManager.sendRegistrationEmail(user);
+			return usersService.updateUserConfirmation(user);
+		} catch (error) {
+			console.error(error);
+		}
+	},
+	
 	async checkCredentials(login: string, password: string): Promise<string | null> {
 		const user = await usersService.getUserByFilter({login});
 		

@@ -1,8 +1,13 @@
 import {Router, Response} from "express";
 import {getErrorStatus} from "./utils";
 import {TypedRequestBody} from "../common/interfaces";
-import {LoginInputModel, LoginOutputModel, RegistrationConfirmationInputModel} from "../models/auth-models";
-import {loginCredentialsValidation} from "../middlewares/auth/login-credentials-validation";
+import {
+	EmailResendingInputModel,
+	LoginInputModel,
+	LoginOutputModel,
+	RegistrationConfirmationInputModel
+} from "../models/auth-models";
+import {loginPasswordValidation} from "../middlewares/auth/login-password-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {jwtService} from "../services/jwt-service";
 import {authService} from "../services/auth-service";
@@ -10,12 +15,14 @@ import {userRequestBodyValidation} from "../middlewares/users/user-request-body-
 import {CreateUserInputModel} from "../models/users/input-models";
 import {userExistenceValidation} from "../middlewares/user-existence-validation";
 import {confirmationCodeValidation} from "../middlewares/auth/confirmation-code-validation";
+import {emailValidation} from "../middlewares/auth/email-validation";
+import {emailExistenceValidation} from "../middlewares/auth/email-existence-validation";
 
 export const authRouter = Router({});
 
 authRouter.post(
 	"/login",
-	loginCredentialsValidation,
+	loginPasswordValidation,
 	requestErrorsValidation,
 	async (req: TypedRequestBody<LoginInputModel> , res: Response<LoginOutputModel>) => {
 		try {
@@ -57,5 +64,19 @@ authRouter.post(
 			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
+		}
+	});
+
+authRouter.post(
+	"/registration-email-resending",
+	emailValidation,
+	emailExistenceValidation,
+	requestErrorsValidation,
+	async (req: TypedRequestBody<EmailResendingInputModel>, res: Response<void>) => {
+		try {
+			await authService.resendRegistrationEmail(req.user!);
+			res.sendStatus(204);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
 		}
 	});

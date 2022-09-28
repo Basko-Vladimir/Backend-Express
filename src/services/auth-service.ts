@@ -21,11 +21,11 @@ export const authService = {
 		}
 	},
 	
-	async confirmRegistration(user: User) {
+	async confirmRegistration(user: User): Promise<void> {
 		return usersService.updateUserConfirmation(user);
 	},
 	
-	async resendRegistrationEmail(user: User) {
+	async resendRegistrationEmail(user: User): Promise<void> {
 		try {
 			const newConfirmationCode = uuidv4();
 			await usersService.updateUser(String(user._id), {
@@ -35,8 +35,7 @@ export const authService = {
 			const updatedUser = await usersService.getUserById(String(user._id));
 			
 			if (updatedUser) {
-				await emailManager.sendRegistrationEmail(updatedUser);
-				return usersService.updateUserConfirmation(updatedUser);
+				return emailManager.sendRegistrationEmail(updatedUser);
 			}
 		} catch (error) {
 			console.error(error);

@@ -5,23 +5,12 @@ import {authService} from "../services/auth-service";
 
 export const userExistenceValidation = body()
 	.custom(async user => {
-		const foundUser = await usersService.getUserByFilter({login: user.login});
-		const errorMessage = "User with passed email, password or login exists already!";
-		let passwordHash;
+		const foundUser = await usersService.getUserByFilter({
+			login: user.login,
+			email: user.email
+		});
 		
-		if (foundUser) {
-			passwordHash = await authService.generateHash(user.password, foundUser.passwordSalt);
-			const existingUser = await usersService.getUserByFilter({
-				email: foundUser.email,
-				passwordHash
-			})
-			
-			if (existingUser) {
-				throw new Error(errorMessage);
-			}
-		
-			return user;
-		}
+		if (foundUser) throw new Error("User with passed email or login exists already!");
 		
 		return user;
 	});

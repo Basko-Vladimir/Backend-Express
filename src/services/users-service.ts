@@ -25,6 +25,10 @@ export const usersService = {
 		return usersRepository.createUser(newUser);
 	},
 	
+	async updateUser(userId: string, updatedField: {[key: string]: unknown}) {
+		return usersRepository.updateUser(userId, updatedField);
+	},
+	
 	async deleteUser(id: string): Promise<void> {
 		return usersRepository.deleteUser(id);
 	},

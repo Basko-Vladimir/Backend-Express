@@ -1,4 +1,6 @@
 import bcrypt from "bcrypt";
+import add from "date-fns/add";
+import { v4 as uuidv4 } from "uuid";
 import {usersService} from "./users-service";
 import {emailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
@@ -25,8 +27,17 @@ export const authService = {
 	
 	async resendRegistrationEmail(user: User) {
 		try {
-			await emailManager.sendRegistrationEmail(user);
-			return usersService.updateUserConfirmation(user);
+			const newConfirmationCode = uuidv4();
+			await usersService.updateUser(String(user._id), {
+				"emailConfirmation.confirmationCode": newConfirmationCode,
+				"emailConfirmation.expirationDate": add(new Date(), {hours: 1})
+			});
+			const updatedUser = await usersService.getUserById(String(user._id));
+			
+			if (updatedUser) {
+				await emailManager.sendRegistrationEmail(updatedUser);
+				return usersService.updateUserConfirmation(updatedUser);
+			}
 		} catch (error) {
 			console.error(error);
 		}

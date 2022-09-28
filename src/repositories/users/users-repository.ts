@@ -18,6 +18,12 @@ export const usersRepository = {
 		return String(insertedId);
 	},
 	
+	async updateUser(userId: string, updatedField: {[key: string]: unknown}): Promise<void> {
+		const { matchedCount } = await usersCollection.updateOne(getFilterByDbId(userId), {$set: updatedField});
+		
+		if (!matchedCount) throw new DataBaseError();
+	},
+	
 	async getUserByFilter(userFilter: UserFilter): Promise<User | null> {
 		return usersCollection.findOne({ $or: [
 				{email: userFilter.email},

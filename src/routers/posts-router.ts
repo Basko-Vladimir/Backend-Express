@@ -130,7 +130,7 @@ postsRouter.post(
 	postIdParamValidation,
 	commentRequestBodyValidation,
 	requestErrorsValidation,
-	postsController.createPost
+	postsController.createCommentByPostId
 );
 
 postsRouter.get(

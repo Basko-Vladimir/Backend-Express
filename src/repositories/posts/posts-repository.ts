@@ -6,7 +6,7 @@ import {PostOutputModel} from "../../models/posts/output-models";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
 import { EntityWithoutId } from "../../common/interfaces";
 
-class PostsRepository {
+export class PostsRepository {
 	async getPostById(id: string): Promise<DbPost | null> {
 		return postsCollection.findOne(getFilterByDbId(id));
 	}
@@ -39,5 +39,3 @@ class PostsRepository {
 		await postsCollection.deleteMany({});
 	}
 }
-
-export const postsRepository = new PostsRepository();

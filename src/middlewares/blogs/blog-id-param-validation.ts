@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from "express";
 import {ParamBlogIdInputModel} from "../../models/blogs/input-models";
-import {blogsService} from "../../services/blogs-service";
+import {blogsService} from "../../composition-root";
 
 export const blogIdParamValidation = async (
 	req: Request<ParamBlogIdInputModel, {}, {}, {}>,

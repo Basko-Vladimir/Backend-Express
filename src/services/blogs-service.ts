@@ -1,32 +1,37 @@
-import {blogsRepository} from "../repositories/blogs/blogs-repository";
+import {BlogsRepository} from "../repositories/blogs/blogs-repository";
 import {Blog} from "../classes/blogs";
 import {CreateBlogInputModel, CreateBlogPostInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
 import {NotFoundError} from "../classes/errors";
-import {postsService} from "./posts-service";
+import {PostsService} from "./posts-service";
 import {PostOutputModel} from "../models/posts/output-models";
 
-class BlogsService {
+export class BlogsService {
+	constructor (
+		protected blogsRepository: BlogsRepository,
+		protected postsService: PostsService
+	) {}
+	
 	async getBlogById(id: string): Promise<Blog | null> {
-		return blogsRepository.getBlogById(id);
+		return this.blogsRepository.getBlogById(id);
 	}
 	
 	async createBlog(data: CreateBlogInputModel): Promise<string> {
 		const { name, youtubeUrl } = data;
 		const blogData = new Blog(name, youtubeUrl);
 
-		return blogsRepository.createBlog(blogData);
+		return this.blogsRepository.createBlog(blogData);
 	}
 	
 	async updateBlog(id: string, data: UpdateBlogInputModel): Promise<void> {
-		return blogsRepository.updateBlog(id, data);
+		return this.blogsRepository.updateBlog(id, data);
 	}
 	
 	async deleteBlog(id: string): Promise<void> {
-		return blogsRepository.deleteBlog(id);
+		return this.blogsRepository.deleteBlog(id);
 	}
 	
 	async createPostByBlogId(blogId: string, createPostData: CreateBlogPostInputModel): Promise<string> {
-		const blog = await blogsRepository.getBlogById(blogId);
+		const blog = await this.blogsRepository.getBlogById(blogId);
 		
 		if (!blog) throw new NotFoundError();
 		
@@ -39,12 +44,10 @@ class BlogsService {
 			blogName: blog.name
 		};
 		
-		return postsService.createPost(postData);
+		return this.postsService.createPost(postData);
 	}
 	
 	async deleteAllBlogs(): Promise<void> {
-		return blogsRepository.deleteAllBlogs();
+		return this.blogsRepository.deleteAllBlogs();
 	}
 }
-
-export const blogsService = new BlogsService();

@@ -1,20 +1,26 @@
 import {ObjectId} from "mongodb";
-import {commentsService} from "./comments-service";
-import { Post } from "../classes/posts";
-import { postsRepository } from "../repositories/posts/posts-repository";
+import {Post} from "../classes/posts";
+import {PostsRepository} from "../repositories/posts/posts-repository";
 import {DbPost} from "../repositories/interfaces/posts-interfaces";
 import {PostOutputModel} from "../models/posts/output-models";
 import {CommentOutputModel} from "../models/comments/output-models";
+import {CommentsService} from "./comments-service";
 
-class PostsService {
+export class PostsService {
+	constructor(
+		protected postsRepository: PostsRepository,
+		protected commentsService: CommentsService
+	) {
+	}
+	
 	async getPostById(id: string): Promise<DbPost | null> {
-		return postsRepository.getPostById(id);
+		return this.postsRepository.getPostById(id);
 	}
 	
 	async createPost(
 		postData: Omit<PostOutputModel, "id" | "createdAt">,
 	): Promise<string> {
-		const { title, content, shortDescription, blogId, blogName } = postData;
+		const {title, content, shortDescription, blogId, blogName} = postData;
 		const newPostData = new Post({
 			title,
 			content,
@@ -23,27 +29,25 @@ class PostsService {
 			blogId: new ObjectId(blogId)
 		});
 		
-		return await postsRepository.createPost(newPostData);
+		return await this.postsRepository.createPost(newPostData);
 	}
 	
 	async updatePost(postData: Omit<PostOutputModel, "blogName" | "createdAt">): Promise<void> {
-		return postsRepository.updatePost(postData);
+		return this.postsRepository.updatePost(postData);
 	}
 	
 	async deletePost(id: string): Promise<void> {
-		return postsRepository.deletePost(id);
+		return this.postsRepository.deletePost(id);
 	}
 	
 	async deleteAllPosts(): Promise<void> {
-		return postsRepository.deleteAllPosts();
+		return this.postsRepository.deleteAllPosts();
 	}
 	
 	async createCommentByPostId(
 		postId: string,
 		commentData: Omit<CommentOutputModel, "id" | "createdAt">
 	): Promise<string> {
-		return commentsService.createComment(postId, commentData);
+		return this.commentsService.createComment(postId, commentData);
 	}
 }
-
-export const postsService = new PostsService();

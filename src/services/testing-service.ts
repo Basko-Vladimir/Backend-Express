@@ -1,17 +1,22 @@
-import {blogsService} from "./blogs-service";
-import {postsService} from "./posts-service";
-import {usersService} from "./users-service";
-import {commentsService} from "./comments-service";
+import {BlogsService} from "./blogs-service";
+import {PostsService} from "./posts-service";
+import {UsersService} from "./users-service";
+import {CommentsService} from "./comments-service";
 
-class TestingService {
+export class TestingService {
+	constructor(
+		protected blogsService: BlogsService,
+		protected postsService: PostsService,
+		protected usersService: UsersService,
+		protected commentsService: CommentsService
+	) {}
+	
 	async deleteAllData(): Promise<void[]> {
 		return Promise.all([
-			blogsService.deleteAllBlogs(),
-			postsService.deleteAllPosts(),
-			usersService.deleteAllUsers(),
-			commentsService.deleteAllComments()
+			this.blogsService.deleteAllBlogs(),
+			this.postsService.deleteAllPosts(),
+			this.usersService.deleteAllUsers(),
+			this.commentsService.deleteAllComments()
 		]);
 	}
 }
-
-export const testingService = new TestingService();

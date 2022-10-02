@@ -7,7 +7,7 @@ declare module "jsonwebtoken" {
 	}
 }
 
-class JwtService {
+export class JwtService {
 	async createJWT(userId: string): Promise<string> {
 		return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: "100d"});
 	}
@@ -21,5 +21,3 @@ class JwtService {
 		}
 	}
 }
-
-export const jwtService = new JwtService();

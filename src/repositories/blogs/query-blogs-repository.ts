@@ -4,7 +4,7 @@ import {NotFoundError} from "../../classes/errors";
 import {AllBlogsOutputModel, BlogOutputModel, BlogsQueryParamsOutputModel} from "../../models/blogs/output-models";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
 
-class QueryBlogsRepository {
+export class QueryBlogsRepository {
 	async getAllBlogs(queryParamsData: BlogsQueryParamsOutputModel): Promise<AllBlogsOutputModel> {
 		try {
 			const { sortBy, sortDirection, pageNumber, pageSize, searchNameTerm } = queryParamsData;
@@ -41,5 +41,3 @@ class QueryBlogsRepository {
 		return mapDbBlogToBlogOutputModel(blog);
 	}
 }
-
-export const queryBlogsRepository = new QueryBlogsRepository();

@@ -4,7 +4,7 @@ import {getFilterByDbId, mapDbUserToUserOutputModel} from "../utils/mappers-util
 import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../../models/users/output-models";
 import {NotFoundError} from "../../classes/errors";
 
-class QueryUsersRepository {
+export class QueryUsersRepository {
 	async getAllUsers(queryParamsData: UsersQueryParamsOutputModel ): Promise<AllUsersOutputModel> {
 		const { sortBy, sortDirection, pageNumber, pageSize, searchEmailTerm, searchLoginTerm } = queryParamsData;
 		const skip = countSkipValue(pageNumber, pageSize);
@@ -39,5 +39,3 @@ class QueryUsersRepository {
 		return mapDbUserToUserOutputModel(user);
 	}
 }
-
-export const queryUsersRepository = new QueryUsersRepository();

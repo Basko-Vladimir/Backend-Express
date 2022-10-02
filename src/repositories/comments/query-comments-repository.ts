@@ -6,7 +6,7 @@ import {PostAllCommentsOutputModel} from "../../models/posts/output-models";
 import {NotFoundError} from "../../classes/errors";
 import {ObjectId} from "mongodb";
 
-class QueryCommentsRepository {
+export class QueryCommentsRepository {
 	async getCommentById(id: string): Promise<CommentOutputModel> {
 		const comment = await commentsCollection.findOne(getFilterByDbId(id));
 		
@@ -45,5 +45,3 @@ class QueryCommentsRepository {
 		}
 	}
 }
-
-export const queryCommentsRepository = new QueryCommentsRepository();

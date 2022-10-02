@@ -1,5 +1,5 @@
 import {body, Meta} from "express-validator";
-import {usersService} from "../../services/users-service";
+import {usersService} from "../../composition-root";
 
 export const emailExistenceValidation = body("email")
 	.custom(async (email, meta: Meta) => {

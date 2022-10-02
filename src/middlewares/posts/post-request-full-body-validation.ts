@@ -1,6 +1,6 @@
 import { body } from "express-validator";
-import {blogsService} from "../../services/blogs-service";
-import {postBodyCommonFieldsValidation} from "../post-body-common-fields-validation";
+import {postBodyCommonFieldsValidation} from "./post-body-common-fields-validation";
+import {blogsService} from "../../composition-root";
 
 export const postRequestFullBodyValidation = [
 	...postBodyCommonFieldsValidation,

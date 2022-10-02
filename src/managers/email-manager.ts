@@ -1,8 +1,12 @@
 import {EmailInfoModel} from "../models/email-models";
-import {emailAdapter} from "../adapters/email-adapter";
 import { User } from "../classes/users";
+import {EmailAdapter} from "../adapters/email-adapter";
 
-class EmailManager {
+export class EmailManager {
+	constructor(
+		protected emailAdapter: EmailAdapter
+	) {}
+	
 	async sendRegistrationEmail(userData: User): Promise<void> {
 		const messageInfo: EmailInfoModel = {
 			from: "Test Backend Server <dev.test.vladimir@gmail.com>",
@@ -16,8 +20,6 @@ class EmailManager {
       </p>`
 		};
 		
-		return emailAdapter.sendEmail(messageInfo);
+		return this.emailAdapter.sendEmail(messageInfo);
 	}
 }
-
-export const emailManager = new EmailManager();

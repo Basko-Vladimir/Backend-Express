@@ -5,7 +5,7 @@ import { User } from "../../classes/users";
 import {EntityWithoutId} from "../../common/interfaces";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
 
-class UsersRepository {
+export class UsersRepository {
 	async getUserById(id: string): Promise<User | null> {
 		return usersCollection.findOne(getFilterByDbId(id));
 	}
@@ -43,6 +43,13 @@ class UsersRepository {
 	async deleteAllUsers(): Promise<void> {
 		await usersCollection.deleteMany({});
 	}
+	
+	async updateUserConfirmation(user: User): Promise<void> {
+		const {matchedCount} = await usersCollection.updateOne(
+			{"emailConfirmation.confirmationCode": user.emailConfirmation.confirmationCode},
+			{$set: {"emailConfirmation.isConfirmed": true}}
+		);
+		
+		if (!matchedCount) throw new DataBaseError();
+	}
 }
-
-export const usersRepository = new UsersRepository();

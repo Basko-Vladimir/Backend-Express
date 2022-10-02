@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from "express";
 import {ParamPostIdInputModel} from "../../models/posts/input-models";
-import {postsService} from "../../services/posts-service";
-import {getErrorStatus} from "../../routers/utils";
+import {getErrorStatus} from "../../controllers/utils";
+import {postsService} from "../../composition-root";
 
 export const postIdParamValidation = async (
 	req: Request<ParamPostIdInputModel, {}, {}, {}>,

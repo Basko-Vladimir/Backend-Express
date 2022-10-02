@@ -1,41 +1,47 @@
 import bcrypt from "bcrypt";
 import add from "date-fns/add";
-import { v4 as uuidv4 } from "uuid";
-import {usersService} from "./users-service";
-import {emailManager} from "../managers/email-manager";
+import {v4 as uuidv4} from "uuid";
+import {EmailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
-import { User } from "../classes/users";
+import {User} from "../classes/users";
+import {UsersService} from "./users-service";
 
-class AuthService {
+export class AuthService {
+	constructor(
+		protected usersService: UsersService,
+		protected emailManager: EmailManager,
+	) {
+	}
+	
 	async registerUser(userData: CreateUserInputModel): Promise<void> {
-		const createdUserId = await usersService.createUser(userData);
-		const createdUser = await usersService.getUserById(createdUserId);
+		const createdUserId = await this.usersService.createUser(userData);
+		const createdUser = await this.usersService.getUserById(createdUserId);
 		
 		if (createdUser) {
 			try {
-				return emailManager.sendRegistrationEmail(createdUser);
+				return this.emailManager.sendRegistrationEmail(createdUser);
 			} catch (error) {
 				console.error(error)
-				return usersService.deleteUser(createdUserId);
+				return this.usersService.deleteUser(createdUserId);
 			}
 		}
 	}
 	
 	async confirmRegistration(user: User): Promise<void> {
-		return usersService.updateUserConfirmation(user);
+		return this.usersService.updateUserConfirmation(user);
 	}
 	
 	async resendRegistrationEmail(user: User): Promise<void> {
 		try {
 			const newConfirmationCode = uuidv4();
-			await usersService.updateUser(String(user._id), {
+			await this.usersService.updateUser(String(user._id), {
 				"emailConfirmation.confirmationCode": newConfirmationCode,
 				"emailConfirmation.expirationDate": add(new Date(), {hours: 1})
 			});
-			const updatedUser = await usersService.getUserById(String(user._id));
+			const updatedUser = await this.usersService.getUserById(String(user._id));
 			
 			if (updatedUser) {
-				return emailManager.sendRegistrationEmail(updatedUser);
+				return this.emailManager.sendRegistrationEmail(updatedUser);
 			}
 		} catch (error) {
 			console.error(error);
@@ -43,7 +49,7 @@ class AuthService {
 	}
 	
 	async checkCredentials(login: string, password: string): Promise<string | null> {
-		const user = await usersService.getUserByFilter({login});
+		const user = await this.usersService.getUserByFilter({login});
 		
 		if (!user) return null;
 		
@@ -55,5 +61,3 @@ class AuthService {
 		return bcrypt.hash(password, salt);
 	}
 }
-
-export const authService = new AuthService();

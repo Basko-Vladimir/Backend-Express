@@ -3,8 +3,9 @@ import {DbComment} from "../interfaces/comments-interfaces";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {EntityWithoutId} from "../../common/interfaces";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
+import {Comment} from "../../classes/comments";
 
-class CommentsRepository {
+export class CommentsRepository {
 	async createComment(comment: EntityWithoutId<DbComment>): Promise<string> {
 		const { insertedId } = await commentsCollection.insertOne(comment);
 		
@@ -30,6 +31,12 @@ class CommentsRepository {
 		
 		if (!deletedCount) throw new NotFoundError();
 	}
+	
+	async getCommentById(id: string): Promise<Comment> {
+		const comment = await commentsCollection.findOne(getFilterByDbId(id));
+		
+		if (!comment) throw new NotFoundError();
+		
+		return comment;
+	}
 }
-
-export const commentsRepository = new CommentsRepository();

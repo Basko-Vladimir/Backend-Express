@@ -1,6 +1,5 @@
 import {Request, Response, NextFunction} from "express";
-import {jwtService} from "../services/jwt-service";
-import {usersService} from "../services/users-service";
+import {jwtService, usersService} from "../composition-root";
 
 export const bearerAuthValidation = async (req: Request, res: Response, next: NextFunction) => {
 	if (!req.headers.authorization) {

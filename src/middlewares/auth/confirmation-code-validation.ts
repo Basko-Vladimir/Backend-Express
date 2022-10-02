@@ -1,10 +1,10 @@
 import {body, Meta} from "express-validator";
-import {usersRepository} from "../../repositories/users/users-repository";
+import {usersService} from "../../composition-root";
 
 export const confirmationCodeValidation = body("code")
 	.exists().withMessage("You didn't provide confirmation code!")
 	.custom(async (code, meta: Meta) => {
-		const user = await usersRepository.getUserByFilter({confirmationCode: code});
+		const user = await usersService.getUserByFilter({confirmationCode: code});
 		const notValidMessage = "Confirmation code is not valid!";
 		
 		if (user) {

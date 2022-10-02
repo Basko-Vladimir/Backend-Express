@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import {usersService} from "../services/users-service";
+import {usersService} from "../composition-root";
 
 export const userExistenceValidation = [
 	body("email").custom(async email => {

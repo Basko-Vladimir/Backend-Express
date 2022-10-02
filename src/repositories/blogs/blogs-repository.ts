@@ -6,7 +6,7 @@ import {UpdateBlogInputModel} from "../../models/blogs/input-models";
 import { Blog } from "../../classes/blogs";
 import {EntityWithoutId} from "../../common/interfaces";
 
-class BlogsRepository {
+export class BlogsRepository {
 	async getBlogById(id: string): Promise<Blog | null> {
 		return await blogsCollection.findOne(getFilterByDbId(id));
 	}
@@ -38,5 +38,3 @@ class BlogsRepository {
 		await blogsCollection.deleteMany({});
 	}
 }
-
-export const blogsRepository = new BlogsRepository();

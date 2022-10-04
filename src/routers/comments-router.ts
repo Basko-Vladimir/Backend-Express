@@ -3,9 +3,11 @@ import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
 import {checkAuthorshipOfCommentUser} from "../middlewares/comments/check-authorship-of-comment-user";
 import {commentRequestBodyValidation} from "../middlewares/comments/comment-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
-import {commentsController} from "../composition-root";
+import {iocContainer} from "../composition-root";
+import {CommentsController} from "../controllers/comments-controller";
 
 export const commentsRouter = Router({});
+const commentsController = iocContainer.resolve(CommentsController);
 
 commentsRouter.get("/:id", commentsController.getCommentById.bind(commentsController));
 

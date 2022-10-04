@@ -1,5 +1,8 @@
 import {body, Meta} from "express-validator";
-import {usersService} from "../../composition-root";
+import {iocContainer} from "../../composition-root";
+import {UsersService} from "../../services/users-service";
+
+const usersService = iocContainer.resolve(UsersService)
 
 export const emailExistenceValidation = body("email")
 	.custom(async (email, meta: Meta) => {

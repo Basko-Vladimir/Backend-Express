@@ -1,4 +1,5 @@
 import {ObjectId} from "mongodb";
+import {inject, injectable} from "inversify";
 import {Post} from "../classes/posts";
 import {PostsRepository} from "../repositories/posts/posts-repository";
 import {DbPost} from "../repositories/interfaces/posts-interfaces";
@@ -6,10 +7,11 @@ import {PostOutputModel} from "../models/posts/output-models";
 import {CommentOutputModel} from "../models/comments/output-models";
 import {CommentsService} from "./comments-service";
 
+@injectable()
 export class PostsService {
 	constructor(
-		protected postsRepository: PostsRepository,
-		protected commentsService: CommentsService
+		@inject(PostsRepository) protected postsRepository: PostsRepository,
+		@inject(CommentsService) protected commentsService: CommentsService
 	) {
 	}
 	

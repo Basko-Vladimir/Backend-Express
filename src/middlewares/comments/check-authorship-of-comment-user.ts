@@ -1,7 +1,10 @@
 import {Request, Response, NextFunction} from "express";
 import {ParamCommentIdInputModel} from "../../models/comments/input-models";
 import {getErrorStatus} from "../../controllers/utils";
-import {commentsService} from "../../composition-root";
+import {iocContainer} from "../../composition-root";
+import {CommentsService} from "../../services/comments-service";
+
+const commentsService = iocContainer.resolve(CommentsService);
 
 export const checkAuthorshipOfCommentUser = async (
 	req: Request<ParamCommentIdInputModel>,

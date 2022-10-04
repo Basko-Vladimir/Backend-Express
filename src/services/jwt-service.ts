@@ -1,4 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
+import {injectable} from "inversify";
 import {settings} from "../settings";
 
 declare module "jsonwebtoken" {
@@ -7,6 +8,7 @@ declare module "jsonwebtoken" {
 	}
 }
 
+@injectable()
 export class JwtService {
 	async createJWT(userId: string): Promise<string> {
 		return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: "100d"});

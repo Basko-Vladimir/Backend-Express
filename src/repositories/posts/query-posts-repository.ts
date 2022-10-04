@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import {injectable} from "inversify";
 import {postsCollection} from "../db";
 import {NotFoundError} from "../../classes/errors";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
@@ -6,6 +7,7 @@ import {getFilterByDbId, mapDbPostToPostOutputModel} from "../utils/mappers-util
 import {PostOutputModel, PostsQueryParamsOutputModel} from "../../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../../models/blogs/output-models";
 
+@injectable()
 export class QueryPostsRepository {
 	async getAllPosts(queryParamsData: PostsQueryParamsOutputModel): Promise<BlogAllPostsOutputModel> {
 		try {

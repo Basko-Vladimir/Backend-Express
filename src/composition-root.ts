@@ -1,3 +1,6 @@
+import "reflect-metadata"; // !important since inversify use reflect-metadata inside itself,
+													 // import of reflect-metadata should be before import of inversify
+import {Container} from "inversify";
 import {BlogsRepository} from "./repositories/blogs/blogs-repository";
 import {QueryBlogsRepository} from "./repositories/blogs/query-blogs-repository";
 import {BlogsService} from "./services/blogs-service";
@@ -22,39 +25,39 @@ import {AuthController} from "./controllers/auth-controller";
 import {EmailAdapter} from "./adapters/email-adapter";
 import {EmailManager} from "./managers/email-manager";
 
-//adapters
-export const emailAdapter = new EmailAdapter();
+export const iocContainer = new Container();
 
-//managers
-export const emailManager = new EmailManager(emailAdapter);
+// adapters
+iocContainer.bind(EmailAdapter).to(EmailAdapter);
 
-//query Repositories
-const queryBlogsRepository = new QueryBlogsRepository();
-const queryPostsRepository = new QueryPostsRepository();
-const queryUsersRepository = new QueryUsersRepository();
-const queryCommentsRepository = new QueryCommentsRepository();
+// managers
+iocContainer.bind(EmailManager).to(EmailManager);
 
-//CUD repositories
-const blogsRepository = new BlogsRepository();
-const postsRepository = new PostsRepository();
-const usersRepository = new UsersRepository();
-const commentsRepository = new CommentsRepository();
+// query Repositories
+iocContainer.bind(QueryBlogsRepository).to(QueryBlogsRepository);
+iocContainer.bind(QueryPostsRepository).to(QueryPostsRepository);
+iocContainer.bind(QueryUsersRepository).to(QueryUsersRepository);
+iocContainer.bind(QueryCommentsRepository).to(QueryCommentsRepository);
 
-//services
-export const commentsService = new CommentsService(commentsRepository);
-export const usersService = new UsersService(usersRepository);
-export const postsService = new PostsService(postsRepository, commentsService);
-export const blogsService = new BlogsService(blogsRepository, postsService);
-export const jwtService = new JwtService();
-export const authService = new AuthService(usersService, emailManager);
-export const testingService = new TestingService(blogsService, postsService, usersService, commentsService);
+// CUD repositories
+iocContainer.bind(BlogsRepository).to(BlogsRepository);
+iocContainer.bind(PostsRepository).to(PostsRepository);
+iocContainer.bind(UsersRepository).to(UsersRepository);
+iocContainer.bind(CommentsRepository).to(CommentsRepository);
 
-//controllers
-export const postsController = new PostsController(
-	postsService, queryPostsRepository, queryBlogsRepository, queryCommentsRepository
-);
-export const blogsController = new BlogsController(blogsService, queryBlogsRepository, queryPostsRepository);
-export const usersController = new UsersController(usersService, queryUsersRepository);
-export const commentsController = new CommentsController(commentsService, queryCommentsRepository);
-export const testingController = new TestingController(testingService);
-export const authController = new AuthController(authService, jwtService);
+// services
+iocContainer.bind(BlogsService).to(BlogsService);
+iocContainer.bind(PostsService).to(PostsService);
+iocContainer.bind(UsersService).to(UsersService);
+iocContainer.bind(CommentsService).to(CommentsService);
+iocContainer.bind(AuthService).to(AuthService);
+iocContainer.bind(TestingService).to(TestingService);
+iocContainer.bind(JwtService).to(JwtService);
+
+// controllers
+iocContainer.bind(BlogsController).to(BlogsController);
+iocContainer.bind(PostsController).to(PostsController);
+iocContainer.bind(UsersController).to(UsersController);
+iocContainer.bind(CommentsController).to(CommentsController);
+iocContainer.bind(AuthController).to(AuthController);
+iocContainer.bind(TestingController).to(TestingController);

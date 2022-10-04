@@ -1,3 +1,4 @@
+import {inject, injectable} from "inversify";
 import {BlogsRepository} from "../repositories/blogs/blogs-repository";
 import {Blog} from "../classes/blogs";
 import {CreateBlogInputModel, CreateBlogPostInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
@@ -5,10 +6,11 @@ import {NotFoundError} from "../classes/errors";
 import {PostsService} from "./posts-service";
 import {PostOutputModel} from "../models/posts/output-models";
 
+@injectable()
 export class BlogsService {
 	constructor (
-		protected blogsRepository: BlogsRepository,
-		protected postsService: PostsService
+		@inject(BlogsRepository) protected blogsRepository: BlogsRepository,
+		@inject(PostsService) protected postsService: PostsService
 	) {}
 	
 	async getBlogById(id: string): Promise<Blog | null> {

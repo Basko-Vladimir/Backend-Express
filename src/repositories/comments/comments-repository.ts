@@ -1,3 +1,4 @@
+import {injectable} from "inversify";
 import {commentsCollection} from "../db";
 import {DbComment} from "../interfaces/comments-interfaces";
 import {getFilterByDbId} from "../utils/mappers-utils";
@@ -5,6 +6,7 @@ import {EntityWithoutId} from "../../common/interfaces";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
 import {Comment} from "../../classes/comments";
 
+@injectable()
 export class CommentsRepository {
 	async createComment(comment: EntityWithoutId<DbComment>): Promise<string> {
 		const { insertedId } = await commentsCollection.insertOne(comment);

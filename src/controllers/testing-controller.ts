@@ -1,10 +1,12 @@
 import {Request, Response} from "express";
 import {getErrorStatus} from "./utils";
 import {TestingService} from "../services/testing-service";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class TestingController {
 	constructor(
-		protected testingService: TestingService
+		@inject(TestingService) protected testingService: TestingService
 	) {}
 	
 	async deleteAllData(req: Request, res: Response<number>) {

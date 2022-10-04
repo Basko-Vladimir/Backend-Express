@@ -3,9 +3,11 @@ import {basicAuthValidation} from "../middlewares/basic-auth-validation";
 import {userRequestBodyValidation} from "../middlewares/users/user-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
-import {usersController} from "../composition-root";
+import {iocContainer} from "../composition-root";
+import {UsersController} from "../controllers/users-controller";
 
 export const usersRouter = Router({});
+const usersController = iocContainer.resolve(UsersController);
 
 usersRouter.get("/", commonQueryParamsSanitization, usersController.getAllUsers.bind(usersController));
 

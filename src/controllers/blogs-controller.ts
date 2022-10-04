@@ -1,3 +1,5 @@
+import {inject, injectable} from "inversify";
+import {Request, Response} from "express";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
 import {
 	AllBlogsOutputModel,
@@ -5,7 +7,6 @@ import {
 	BlogOutputModel,
 	BlogsQueryParamsOutputModel
 } from "../models/blogs/output-models";
-import {Request, Response} from "express";
 import {QueryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 import {EMPTY_SEARCH_VALUE} from "../common/constants";
 import {getErrorStatus} from "./utils";
@@ -20,11 +21,12 @@ import {BlogsService} from "../services/blogs-service";
 import {PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
 import {QueryPostsRepository} from "../repositories/posts/query-posts-repository";
 
+@injectable()
 export class BlogsController {
 	constructor(
-		protected blogsService: BlogsService,
-		protected queryBlogsRepository: QueryBlogsRepository,
-		protected queryPostsRepository: QueryPostsRepository
+		@inject(BlogsService) protected blogsService: BlogsService,
+		@inject(QueryBlogsRepository) protected queryBlogsRepository: QueryBlogsRepository,
+		@inject(QueryPostsRepository) protected queryPostsRepository: QueryPostsRepository
 	) {}
 	
 	async getAllBlogs (req: TypedRequestQuery<BlogsQueryParamsOutputModel>, res: Response<AllBlogsOutputModel>) {

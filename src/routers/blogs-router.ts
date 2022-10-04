@@ -5,9 +5,11 @@ import {requestErrorsValidation} from "../middlewares/request-errors-validation"
 import {postBodyCommonFieldsValidation} from "../middlewares/posts/post-body-common-fields-validation";
 import {blogIdParamValidation} from "../middlewares/blogs/blog-id-param-validation";
 import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
-import {blogsController} from "../composition-root";
+import {iocContainer} from "../composition-root";
+import {BlogsController} from "../controllers/blogs-controller";
 
 export const blogsRouter = Router({});
+const blogsController = iocContainer.resolve(BlogsController);
 
 blogsRouter.get("/", commonQueryParamsSanitization, blogsController.getAllBlogs.bind(blogsController));
 blogsRouter.get("/:id", blogsController.getBlogById.bind(blogsController));

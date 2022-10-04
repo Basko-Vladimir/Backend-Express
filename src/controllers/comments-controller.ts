@@ -1,3 +1,4 @@
+import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
 import {TypedRequestParams} from "../common/interfaces";
 import {ParamIdInputModel} from "../models/common-models";
@@ -7,10 +8,11 @@ import {getErrorStatus} from "./utils";
 import {CreateCommentInputModel, ParamCommentIdInputModel} from "../models/comments/input-models";
 import {CommentsService} from "../services/comments-service";
 
+@injectable()
 export class CommentsController {
 	constructor(
-		protected commentsService: CommentsService,
-		protected queryCommentsRepository: QueryCommentsRepository
+		@inject(CommentsService) protected commentsService: CommentsService,
+		@inject(QueryCommentsRepository) protected queryCommentsRepository: QueryCommentsRepository
 	) {}
 	
 	async getCommentById(req: TypedRequestParams<ParamIdInputModel>, res: Response<CommentOutputModel>) {

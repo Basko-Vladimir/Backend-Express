@@ -1,5 +1,8 @@
 import {body, Meta} from "express-validator";
-import {usersService} from "../../composition-root";
+import {iocContainer} from "../../composition-root";
+import {UsersService} from "../../services/users-service";
+
+const usersService = iocContainer.resolve(UsersService);
 
 export const confirmationCodeValidation = body("code")
 	.exists().withMessage("You didn't provide confirmation code!")

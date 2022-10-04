@@ -1,3 +1,4 @@
+import {inject, injectable} from "inversify";
 import bcrypt from "bcrypt";
 import add from "date-fns/add";
 import {v4 as uuidv4} from "uuid";
@@ -6,12 +7,12 @@ import {CreateUserInputModel} from "../models/users/input-models";
 import {User} from "../classes/users";
 import {UsersService} from "./users-service";
 
+@injectable()
 export class AuthService {
 	constructor(
-		protected usersService: UsersService,
-		protected emailManager: EmailManager,
-	) {
-	}
+		@inject(UsersService) protected usersService: UsersService,
+		@inject(EmailManager) protected emailManager: EmailManager,
+	) {}
 	
 	async registerUser(userData: CreateUserInputModel): Promise<void> {
 		const createdUserId = await this.usersService.createUser(userData);

@@ -1,3 +1,4 @@
+import {injectable} from "inversify";
 import {commentsCollection} from "../db";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
 import {getFilterByDbId, mapDbCommentToCommentOutputModel} from "../utils/mappers-utils";
@@ -6,6 +7,7 @@ import {PostAllCommentsOutputModel} from "../../models/posts/output-models";
 import {NotFoundError} from "../../classes/errors";
 import {ObjectId} from "mongodb";
 
+@injectable()
 export class QueryCommentsRepository {
 	async getCommentById(id: string): Promise<CommentOutputModel> {
 		const comment = await commentsCollection.findOne(getFilterByDbId(id));

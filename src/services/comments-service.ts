@@ -1,10 +1,12 @@
+import {inject, injectable} from "inversify";
 import {CommentOutputModel} from "../models/comments/output-models";
 import {CommentsRepository} from "../repositories/comments/comments-repository";
 import {Comment} from "../classes/comments";
 
+@injectable()
 export class CommentsService {
 	constructor(
-		protected commentsRepository: CommentsRepository
+		@inject(CommentsRepository) protected commentsRepository: CommentsRepository
 	) {}
 	
 	async createComment(

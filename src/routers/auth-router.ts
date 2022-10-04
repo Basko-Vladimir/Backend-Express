@@ -7,9 +7,11 @@ import {confirmationCodeValidation} from "../middlewares/auth/confirmation-code-
 import {emailValidation} from "../middlewares/auth/email-validation";
 import {emailExistenceValidation} from "../middlewares/auth/email-existence-validation";
 import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
-import {authController} from "../composition-root";
+import {iocContainer} from "../composition-root";
+import {AuthController} from "../controllers/auth-controller";
 
 export const authRouter = Router({});
+const authController = iocContainer.resolve(AuthController);
 
 authRouter.get("/me", bearerAuthValidation, authController.getCurrentUser.bind(authController));
 

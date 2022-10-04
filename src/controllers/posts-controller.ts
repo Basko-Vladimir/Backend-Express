@@ -1,6 +1,7 @@
+import {inject, injectable} from "inversify";
+import {Request, Response} from "express";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
 import {PostAllCommentsOutputModel, PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
-import {Request, Response} from "express";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
 import {QueryPostsRepository} from "../repositories/posts/query-posts-repository";
 import {QueryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
@@ -12,12 +13,13 @@ import {CreateCommentInputModel} from "../models/comments/input-models";
 import {CommentOutputModel, CommentQueryParamsOutputModel} from "../models/comments/output-models";
 import {QueryCommentsRepository} from "../repositories/comments/query-comments-repository";
 
+@injectable()
 export class PostsController {
 	constructor (
-		protected postsService: PostsService,
-		protected queryPostsRepository: QueryPostsRepository,
-		protected queryBlogsRepository: QueryBlogsRepository,
-		protected queryCommentsRepository: QueryCommentsRepository
+		@inject(PostsService) protected postsService: PostsService,
+		@inject(QueryPostsRepository) protected queryPostsRepository: QueryPostsRepository,
+		@inject(QueryBlogsRepository) protected queryBlogsRepository: QueryBlogsRepository,
+		@inject(QueryCommentsRepository) protected queryCommentsRepository: QueryCommentsRepository
 	) {}
 	
 	async getAllPosts(req: TypedRequestQuery<PostsQueryParamsOutputModel>, res: Response<BlogAllPostsOutputModel>) {

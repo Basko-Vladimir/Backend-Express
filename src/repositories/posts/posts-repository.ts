@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import {injectable} from "inversify";
 import {postsCollection} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import { DbPost } from "../interfaces/posts-interfaces";
@@ -6,6 +7,7 @@ import {PostOutputModel} from "../../models/posts/output-models";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
 import { EntityWithoutId } from "../../common/interfaces";
 
+@injectable()
 export class PostsRepository {
 	async getPostById(id: string): Promise<DbPost | null> {
 		return postsCollection.findOne(getFilterByDbId(id));

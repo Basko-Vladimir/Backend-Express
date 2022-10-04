@@ -1,7 +1,10 @@
 import {Request, Response, NextFunction} from "express";
 import {ParamPostIdInputModel} from "../../models/posts/input-models";
 import {getErrorStatus} from "../../controllers/utils";
-import {postsService} from "../../composition-root";
+import {iocContainer} from "../../composition-root";
+import { PostsService } from "../../services/posts-service";
+
+const postsService = iocContainer.resolve(PostsService);
 
 export const postIdParamValidation = async (
 	req: Request<ParamPostIdInputModel, {}, {}, {}>,

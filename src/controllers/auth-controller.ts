@@ -1,3 +1,4 @@
+import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
 import {
 	CurrentUserDataOutputModel, EmailResendingInputModel,
@@ -11,10 +12,11 @@ import {AuthService} from "../services/auth-service";
 import {JwtService} from "../services/jwt-service";
 import {CreateUserInputModel} from "../models/users/input-models";
 
+@injectable()
 export class AuthController {
 	constructor(
-		protected authService: AuthService,
-		protected jwtService: JwtService
+		@inject(AuthService) protected authService: AuthService,
+		@inject(JwtService) protected jwtService: JwtService
 	) {}
 	async getCurrentUser (req: Request, res: Response<CurrentUserDataOutputModel>) {
 		try {

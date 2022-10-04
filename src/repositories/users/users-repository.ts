@@ -1,3 +1,4 @@
+import {injectable} from "inversify";
 import {usersCollection} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {UserFilter} from "../interfaces/users-interfaces";
@@ -5,6 +6,7 @@ import { User } from "../../classes/users";
 import {EntityWithoutId} from "../../common/interfaces";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
 
+@injectable()
 export class UsersRepository {
 	async getUserById(id: string): Promise<User | null> {
 		return usersCollection.findOne(getFilterByDbId(id));

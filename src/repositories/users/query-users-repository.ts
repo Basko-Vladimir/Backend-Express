@@ -1,9 +1,11 @@
+import {injectable} from "inversify";
 import {usersCollection} from "../db";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
 import {getFilterByDbId, mapDbUserToUserOutputModel} from "../utils/mappers-utils";
 import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../../models/users/output-models";
 import {NotFoundError} from "../../classes/errors";
 
+@injectable()
 export class QueryUsersRepository {
 	async getAllUsers(queryParamsData: UsersQueryParamsOutputModel ): Promise<AllUsersOutputModel> {
 		const { sortBy, sortDirection, pageNumber, pageSize, searchEmailTerm, searchLoginTerm } = queryParamsData;

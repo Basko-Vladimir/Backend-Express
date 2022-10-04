@@ -6,9 +6,11 @@ import {postIdParamValidation} from "../middlewares/posts/post-id-param-validati
 import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
 import {commentRequestBodyValidation} from "../middlewares/comments/comment-request-body-validation";
 import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
-import {postsController} from "../composition-root";
+import {iocContainer} from "../composition-root";
+import {PostsController} from "../controllers/posts-controller";
 
 export const postsRouter = Router({});
+const postsController = iocContainer.resolve(PostsController);
 
 postsRouter.get("/", commonQueryParamsSanitization, postsController.getAllPosts.bind(postsController));
 postsRouter.delete("/:id", basicAuthValidation, postsController.deletePost.bind(postsController));

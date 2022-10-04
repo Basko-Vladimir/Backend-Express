@@ -1,6 +1,9 @@
 import { body } from "express-validator";
 import {postBodyCommonFieldsValidation} from "./post-body-common-fields-validation";
-import {blogsService} from "../../composition-root";
+import {iocContainer} from "../../composition-root";
+import { BlogsService } from "../../services/blogs-service";
+
+const blogsService = iocContainer.resolve(BlogsService);
 
 export const postRequestFullBodyValidation = [
 	...postBodyCommonFieldsValidation,

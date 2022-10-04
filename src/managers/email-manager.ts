@@ -1,10 +1,12 @@
 import {EmailInfoModel} from "../models/email-models";
 import { User } from "../classes/users";
 import {EmailAdapter} from "../adapters/email-adapter";
+import {inject, injectable} from "inversify";
 
+@injectable()
 export class EmailManager {
 	constructor(
-		protected emailAdapter: EmailAdapter
+		@inject(EmailAdapter) protected emailAdapter: EmailAdapter
 	) {}
 	
 	async sendRegistrationEmail(userData: User): Promise<void> {

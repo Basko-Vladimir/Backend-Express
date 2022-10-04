@@ -1,3 +1,4 @@
+import {inject, injectable} from "inversify";
 import {Response} from "express";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
 import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../models/users/output-models";
@@ -8,10 +9,11 @@ import {CreateUserInputModel} from "../models/users/input-models";
 import {UsersService} from "../services/users-service";
 import {ParamIdInputModel} from "../models/common-models";
 
+@injectable()
 export class UsersController {
 	constructor(
-		protected usersService: UsersService,
-		protected queryUsersRepository: QueryUsersRepository
+		@inject(UsersService) protected usersService: UsersService,
+		@inject(UsersService) protected queryUsersRepository: QueryUsersRepository
 	) {}
 	
 	async getAllUsers(req: TypedRequestQuery<UsersQueryParamsOutputModel>, res: Response<AllUsersOutputModel>) {

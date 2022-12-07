@@ -5,7 +5,7 @@ import {AllEntitiesOutputModel, CommonQueryParamsModel} from "../common-models";
 export interface BlogOutputModel {
 	id: string;
 	name: string;
-	youtubeUrl: string;
+	websiteUrl: string;
 	createdAt: string;
 }
 

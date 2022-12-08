@@ -33,8 +33,8 @@ export class AuthController {
 	
 	async login (req: TypedRequestBody<LoginInputModel>, res: Response<LoginOutputModel>) {
 		try {
-			const {login, password} = req.body;
-			const userId = await this.authService.checkCredentials(login, password);
+			const {loginOrEmail, password} = req.body;
+			const userId = await this.authService.checkCredentials(loginOrEmail, password);
 			
 			if (userId) {
 				const token = await this.jwtService.createJWT(userId);

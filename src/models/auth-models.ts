@@ -1,5 +1,5 @@
 export interface LoginInputModel {
-	login: string;
+	loginOrEmail: string;
 	password: string;
 }
 

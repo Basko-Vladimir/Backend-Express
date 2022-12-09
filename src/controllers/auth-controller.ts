@@ -40,6 +40,8 @@ export class AuthController {
 				const accessToken = await this.jwtService.createJWT(userId, "10s");
 				const refreshToken = await this.jwtService.createJWT(userId, "20s");
 				
+				await this.authService.updateUserRefreshToken(userId, refreshToken);
+				
 				res
 					.status(200)
 					.cookie("refreshToken ", refreshToken, {httpOnly: true, secure: true})

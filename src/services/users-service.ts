@@ -30,7 +30,7 @@ export class UsersService {
 		return this.usersRepository.createUser(newUser);
 	}
 	
-	async updateUser(userId: string, updatedField: {[key: string]: unknown}) {
+	async updateUser(userId: string, updatedField: {[key: string]: unknown}): Promise<void> {
 		return this.usersRepository.updateUser(userId, updatedField);
 	}
 	

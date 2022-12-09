@@ -22,6 +22,7 @@ export class User {
 	passwordSalt: string;
 	passwordHash: string;
 	emailConfirmation: EmailConfirmation;
+	refreshToken: string | null;
 	createdAt: Date;
 	
 	constructor(login: string, email: string, salt: string, hash: string) {
@@ -31,5 +32,6 @@ export class User {
 		this.passwordHash = hash;
 		this.emailConfirmation = new EmailConfirmation();
 		this.createdAt = new Date();
+		this.refreshToken = null;
 	}
 }

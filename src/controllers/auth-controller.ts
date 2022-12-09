@@ -37,8 +37,13 @@ export class AuthController {
 			const userId = await this.authService.checkCredentials(login, password);
 			
 			if (userId) {
-				const token = await this.jwtService.createJWT(userId);
-				res.status(200).send({accessToken: token});
+				const accessToken = await this.jwtService.createJWT(userId, "10s");
+				const refreshToken = await this.jwtService.createJWT(userId, "20s");
+				
+				res
+					.status(200)
+					.cookie("refreshToken ", refreshToken, {httpOnly: true, secure: true})
+					.send({accessToken: accessToken});
 			} else {
 				res.sendStatus(401);
 			}

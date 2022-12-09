@@ -5,19 +5,20 @@ import {settings} from "../settings";
 declare module "jsonwebtoken" {
 	export interface JwtPayload {
 		userId: string;
+		deviceId?: string;
 	}
 }
 
 @injectable()
 export class JwtService {
-	async createJWT(userId: string): Promise<string> {
-		return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: "100d"});
+	async createJWT(payload: JwtPayload, expiresIn: string): Promise<string> {
+		return jwt.sign(payload, settings.JWT_SECRET, {expiresIn});
 	}
 	
-	async getUserIdByToken(token: string): Promise<string | null> {
+	async getTokenPayload(token: string): Promise<JwtPayload | null> {
 		try {
 			const result: JwtPayload = <JwtPayload>jwt.verify(token, settings.JWT_SECRET);
-			return result.userId;
+			return result;
 		} catch {
 			return null;
 		}

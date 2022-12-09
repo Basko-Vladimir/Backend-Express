@@ -13,8 +13,6 @@ export class ClientRequestsRepository {
 		filter: UpdateOrFilterModel,
 		sortFilter: UpdateOrFilterModel<DbSortDirection> = {}
 	): Promise<ClientRequest[]> {
-		
-		sortFilter
 		return clientRequestsCollection
 			.find(filter)
 			.sort(sortFilter)

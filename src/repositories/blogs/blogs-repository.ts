@@ -1,42 +1,40 @@
 import {injectable} from "inversify";
-import {blogsCollection} from "../db";
-import {DbBlog} from "../interfaces";
-import {getFilterByDbId} from "../mappers-utils";
-import {NotFoundError} from "../../classes/errors";
+import {BlogsModel} from "../db";
+import {getFilterByDbId} from "../utils/mappers-utils";
+import {DataBaseError, NotFoundError} from "../../classes/errors";
 import {UpdateBlogInputModel} from "../../models/blogs/input-models";
 import { Blog } from "../../classes/blogs";
-import {EntityWithoutId} from "../../common/interfaces";
 
 @injectable()
 export class BlogsRepository {
 	async getBlogById(id: string): Promise<Blog | null> {
-		return await blogsCollection.findOne(getFilterByDbId(id));
+		return BlogsModel.findById(id);
 	}
 	
-	async createBlog(blogData: EntityWithoutId<DbBlog>): Promise<string> {
-		const { insertedId } = await blogsCollection.insertOne(blogData);
+	async createBlog(blogData: Blog): Promise<string> {
+		const createdBLog = await BlogsModel.create(blogData);
 		
-		if (!insertedId) throw new NotFoundError();
+		if (!createdBLog) throw new DataBaseError();
 		
-		return String(insertedId);
+		return String(createdBLog._id);
 	}
 	
 	async updateBlog(id: string, data: UpdateBlogInputModel): Promise<void> {
-		const { matchedCount } = await blogsCollection.updateOne(
+		const { matchedCount } = await BlogsModel.updateOne(
 			getFilterByDbId(id),
-			{$set: {...data}}
+			{...data}
 		);
 		
 		if (!matchedCount) throw new NotFoundError();
 	}
 	
 	async deleteBlog(id: string): Promise<void> {
-		const { deletedCount } = await blogsCollection.deleteOne(getFilterByDbId(id));
+		const { deletedCount } = await BlogsModel.deleteOne(getFilterByDbId(id));
 		
 		if (!deletedCount) throw new NotFoundError();
 	}
 	
 	async deleteAllBlogs(): Promise<void> {
-		await blogsCollection.deleteMany({});
+		await BlogsModel.deleteMany({});
 	}
 }

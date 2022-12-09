@@ -15,7 +15,7 @@ devicesSessionsRouter.get(
 devicesSessionsRouter.delete(
 	"/devices",
 	refreshTokenValidation,
-	devicesSessionsController.deleteAllDevicesSessionsExceptCurrent.bind(devicesSessionsController)
+	devicesSessionsController.deleteAllOtherDevicesSessions.bind(devicesSessionsController)
 );
 
 devicesSessionsRouter.delete(

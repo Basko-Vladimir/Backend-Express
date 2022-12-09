@@ -71,10 +71,11 @@ export class PostsController {
 	
 	async createCommentByPostId(req: Request<ParamPostIdInputModel, {}, CreateCommentInputModel>, res: Response<CommentOutputModel>) {
 		try {
+			const { user } = req.context;
 			const commentData: Omit<CommentOutputModel, "id" | "createdAt"> = {
 				content: req.body.content,
-				userId: String(req.user!._id),
-				userLogin: req.user!.login
+				userId: String(user!._id),
+				userLogin: user!.login
 			};
 			const commentId = await this.postsService.createCommentByPostId(req.params.postId, commentData);
 			const comment = await this.queryCommentsRepository.getCommentById(commentId);

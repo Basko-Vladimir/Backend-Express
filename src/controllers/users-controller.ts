@@ -13,7 +13,7 @@ import {ParamIdInputModel} from "../models/common-models";
 export class UsersController {
 	constructor(
 		@inject(UsersService) protected usersService: UsersService,
-		@inject(UsersService) protected queryUsersRepository: QueryUsersRepository
+		@inject(QueryUsersRepository) protected queryUsersRepository: QueryUsersRepository
 	) {}
 	
 	async getAllUsers(req: TypedRequestQuery<UsersQueryParamsOutputModel>, res: Response<AllUsersOutputModel>) {

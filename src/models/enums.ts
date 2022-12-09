@@ -28,3 +28,9 @@ export enum CommentSortByField {
 	userLogin = "userLogin",
 	createdAt = "createdAt"
 }
+
+export enum ClientRequestSortByField {
+	endpoint = "endpoint",
+	ip = "ip",
+	createTimeStamp = "createTimeStamp"
+}

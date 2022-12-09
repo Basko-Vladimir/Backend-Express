@@ -7,6 +7,7 @@ import {emailValidation} from "../middlewares/auth/email-validation";
 import {loginDataValidation} from "../middlewares/auth/login-data-validation";
 import {emailExistenceValidation} from "../middlewares/auth/email-existence-validation";
 import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
+import {refreshTokenValidation} from "../middlewares/auth/refresh-token-validation";
 import {iocContainer} from "../composition-root";
 import {AuthController} from "../controllers/auth-controller";
 
@@ -43,4 +44,16 @@ authRouter.post(
 	emailExistenceValidation,
 	requestErrorsValidation,
 	authController.resendRegistrationEmail.bind(authController)
+);
+
+authRouter.post(
+	"/refresh-token",
+	refreshTokenValidation,
+	authController.refreshToken.bind(authController)
+);
+
+authRouter.get(
+	"/logout",
+	refreshTokenValidation,
+	authController.logout.bind(authController)
 );

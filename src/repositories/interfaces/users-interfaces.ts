@@ -1,4 +1,5 @@
 import {ObjectId} from "mongodb";
+import { EmailConfirmation } from "../../classes/users";
 
 export interface DbUser {
 	_id: ObjectId;
@@ -6,6 +7,8 @@ export interface DbUser {
 	email: string;
 	passwordSalt: string;
 	passwordHash: string;
+	emailConfirmation: EmailConfirmation;
+	refreshToken: string | null;
 	createdAt: Date;
 }
 

@@ -9,7 +9,7 @@ import {Comment} from "../classes/comments";
 import {settings} from "../settings";
 
 const client = new MongoClient(settings.MONGO_URI);
-const db = client.db("homework4");
+const db = client.db(settings.DB);
 
 export const blogsCollection = db.collection<EntityWithoutId<Blog>>("blogs");
 export const postsCollection = db.collection<EntityWithoutId<Post>>("posts");

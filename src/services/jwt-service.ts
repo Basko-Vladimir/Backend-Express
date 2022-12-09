@@ -10,8 +10,8 @@ declare module "jsonwebtoken" {
 
 @injectable()
 export class JwtService {
-	async createJWT(userId: string): Promise<string> {
-		return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: "100d"});
+	async createJWT(userId: string, expiresIn: string): Promise<string> {
+		return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn});
 	}
 	
 	async getUserIdByToken(token: string): Promise<string | null> {

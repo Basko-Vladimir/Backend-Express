@@ -62,7 +62,7 @@ export class AuthService {
 		return bcrypt.hash(password, salt);
 	}
 	
-	async updateUserRefreshToken(userId: string, refreshToken: string): Promise<any> {
+	async updateUserRefreshToken(userId: string, refreshToken: string | null): Promise<any> {
 		return this.usersService.updateUser(userId, {refreshToken});
 	}
 }

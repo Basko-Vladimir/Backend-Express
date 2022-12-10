@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import {runDb} from "./repositories/db";
 import {blogsRouter} from "./routers/blogs-router";
@@ -15,6 +16,7 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser());
+app.use(cookieParser());
 
 app.use("/auth", authRouter);
 app.use("/blogs", blogsRouter);

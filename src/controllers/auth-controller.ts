@@ -80,4 +80,13 @@ export class AuthController {
 			res.sendStatus(getErrorStatus(error));
 		}
 	}
+	
+	async logout (req: Request, res: Response<string>) {
+		try {
+			await this.authService.updateUserRefreshToken(String(req.user!._id), null);
+			res.sendStatus(204);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	}
 }

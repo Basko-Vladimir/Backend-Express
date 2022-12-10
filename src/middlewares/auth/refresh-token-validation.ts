@@ -22,12 +22,12 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
 	}
 	
 	const user = await usersService.getUserById(userId);
-	req.user = await usersService.getUserById(userId);
 	
-	if (user?.refreshToken !== refreshToken) {
+	if (!user || user.refreshToken !== refreshToken) {
 		res.sendStatus(401);
 		return;
 	}
 	
+	req.user = user;
 	next();
 };

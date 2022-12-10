@@ -46,6 +46,12 @@ authRouter.post(
 	authController.resendRegistrationEmail.bind(authController)
 );
 
+authRouter.post(
+	"/refresh-token",
+	refreshTokenValidation,
+	authController.refreshToken.bind(authController)
+);
+
 authRouter.get(
 	"/logout",
 	refreshTokenValidation,

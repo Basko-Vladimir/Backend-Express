@@ -7,7 +7,8 @@ import {emailValidation} from "../middlewares/auth/email-validation";
 import {loginDataValidation} from "../middlewares/auth/login-data-validation";
 import {emailExistenceValidation} from "../middlewares/auth/email-existence-validation";
 import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
-import {refreshTokenValidation} from "../middlewares/auth/refresh-token-validation";
+import {refreshTokenValidation} from "../middlewares/refresh-token-validation";
+import {clientRequestsCountValidation} from "../middlewares/auth/client-requests-count-validation";
 import {iocContainer} from "../composition-root";
 import {AuthController} from "../controllers/auth-controller";
 
@@ -18,6 +19,7 @@ authRouter.get("/me", bearerAuthValidation, authController.getCurrentUser.bind(a
 
 authRouter.post(
 	"/login",
+	clientRequestsCountValidation,
 	loginDataValidation,
 	requestErrorsValidation,
 	authController.login.bind(authController)
@@ -25,6 +27,7 @@ authRouter.post(
 
 authRouter.post(
 	"/registration",
+	clientRequestsCountValidation,
 	userRequestBodyValidation,
 	userExistenceValidation,
 	requestErrorsValidation,
@@ -33,6 +36,7 @@ authRouter.post(
 
 authRouter.post(
 	"/registration-confirmation",
+	clientRequestsCountValidation,
 	confirmationCodeValidation,
 	requestErrorsValidation,
 	authController.confirmRegistration.bind(authController)
@@ -40,6 +44,7 @@ authRouter.post(
 
 authRouter.post(
 	"/registration-email-resending",
+	clientRequestsCountValidation,
 	emailValidation,
 	emailExistenceValidation,
 	requestErrorsValidation,

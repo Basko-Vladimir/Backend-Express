@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from "express";
-import {iocContainer} from "../../composition-root";
-import { UsersService } from "../../services/users-service";
-import {JwtService} from "../../services/jwt-service";
+import {iocContainer} from "../composition-root";
+import { UsersService } from "../services/users-service";
+import {JwtService} from "../services/jwt-service";
 
 const jwtService = iocContainer.resolve(JwtService);
 const usersService = iocContainer.resolve(UsersService);

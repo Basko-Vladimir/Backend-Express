@@ -27,7 +27,7 @@ export class AuthController {
 			};
 			res.status(200).send(currentUser);
 		} catch (error) {
-			res.sendStatus(getErrorStatus(error))
+			res.sendStatus(getErrorStatus(error));
 		}
 	}
 	
@@ -47,7 +47,7 @@ export class AuthController {
 				res.sendStatus(401);
 			}
 		} catch (err) {
-			res.sendStatus(getErrorStatus(err))
+			res.sendStatus(getErrorStatus(err));
 		}
 	}
 	

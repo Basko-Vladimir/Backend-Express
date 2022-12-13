@@ -63,7 +63,6 @@ iocContainer.bind(CommentsRepository).to(CommentsRepository);
 iocContainer.bind(ClientRequestsRepository).to(ClientRequestsRepository);
 iocContainer.bind(DevicesSessionsRepository).to(DevicesSessionsRepository);
 
-
 // services
 iocContainer.bind(BlogsService).to(BlogsService);
 iocContainer.bind(PostsService).to(PostsService);

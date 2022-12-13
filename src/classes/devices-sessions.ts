@@ -1,17 +1,27 @@
 import {ObjectId} from "mongodb";
-import {v4 as uuidv4} from "uuid";
 
 export class DeviceSession {
 	_id: ObjectId | null = null;
-	issuedAt: Date;
-	deviceId: string;
-	deviceName: string;
+	issuedAt?: number;
+	expiredDate?: number;
+	deviceId?: string;
+	deviceName?: string;
+	ip: string;
 	userId: ObjectId;
 	
-	constructor(issuedAt: Date, deviceName: string, userId: ObjectId) {
-		this.issuedAt = issuedAt;
-		this.deviceId = uuidv4();
-		this.deviceName = deviceName;
+	constructor(
+		userId: ObjectId,
+		ip: string,
+		issuedAt?: number,
+		expiredDate?: number,
+		deviceId?: string,
+		deviceName?: string
+	) {
 		this.userId = userId;
+		this.ip = ip;
+		this.issuedAt = issuedAt;
+		this.expiredDate = expiredDate;
+		this.deviceId = deviceId;
+		this.deviceName = deviceName;
 	}
 }

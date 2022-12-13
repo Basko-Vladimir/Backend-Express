@@ -18,7 +18,7 @@ export const postsCollection = db.collection<EntityWithoutId<Post>>("posts");
 export const usersCollection = db.collection<EntityWithoutId<User>>("users");
 export const commentsCollection = db.collection<EntityWithoutId<Comment>>("comments");
 export const clientRequestsCollection = db.collection<EntityWithoutId<ClientRequest>>("requests");
-export const devicesSessionsCollection = db.collection<EntityWithoutId<DeviceSession>>("sessions");
+export const devicesSessionsCollection = db.collection<EntityWithoutId<DeviceSession>>("devices_sessions");
 
 export async function runDb() {
 	try {

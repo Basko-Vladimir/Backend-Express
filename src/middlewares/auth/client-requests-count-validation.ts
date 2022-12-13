@@ -14,10 +14,11 @@ export const clientRequestsCountValidation = async (req: Request, res: Response,
 	const ip = req.ip;
 	const sortFilter = {[ClientRequestSortByField.createTimeStamp as string]: DbSortDirection.ASC};
 	const clientRequests = await clientRequestsService.getClientRequestsByFilter({endpoint, ip}, sortFilter);
-	const timeBetweenLastFirstRequests =
-		clientRequests[clientRequests.length - 1].createTimeStamp - clientRequests[0].createTimeStamp;
 	
 	if (clientRequests.length >= COUNT_LIMIT) {
+		const timeBetweenLastFirstRequests =
+			clientRequests[clientRequests.length - 1].createTimeStamp - clientRequests[0].createTimeStamp;
+		
 		await clientRequestsService.updateClientRequest(
 			String(clientRequests[0]._id),
 			{[ClientRequestSortByField.createTimeStamp]: Date.now()}

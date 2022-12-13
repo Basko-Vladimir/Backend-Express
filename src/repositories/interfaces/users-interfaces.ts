@@ -8,7 +8,6 @@ export interface DbUser {
 	passwordSalt: string;
 	passwordHash: string;
 	emailConfirmation: EmailConfirmation;
-	refreshToken: string | null;
 	createdAt: Date;
 }
 

@@ -14,7 +14,7 @@ export const checkAuthorshipOfCommentUser = async (
 	try {
 		const comment = await commentsService.getCommentById(req.params.commentId);
 		
-		if (String(comment.userId) === String(req.user!._id)) {
+		if (String(comment.userId) === String(req.context.user!._id)) {
 			next();
 		} else {
 			res.sendStatus(403);

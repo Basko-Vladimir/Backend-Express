@@ -34,7 +34,9 @@ export class DevicesSessionsRepository {
 		if (!deletedCount) throw new DataBaseError();
 	}
 	
-	async deleteDeviceSessionById(): Promise<void> {
-	
+	async deleteDeviceSessionById(_id: string): Promise<void> {
+		const { deletedCount } = await devicesSessionsCollection.deleteOne(getFilterByDbId(_id));
+		
+		if (!deletedCount) throw new DataBaseError();
 	}
 }

@@ -1,6 +1,4 @@
 import {inject, injectable} from "inversify";
-import {Request, Response} from "express";
-import {getErrorStatus} from "../controllers/utils";
 import {DeviceSession} from "../classes/devices-sessions";
 import {DevicesSessionsRepository} from "../repositories/devices-sessions/devices-sessions-repository";
 import {EntityWithoutId} from "../common/interfaces";
@@ -30,11 +28,7 @@ export class DevicesSessionsService {
 		return this.devicesSessionsRepository.deleteAllDevicesSessionsExceptCurrent(id);
 	}
 	
-	async deleteDeviceSessionById (req: Request, res: Response<void>) {
-		try {
-		
-		} catch (error) {
-			res.sendStatus(getErrorStatus(error));
-		}
+	async deleteDeviceSessionById (id: string): Promise<void> {
+		return this.devicesSessionsRepository.deleteDeviceSessionById(id);
 	}
 }

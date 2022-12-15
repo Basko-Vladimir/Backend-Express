@@ -25,4 +25,8 @@ export class ClientRequestsService {
 	async updateClientRequest (clientRequestId: string, fields: {[key: string]: unknown}): Promise<void> {
 		return this.clientRequestsRepository.updateClientRequest(clientRequestId, fields);
 	}
+	
+	async deleteAllClientRequests(): Promise<void> {
+		return this.clientRequestsRepository.deleteAllClientRequests();
+	}
 }

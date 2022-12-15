@@ -1,10 +1,10 @@
 import {injectable} from "inversify";
-import {ClientRequest} from "../../classes/client-requests";
 import {clientRequestsCollection} from "../db";
-import {EntityWithoutId} from "../../common/interfaces";
-import {DataBaseError} from "../../classes/errors";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {DbSortDirection} from "../interfaces/common-interfaces";
+import {ClientRequest} from "../../classes/client-requests";
+import {EntityWithoutId} from "../../common/interfaces";
+import {DataBaseError} from "../../classes/errors";
 
 @injectable()
 export class ClientRequestsRepository {
@@ -32,4 +32,8 @@ export class ClientRequestsRepository {
 		
 		if (!matchedCount) throw new DataBaseError();
  	}
+	
+	async deleteAllClientRequests(): Promise<void> {
+		await clientRequestsCollection.deleteMany({});
+	}
 }

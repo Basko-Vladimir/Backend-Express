@@ -39,4 +39,8 @@ export class DevicesSessionsRepository {
 		
 		if (!deletedCount) throw new DataBaseError();
 	}
+	
+	async deleteAllDevicesSessions(): Promise<void> {
+		await devicesSessionsCollection.deleteMany({});
+	}
 }

@@ -31,4 +31,8 @@ export class DevicesSessionsService {
 	async deleteDeviceSessionById (id: string): Promise<void> {
 		return this.devicesSessionsRepository.deleteDeviceSessionById(id);
 	}
+	
+	async deleteAllDevicesSessions(): Promise<void> {
+		return this.devicesSessionsRepository.deleteAllDevicesSessions();
+	}
 }

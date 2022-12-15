@@ -19,7 +19,6 @@ export class DevicesSessionsService {
 	}
 	
 	async updateDeviceSession (_id: string, updatedFiled: {[key: string]: unknown}): Promise<void> {
-		console.log("DevicesSessionsService")
 		return this.devicesSessionsRepository.updateDeviceSession(_id, updatedFiled);
 	}
 	
@@ -27,12 +26,8 @@ export class DevicesSessionsService {
 		return this.devicesSessionsRepository.getDeviceSessionByFilter(filter);
 	}
 	
-	async deleteAllOtherDevicesSessions (req: Request, res: Response<void>) {
-		try {
-		
-		} catch (error) {
-			res.sendStatus(getErrorStatus(error));
-		}
+	async deleteAllDevicesSessionsExceptCurrent (id: string): Promise<void> {
+		return this.devicesSessionsRepository.deleteAllDevicesSessionsExceptCurrent(id);
 	}
 	
 	async deleteDeviceSessionById (req: Request, res: Response<void>) {

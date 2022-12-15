@@ -1,9 +1,10 @@
 import {injectable} from "inversify";
+import {ObjectId} from "mongodb";
 import {devicesSessionsCollection} from "../db";
+import {getFilterByDbId} from "../utils/mappers-utils";
 import {EntityWithoutId} from "../../common/interfaces";
 import {DeviceSession} from "../../classes/devices-sessions";
 import {DataBaseError} from "../../classes/errors";
-import {getFilterByDbId} from "../utils/mappers-utils";
 
 @injectable()
 export class DevicesSessionsRepository {
@@ -16,7 +17,6 @@ export class DevicesSessionsRepository {
 	}
 	
 	async updateDeviceSession(_id: string, updatedFiled: {[key: string]: unknown}): Promise<void> {
-		console.log("DevicesSessionsRepository")
 		const {matchedCount} = await devicesSessionsCollection.updateOne(getFilterByDbId(_id), {$set: updatedFiled});
 		
 		if (!matchedCount) throw new DataBaseError();
@@ -28,8 +28,10 @@ export class DevicesSessionsRepository {
 		return deviceSession || null;
 	}
 	
-	async deleteAllOtherDevicesSessions(): Promise<void> {
-	
+	async deleteAllDevicesSessionsExceptCurrent(id: string): Promise<void> {
+		const { deletedCount } = await devicesSessionsCollection.deleteMany({_id: {$ne: new ObjectId(id)}});
+
+		if (!deletedCount) throw new DataBaseError();
 	}
 	
 	async deleteDeviceSessionById(): Promise<void> {

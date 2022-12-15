@@ -105,7 +105,7 @@ export class AuthController {
 			const userId = String(user!._id);
 			const sessionId = session!._id;
 			const { accessToken, refreshToken } = await this
-				.createNewTokensPair({userId}, "10s", {userId, deviceId: session!.deviceId}, "20d");
+				.createNewTokensPair({userId}, "10s", {userId, deviceId: session!.deviceId}, "20s");
 			const refreshTokenPayload = await this.jwtService.getTokenPayload(refreshToken);
 			
 			await this.authService.updateDeviceSessionData(String(sessionId!), refreshTokenPayload?.iat!);

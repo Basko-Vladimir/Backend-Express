@@ -25,9 +25,10 @@ export class DevicesSessionsController {
 		}
 	}
 	
-	async deleteAllOtherDevicesSessions (req: Request, res: Response<void>) {
+	async deleteAllDevicesSessionsExceptCurrent (req: Request, res: Response<void>) {
 		try {
-		
+			await this.devicesSessionsService.deleteAllDevicesSessionsExceptCurrent(String(req.context.session?._id));
+			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}

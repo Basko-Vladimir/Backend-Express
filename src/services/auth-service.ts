@@ -82,4 +82,8 @@ export class AuthService {
 	async createDeviceSession(deviceSessionDataInputModel: EntityWithoutId<DeviceSession>): Promise<string> {
 		return this.devicesSessionsService.createDeviceSession(deviceSessionDataInputModel);
 	}
+	
+	async logout(deviceSessionId: string): Promise<void> {
+		return this.devicesSessionsService.deleteDeviceSessionById(deviceSessionId);
+	}
 }

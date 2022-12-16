@@ -34,5 +34,4 @@ export const refreshTokenValidation = async (req: Request, res: Response, next: 
 	} catch (error) {
 		res.status(500).send(error);
 	}
-	
 };

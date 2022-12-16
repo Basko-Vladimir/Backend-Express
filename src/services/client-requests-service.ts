@@ -2,6 +2,7 @@ import {inject, injectable} from "inversify";
 import {ClientRequest} from "../classes/client-requests";
 import {ClientRequestsRepository} from "../repositories/client-requests/client-requests-repository";
 import {DbSortDirection} from "../repositories/interfaces/common-interfaces";
+import {UpdateOrFilterModel} from "../common/interfaces";
 
 @injectable()
 export class ClientRequestsService {
@@ -10,8 +11,8 @@ export class ClientRequestsService {
 	) {}
 	
 	async getClientRequestsByFilter (
-		filter: {[key: string]: unknown},
-		sortFilter: {[key: string]: DbSortDirection}
+		filter: UpdateOrFilterModel,
+		sortFilter: UpdateOrFilterModel<DbSortDirection>
 	): Promise<ClientRequest[]> {
 		return this.clientRequestsRepository.getClientRequestsByFilter(filter, sortFilter)
 	}
@@ -22,8 +23,15 @@ export class ClientRequestsService {
 		return this.clientRequestsRepository.createClientRequest(newClientRequest);
 	}
 	
-	async updateClientRequest (clientRequestId: string, fields: {[key: string]: unknown}): Promise<void> {
+	async updateClientRequest (clientRequestId: string, fields: UpdateOrFilterModel): Promise<void> {
 		return this.clientRequestsRepository.updateClientRequest(clientRequestId, fields);
+	}
+	
+	async updateManyClientsRequestsByFilter(
+		filter: UpdateOrFilterModel,
+		fields: UpdateOrFilterModel
+	): Promise<void> {
+		return this.clientRequestsRepository.updateManyClientsRequestsByFilter(filter, fields);
 	}
 	
 	async deleteAllClientRequests(): Promise<void> {

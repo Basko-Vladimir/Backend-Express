@@ -3,7 +3,7 @@ import {usersCollection} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {UserFilter} from "../interfaces/users-interfaces";
 import { User } from "../../classes/users";
-import {EntityWithoutId} from "../../common/interfaces";
+import {EntityWithoutId, UpdateOrFilterModel} from "../../common/interfaces";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
 
 @injectable()
@@ -20,7 +20,7 @@ export class UsersRepository {
 		return String(insertedId);
 	}
 	
-	async updateUser(userId: string, updatedField: {[key: string]: unknown}): Promise<void> {
+	async updateUser(userId: string, updatedField: UpdateOrFilterModel): Promise<void> {
 		const { matchedCount } = await usersCollection.updateOne(getFilterByDbId(userId), {$set: updatedField});
 		
 		if (!matchedCount) throw new DataBaseError();

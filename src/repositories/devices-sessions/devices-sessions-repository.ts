@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import {ObjectId} from "mongodb";
 import {devicesSessionsCollection} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
-import {EntityWithoutId} from "../../common/interfaces";
+import {EntityWithoutId, UpdateOrFilterModel} from "../../common/interfaces";
 import {DeviceSession} from "../../classes/devices-sessions";
 import {DataBaseError} from "../../classes/errors";
 
@@ -16,13 +16,13 @@ export class DevicesSessionsRepository {
 		return String(insertedId);
 	}
 	
-	async updateDeviceSession(_id: string, updatedFiled: {[key: string]: unknown}): Promise<void> {
+	async updateDeviceSession(_id: string, updatedFiled: UpdateOrFilterModel): Promise<void> {
 		const {matchedCount} = await devicesSessionsCollection.updateOne(getFilterByDbId(_id), {$set: updatedFiled});
 		
 		if (!matchedCount) throw new DataBaseError();
 	}
 	
-	async getDeviceSessionByFilter(filter: {[key: string]: unknown}): Promise<DeviceSession | null> {
+	async getDeviceSessionByFilter(filter: UpdateOrFilterModel): Promise<DeviceSession | null> {
 		const deviceSession = await devicesSessionsCollection.findOne(filter);
 		
 		return deviceSession || null;

@@ -28,8 +28,8 @@ export class DevicesSessionsService {
 		return this.devicesSessionsRepository.deleteAllDevicesSessionsExceptCurrent(id);
 	}
 	
-	async deleteDeviceSessionById (id: string): Promise<void> {
-		return this.devicesSessionsRepository.deleteDeviceSessionById(id);
+	async deleteDeviceSessionById (_id: string): Promise<void> {
+		return this.devicesSessionsRepository.deleteDeviceSessionById(_id);
 	}
 	
 	async deleteAllDevicesSessions(): Promise<void> {

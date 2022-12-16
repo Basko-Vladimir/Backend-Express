@@ -134,11 +134,13 @@ export class AuthController {
 		refreshTokenPayload: JwtPayload,
 		refreshTokenLifetime: string
 	): Promise<{accessToken: string, refreshToken: string}> {
-		const accessToken = await this.jwtService
-			.createJWT({...accessTokenPayload, iat: Date.now()}, accessTokenLifetime);
-		const refreshToken = await this.jwtService
-			.createJWT({...refreshTokenPayload, iat: Date.now()}, refreshTokenLifetime);
+		const accessToken = await this.jwtService.createJWT(
+			{...accessTokenPayload, iat: Date.now()}, accessTokenLifetime
+		);
+		const refreshToken = await this.jwtService.createJWT(
+			{...refreshTokenPayload, iat: Date.now()}, refreshTokenLifetime
+		);
 		
-		return { accessToken, refreshToken };
+		return {accessToken, refreshToken};
 	}
 }

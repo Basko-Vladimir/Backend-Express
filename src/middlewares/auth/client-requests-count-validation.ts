@@ -15,7 +15,7 @@ export const clientRequestsCountValidation = async (req: Request, res: Response,
 	const sortFilter = {[ClientRequestSortByField.createTimeStamp as string]: DbSortDirection.ASC};
 	const clientRequests = await clientRequestsService.getClientRequestsByFilter({endpoint, ip}, sortFilter);
 	
-	if (clientRequests.length >= COUNT_LIMIT) {
+	if (clientRequests.length > COUNT_LIMIT) {
 		const timeBetweenLastFirstRequests =
 			clientRequests[clientRequests.length - 1].createTimeStamp - clientRequests[0].createTimeStamp;
 		
@@ -24,7 +24,7 @@ export const clientRequestsCountValidation = async (req: Request, res: Response,
 			{[ClientRequestSortByField.createTimeStamp]: Date.now()}
 		);
 		
-		if (timeBetweenLastFirstRequests < TIME_LIMIT) {
+		if (timeBetweenLastFirstRequests <= TIME_LIMIT) {
 			res.sendStatus(429);
 			return;
 		}

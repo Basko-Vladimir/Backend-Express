@@ -16,8 +16,7 @@ export const clientRequestsCountValidation = async (req: Request, res: Response,
 	const clientRequests = await clientRequestsService.getClientRequestsByFilter({endpoint, ip}, sortFilter);
 	
 	if (clientRequests.length >= COUNT_LIMIT) {
-		const timeBetweenLastFirstRequests =
-			clientRequests[clientRequests.length - 1].createTimeStamp - clientRequests[0].createTimeStamp;
+		const timeBetweenLastFirstRequests = Date.now() - clientRequests[0].createTimeStamp;
 		
 		await clientRequestsService.updateClientRequest(
 			String(clientRequests[0]._id),

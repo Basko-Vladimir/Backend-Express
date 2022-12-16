@@ -40,7 +40,12 @@ export class DevicesSessionsController {
 			const deviceId = req.params.deviceId;
 			const deletingDeviceSession = await this.devicesSessionsService.getDeviceSessionByFilter({_id: new ObjectId(deviceId)});
 			
-			if (String(deletingDeviceSession?.userId) === String(req.context.user!._id)) {
+			if (!deletingDeviceSession) {
+				res.sendStatus(404);
+				return;
+			}
+			
+			if (String(deletingDeviceSession.userId) === String(req.context.user!._id)) {
 				await this.devicesSessionsService.deleteDeviceSessionById(deviceId);
 				res.sendStatus(204);
 			} else {

@@ -58,7 +58,7 @@ export const mapDbDeviceSessionToDeviceSessionOutputModel = (
  return {
 	 ip: deviceSession.ip,
 	 title: deviceSession.deviceName,
-	 lastActiveDate: deviceSession.issuedAt ? new Date(deviceSession.issuedAt).toString() : "No lastActiveDate",
+	 lastActiveDate: deviceSession.issuedAt ? new Date(deviceSession.issuedAt).toISOString() : "No lastActiveDate",
 	 deviceId: deviceSession.deviceId || ""
  };
 };

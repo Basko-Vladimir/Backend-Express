@@ -19,15 +19,15 @@ export const clientRequestsCountValidation = async (req: Request, res: Response,
 		const timeBetweenLastFirstRequests =
 			clientRequests[clientRequests.length - 1].createTimeStamp - clientRequests[0].createTimeStamp;
 		
-		if (timeBetweenLastFirstRequests <= TIME_LIMIT) {
-			res.sendStatus(429);
-			return;
-		}
-		
 		await clientRequestsService.updateClientRequest(
 			String(clientRequests[0]._id),
 			{[ClientRequestSortByField.createTimeStamp]: Date.now()}
 		);
+		
+		if (timeBetweenLastFirstRequests <= TIME_LIMIT) {
+			res.sendStatus(429);
+			return;
+		}
 	} else {
 		await clientRequestsService.createClientRequest(endpoint, ip);
 	}

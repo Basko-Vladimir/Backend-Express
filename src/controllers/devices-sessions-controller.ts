@@ -38,7 +38,7 @@ export class DevicesSessionsController {
 	async deleteDeviceSessionById (req: TypedRequestParams<ParamDeviceSessionIdInputModel>, res: Response<void>) {
 		try {
 			const deviceId = req.params.deviceId;
-			const deletingDeviceSession = await this.devicesSessionsService.getDeviceSessionByFilter({_id: new ObjectId(deviceId)});
+			const deletingDeviceSession = await this.devicesSessionsService.getDeviceSessionByFilter({deviceId: new ObjectId(deviceId)});
 			
 			if (!deletingDeviceSession) {
 				res.sendStatus(404);

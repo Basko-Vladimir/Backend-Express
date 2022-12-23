@@ -1,18 +1,15 @@
 import {ObjectId} from "mongodb";
-import { EntityWithoutId } from "../common/interfaces";
 
 export class Post {
-	_id: ObjectId | null = null;
 	title: string;
 	shortDescription: string;
 	content: string;
-	blogName: string;
 	blogId: ObjectId;
+	blogName: string;
 	createdAt: Date;
 	
-	
 	constructor ({
-	 title, content, blogId, blogName, shortDescription}: EntityWithoutId<Omit<Post, "createdAt">>
+	 title, content, blogId, blogName, shortDescription}: Omit<Post, "createdAt">
 	) {
 			this.title = title;
 			this.content = content;

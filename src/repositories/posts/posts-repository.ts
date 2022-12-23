@@ -1,43 +1,43 @@
 import { ObjectId } from "mongodb";
 import {injectable} from "inversify";
-import {postsCollection} from "../db";
+import {PostsModel} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import { DbPost } from "../interfaces/posts-interfaces";
-import {PostOutputModel} from "../../models/posts/output-models";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
-import { EntityWithoutId } from "../../common/interfaces";
+import {Post} from "../../classes/posts";
+import {UpdatePostInputModel} from "../../models/posts/input-models";
 
 @injectable()
 export class PostsRepository {
 	async getPostById(id: string): Promise<DbPost | null> {
-		return postsCollection.findOne(getFilterByDbId(id));
+		return PostsModel.findById(id);
 	}
 	
-	async createPost(postData: EntityWithoutId<DbPost>): Promise<string> {
-		const { insertedId } = await postsCollection.insertOne(postData);
+	async createPost(postData: Post): Promise<string> {
+		const createdPost = await PostsModel.create(postData);
 		
-		if (!insertedId) throw new DataBaseError();
+		if (!createdPost) throw new DataBaseError();
 		
-		return String(insertedId);
+		return String(createdPost._id);
 	}
 	
-	async updatePost(postData: Omit<PostOutputModel, "createdAt" | "blogName">): Promise<void> {
-		const { id, blogId, shortDescription, title, content } = postData;
-		const { matchedCount } = await postsCollection.updateOne(
+	async updatePost(id: string, postData: UpdatePostInputModel): Promise<void> {
+		const { blogId, shortDescription, title, content } = postData;
+		const { matchedCount } = await PostsModel.updateOne(
 			getFilterByDbId(id),
-			{$set: {shortDescription, title, content, blogId: new ObjectId(blogId)}}
+			{shortDescription, title, content, blogId: new ObjectId(blogId)}
 		);
 		
 		if (!matchedCount) throw new NotFoundError();
 	}
 	
 	async deletePost(id: string): Promise<void> {
-		const { deletedCount } = await postsCollection.deleteOne(getFilterByDbId(id));
+		const { deletedCount } = await PostsModel.deleteOne(getFilterByDbId(id));
 		
 		if (!deletedCount) throw new NotFoundError();
 	}
 	
 	async deleteAllPosts(): Promise<void> {
-		await postsCollection.deleteMany({});
+		await PostsModel.deleteMany({});
 	}
 }

@@ -53,7 +53,7 @@ export class PostsController {
 	
 	async updatePost(req: Request<ParamIdInputModel, {}, UpdatePostInputModel>, res: Response<void>) {
 		try {
-			await this.postsService.updatePost({...req.body, ...req.params});
+			await this.postsService.updatePost(req.params.id, {...req.body});
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));

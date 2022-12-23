@@ -1,11 +1,12 @@
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
+import {CommentsService} from "./comments-service";
 import {Post} from "../classes/posts";
 import {PostsRepository} from "../repositories/posts/posts-repository";
 import {DbPost} from "../repositories/interfaces/posts-interfaces";
 import {PostOutputModel} from "../models/posts/output-models";
 import {CommentOutputModel} from "../models/comments/output-models";
-import {CommentsService} from "./comments-service";
+import {UpdatePostInputModel} from "../models/posts/input-models";
 
 @injectable()
 export class PostsService {
@@ -34,8 +35,8 @@ export class PostsService {
 		return await this.postsRepository.createPost(newPostData);
 	}
 	
-	async updatePost(postData: Omit<PostOutputModel, "blogName" | "createdAt">): Promise<void> {
-		return this.postsRepository.updatePost(postData);
+	async updatePost(id: string, postData: UpdatePostInputModel): Promise<void> {
+		return this.postsRepository.updatePost(id, postData);
 	}
 	
 	async deletePost(id: string): Promise<void> {

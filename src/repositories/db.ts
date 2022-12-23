@@ -3,21 +3,18 @@ import mongoose from "mongoose";
 import {MongoClient} from "mongodb";
 import {EntityWithoutId} from "../common/interfaces";
 import {DataBaseError} from "../classes/errors";
-import {Post} from "../classes/posts";
 import { User } from "../classes/users";
 import {Comment} from "../classes/comments";
 import {ClientRequest} from "../classes/client-requests";
 import {DeviceSession} from "../classes/devices-sessions";
 import {settings} from "../settings";
-import {blogsSchema} from "./schemas";
+import {blogsSchema, postsSchema} from "./schemas";
 
 const client = new MongoClient(settings.MONGO_URI);
 const db = client.db(settings.DB);
 
-mongoose.set('strictQuery', false);
-
 export const BlogsModel = mongoose.model("blogs", blogsSchema);
-export const postsCollection = db.collection<EntityWithoutId<Post>>("posts");
+export const PostsModel = mongoose.model("posts", postsSchema);
 export const usersCollection = db.collection<EntityWithoutId<User>>("users");
 export const commentsCollection = db.collection<EntityWithoutId<Comment>>("comments");
 export const clientRequestsCollection = db.collection<EntityWithoutId<ClientRequest>>("requests");

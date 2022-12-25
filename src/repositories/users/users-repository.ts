@@ -1,33 +1,37 @@
 import {injectable} from "inversify";
-import {usersCollection} from "../db";
+import {UsersModel} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
-import {UserFilter} from "../interfaces/users-interfaces";
+import {DbUser, UserFilter} from "../interfaces/users-interfaces";
 import { User } from "../../classes/users";
 import {EntityWithoutId, UpdateOrFilterModel} from "../../common/interfaces";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
 
 @injectable()
 export class UsersRepository {
-	async getUserById(id: string): Promise<User | null> {
-		return usersCollection.findOne(getFilterByDbId(id));
+	async getUserById(id: string): Promise<DbUser | null> {
+		return UsersModel.findById(id);
 	}
 	
 	async createUser(userData: EntityWithoutId<User>): Promise<string> {
-		const { insertedId } = await usersCollection.insertOne(userData);
+		const createdUser = await UsersModel.create(userData);
 		
-		if (!insertedId) throw new DataBaseError();
+		if (!createdUser) throw new DataBaseError();
 		
-		return String(insertedId);
+		return String(createdUser._id);
 	}
 	
 	async updateUser(userId: string, updatedField: UpdateOrFilterModel): Promise<void> {
-		const { matchedCount } = await usersCollection.updateOne(getFilterByDbId(userId), {$set: updatedField});
+		const { matchedCount } = await UsersModel.updateOne(
+			getFilterByDbId(userId),
+			{updatedField}
+		);
 		
 		if (!matchedCount) throw new DataBaseError();
 	}
 	
-	async getUserByFilter(userFilter: UserFilter): Promise<User | null> {
-		return usersCollection.findOne({ $or: [
+	async getUserByFilter(userFilter: UserFilter): Promise<DbUser | null> {
+		return UsersModel.findOne({
+			$or: [
 				{email: userFilter.email},
 				{login: userFilter.login},
 				{passwordHash: userFilter.passwordHash},
@@ -37,19 +41,19 @@ export class UsersRepository {
 	}
 	
 	async deleteUser(id: string): Promise<void> {
-		const { deletedCount } = await usersCollection.deleteOne(getFilterByDbId(id));
+		const { deletedCount } = await UsersModel.deleteOne(getFilterByDbId(id));
 		
 		if (!deletedCount) throw new NotFoundError();
 	}
 	
 	async deleteAllUsers(): Promise<void> {
-		await usersCollection.deleteMany({});
+		await UsersModel.deleteMany({});
 	}
 	
 	async updateUserConfirmation(user: User): Promise<void> {
-		const {matchedCount} = await usersCollection.updateOne(
+		const {matchedCount} = await UsersModel.updateOne(
 			{"emailConfirmation.confirmationCode": user.emailConfirmation.confirmationCode},
-			{$set: {"emailConfirmation.isConfirmed": true}}
+			{"emailConfirmation.isConfirmed": true}
 		);
 		
 		if (!matchedCount) throw new DataBaseError();

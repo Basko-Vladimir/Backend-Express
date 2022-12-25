@@ -1,5 +1,6 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
+import { ObjectId } from "mongodb";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
 import {PostAllCommentsOutputModel, PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
@@ -12,6 +13,7 @@ import {PostsService} from "../services/posts-service";
 import {CreateCommentInputModel} from "../models/comments/input-models";
 import {CommentOutputModel, CommentQueryParamsOutputModel} from "../models/comments/output-models";
 import {QueryCommentsRepository} from "../repositories/comments/query-comments-repository";
+import {Comment} from "../classes/comments";
 
 @injectable()
 export class PostsController {
@@ -72,12 +74,13 @@ export class PostsController {
 	async createCommentByPostId(req: Request<ParamPostIdInputModel, {}, CreateCommentInputModel>, res: Response<CommentOutputModel>) {
 		try {
 			const { user } = req.context;
-			const commentData: Omit<CommentOutputModel, "id" | "createdAt"> = {
+			const commentData: Omit<Comment, "createdAt"> = {
 				content: req.body.content,
-				userId: String(user!._id),
-				userLogin: user!.login
+				userId: user!._id,
+				userLogin: user!.login,
+				postId: new ObjectId(req.params.postId)
 			};
-			const commentId = await this.postsService.createCommentByPostId(req.params.postId, commentData);
+			const commentId = await this.postsService.createCommentByPostId(commentData);
 			const comment = await this.queryCommentsRepository.getCommentById(commentId);
 			res.status(201).send(comment);
 		} catch (err) {

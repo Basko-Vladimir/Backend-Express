@@ -2,10 +2,10 @@ import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import {CommentsService} from "./comments-service";
 import {Post} from "../classes/posts";
+import {Comment} from "../classes/comments";
 import {PostsRepository} from "../repositories/posts/posts-repository";
 import {DbPost} from "../repositories/interfaces/posts-interfaces";
 import {PostOutputModel} from "../models/posts/output-models";
-import {CommentOutputModel} from "../models/comments/output-models";
 import {UpdatePostInputModel} from "../models/posts/input-models";
 
 @injectable()
@@ -47,10 +47,7 @@ export class PostsService {
 		return this.postsRepository.deleteAllPosts();
 	}
 	
-	async createCommentByPostId(
-		postId: string,
-		commentData: Omit<CommentOutputModel, "id" | "createdAt">
-	): Promise<string> {
-		return this.commentsService.createComment(postId, commentData);
+	async createCommentByPostId(commentData: Omit<Comment, "createdAt">): Promise<string> {
+		return this.commentsService.createComment(commentData);
 	}
 }

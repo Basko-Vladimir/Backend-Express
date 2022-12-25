@@ -1,26 +1,31 @@
 import {body} from "express-validator";
 import {blogsConstants, MIN_STRINGS_LENGTH} from "../../common/constants";
+import {
+	generateLengthRangeErrorMessage,
+	generateMissedPropError,
+	generateRegExpError
+} from "../../common/error-messages";
 
 const { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH, MAX_WEBSITE_URL_LENGTH, WEBSITE_URL_REG_EXP } = blogsConstants;
 export const blogRequestBodyValidation = [
 	body("name")
 		.exists()
-		.withMessage("You didn't provide 'name' field")
+		.withMessage(generateMissedPropError("name"))
 		.trim()
 		.isLength({min: MIN_STRINGS_LENGTH, max: MAX_NAME_LENGTH})
-		.withMessage(`Name should be from ${MIN_STRINGS_LENGTH} to ${MAX_NAME_LENGTH} chars`),
+		.withMessage(generateLengthRangeErrorMessage("name", MIN_STRINGS_LENGTH, MAX_NAME_LENGTH)),
 	body("websiteUrl")
 		.exists()
-		.withMessage("You didn't provide 'websiteUrl' field")
+		.withMessage(generateMissedPropError("websiteUrl"))
 		.trim()
 		.isLength({min: MIN_STRINGS_LENGTH, max: MAX_WEBSITE_URL_LENGTH})
-		.withMessage(`WebsiteUrl should be from ${MIN_STRINGS_LENGTH} to ${MAX_WEBSITE_URL_LENGTH} chars`)
+		.withMessage(generateLengthRangeErrorMessage("websiteUrl", MIN_STRINGS_LENGTH, MAX_WEBSITE_URL_LENGTH))
 		.isURL()
-		.withMessage(`URL doesn't match to pattern ${WEBSITE_URL_REG_EXP}`),
+		.withMessage(generateRegExpError("websiteUrl", WEBSITE_URL_REG_EXP)),
 	body("description")
 		.exists()
-		.withMessage("You didn't provide 'description' field")
+		.withMessage(generateMissedPropError("description"))
 		.trim()
 		.isLength({min: MIN_STRINGS_LENGTH, max: MAX_DESCRIPTION_LENGTH})
-		.withMessage(`Description should be from ${MIN_STRINGS_LENGTH} to ${MAX_DESCRIPTION_LENGTH} chars`)
+		.withMessage(generateLengthRangeErrorMessage("description", MIN_STRINGS_LENGTH, MAX_DESCRIPTION_LENGTH))
 ];

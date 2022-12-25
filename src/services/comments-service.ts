@@ -1,5 +1,4 @@
 import {inject, injectable} from "inversify";
-import {CommentOutputModel} from "../models/comments/output-models";
 import {CommentsRepository} from "../repositories/comments/comments-repository";
 import {Comment} from "../classes/comments";
 
@@ -10,10 +9,9 @@ export class CommentsService {
 	) {}
 	
 	async createComment(
-		postId: string,
-		commentData: Omit<CommentOutputModel, "id" | "createdAt">
+		commentData: Omit<Comment, "createdAt">
 	): Promise<string> {
-		const { content, userLogin, userId } = commentData;
+		const { content, userLogin, userId, postId } = commentData;
 		const newComment = new Comment(content, userLogin, userId, postId);
 		
 		return this.commentsRepository.createComment(newComment);

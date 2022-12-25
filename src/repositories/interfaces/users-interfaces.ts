@@ -9,6 +9,7 @@ export interface DbUser {
 	passwordHash: string;
 	emailConfirmation: EmailConfirmation;
 	createdAt: Date;
+	__v: number;
 }
 
 export interface UserFilter {

@@ -7,4 +7,5 @@ export interface DbComment {
 	userId: ObjectId;
 	userLogin: string;
 	createdAt: Date;
+	__v: number;
 }

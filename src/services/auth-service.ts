@@ -7,9 +7,9 @@ import {DevicesSessionsService} from "./devices-sessions-service";
 import {EmailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
 import {EntityWithoutId} from "../common/interfaces";
-import {User} from "../classes/users";
 import {NotFoundError} from "../classes/errors";
 import {DeviceSession} from "../classes/devices-sessions";
+import {DbUser} from "../repositories/interfaces/users-interfaces";
 
 @injectable()
 export class AuthService {
@@ -41,11 +41,11 @@ export class AuthService {
 		}
 	}
 	
-	async confirmRegistration(user: User): Promise<void> {
+	async confirmRegistration(user: DbUser): Promise<void> {
 		return this.usersService.updateUserConfirmation(user);
 	}
 	
-	async resendRegistrationEmail(user: User): Promise<void> {
+	async resendRegistrationEmail(user: DbUser): Promise<void> {
 		try {
 			const newConfirmationCode = uuidv4();
 			await this.usersService.updateUser(String(user._id), {

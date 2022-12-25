@@ -1,4 +1,3 @@
-import {ObjectId} from "mongodb";
 import { v4 as uuidv4 } from "uuid";
 import add from "date-fns/add";
 
@@ -16,7 +15,6 @@ export class EmailConfirmation {
 }
 
 export class User {
-	_id: ObjectId | null = null;
 	login: string;
 	email: string;
 	passwordSalt: string;

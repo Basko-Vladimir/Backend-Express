@@ -1,4 +1,5 @@
 export const DATE_ERROR_MESSAGE = "Can not create an entity with a past Date";
+export const EMAIL_SERVICE_ERROR = "Some error with email service, try later!";
 
 const makeCapitalizeString = (value: string): string => {
 	return value[0].toUpperCase() + value.slice(1);

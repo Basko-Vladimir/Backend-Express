@@ -7,6 +7,7 @@ import {DevicesSessionsService} from "./devices-sessions-service";
 import {EmailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
 import {EntityWithoutId} from "../common/interfaces";
+import {EMAIL_SERVICE_ERROR} from "../common/error-messages";
 import {NotFoundError} from "../classes/errors";
 import {DeviceSession} from "../classes/devices-sessions";
 import {DbUser} from "../repositories/interfaces/users-interfaces";
@@ -37,7 +38,7 @@ export class AuthService {
 		} catch (error) {
 			console.error(error)
 			await this.usersService.deleteUser(createdUserId);
-			throw new Error("Some error with email service, try later!")
+			throw new Error(EMAIL_SERVICE_ERROR);
 		}
 	}
 	
@@ -81,5 +82,17 @@ export class AuthService {
 	
 	async createDeviceSession(deviceSessionDataInputModel: EntityWithoutId<DeviceSession>): Promise<string> {
 		return this.devicesSessionsService.createDeviceSession(deviceSessionDataInputModel);
+	}
+	
+	async logout(deviceSessionId: string): Promise<void> {
+		return this.devicesSessionsService.deleteDeviceSessionById(deviceSessionId);
+	}
+	
+	async recoverPassword(email: string): Promise<void> {
+		try {
+			return this.emailManager.recoverPassword(email);
+		} catch (error) {
+			throw new Error(EMAIL_SERVICE_ERROR);
+		}
 	}
 }

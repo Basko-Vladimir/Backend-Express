@@ -62,3 +62,11 @@ authRouter.get(
 	refreshTokenValidation,
 	authController.logout.bind(authController)
 );
+
+authRouter.post(
+	"/password-recovery",
+	clientRequestsCountValidation,
+	emailValidation,
+	requestErrorsValidation,
+	authController.recoverPassword.bind(authController)
+);

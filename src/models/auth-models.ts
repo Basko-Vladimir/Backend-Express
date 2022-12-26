@@ -11,7 +11,7 @@ export interface RegistrationConfirmationInputModel {
 	code: string;
 }
 
-export interface EmailResendingInputModel {
+export interface EmailInputModel {
 	email: string;
 }
 

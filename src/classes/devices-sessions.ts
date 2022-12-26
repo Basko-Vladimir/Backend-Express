@@ -1,7 +1,6 @@
 import {ObjectId} from "mongodb";
 
 export class DeviceSession {
-	_id: ObjectId | null = null;
 	issuedAt?: number;
 	expiredDate?: number;
 	deviceId?: string;

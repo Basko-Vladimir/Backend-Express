@@ -3,6 +3,7 @@ import {ClientRequest} from "../classes/client-requests";
 import {ClientRequestsRepository} from "../repositories/client-requests/client-requests-repository";
 import {DbSortDirection} from "../repositories/interfaces/common-interfaces";
 import {UpdateOrFilterModel} from "../common/interfaces";
+import {DbClientRequest} from "../repositories/interfaces/client-requests";
 
 @injectable()
 export class ClientRequestsService {
@@ -13,7 +14,7 @@ export class ClientRequestsService {
 	async getClientRequestsByFilter (
 		filter: UpdateOrFilterModel,
 		sortFilter: UpdateOrFilterModel<DbSortDirection>
-	): Promise<ClientRequest[]> {
+	): Promise<DbClientRequest[]> {
 		return this.clientRequestsRepository.getClientRequestsByFilter(filter, sortFilter)
 	}
 	

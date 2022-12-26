@@ -1,10 +1,11 @@
 import {injectable} from "inversify";
-import {clientRequestsCollection} from "../db";
+import {ClientRequestsModel} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {DbSortDirection} from "../interfaces/common-interfaces";
+import {DbClientRequest} from "../interfaces/client-requests";
 import {ClientRequest} from "../../classes/client-requests";
-import {EntityWithoutId, UpdateOrFilterModel} from "../../common/interfaces";
 import {DataBaseError} from "../../classes/errors";
+import {UpdateOrFilterModel} from "../../common/interfaces";
 
 @injectable()
 export class ClientRequestsRepository {
@@ -12,23 +13,25 @@ export class ClientRequestsRepository {
 	async getClientRequestsByFilter (
 		filter: UpdateOrFilterModel,
 		sortFilter: UpdateOrFilterModel<DbSortDirection> = {}
-	): Promise<ClientRequest[]> {
-		return clientRequestsCollection
+	): Promise<DbClientRequest[]> {
+		return ClientRequestsModel
 			.find(filter)
-			.sort(sortFilter)
-			.toArray();
+			.sort(sortFilter);
 	}
 	
-	async createClientRequest (clientRequest: EntityWithoutId<ClientRequest>): Promise<string> {
-		const { insertedId } = await clientRequestsCollection.insertOne(clientRequest);
+	async createClientRequest (clientRequest: ClientRequest): Promise<string> {
+		const createdClientRequest = await ClientRequestsModel.create(clientRequest);
 		
-		if (!insertedId) throw new DataBaseError();
+		if (!createdClientRequest) throw new DataBaseError();
 		
-		return String(insertedId);
+		return String(createdClientRequest._id);
 	}
 	
 	async updateClientRequest (clientRequestId: string, fields: UpdateOrFilterModel): Promise<void> {
-		const { matchedCount } = await clientRequestsCollection.updateOne(getFilterByDbId(clientRequestId), {$set: fields});
+		const { matchedCount } = await ClientRequestsModel.updateOne(
+			getFilterByDbId(clientRequestId),
+			fields
+		);
 		
 		if (!matchedCount) throw new DataBaseError();
  	}
@@ -37,12 +40,12 @@ export class ClientRequestsRepository {
 		 filter: UpdateOrFilterModel,
 		 fields: UpdateOrFilterModel
 	 ) : Promise<void> {
-		 const { matchedCount } = await clientRequestsCollection.updateMany(filter, {$set: fields});
+		 const { matchedCount } = await ClientRequestsModel.updateMany(filter, fields);
 		
 		 if (!matchedCount) throw new DataBaseError();
 	 }
 	
 	async deleteAllClientRequests(): Promise<void> {
-		await clientRequestsCollection.deleteMany({});
+		await ClientRequestsModel.deleteMany({});
 	}
 }

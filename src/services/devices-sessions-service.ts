@@ -2,6 +2,7 @@ import {inject, injectable} from "inversify";
 import {DeviceSession} from "../classes/devices-sessions";
 import {DevicesSessionsRepository} from "../repositories/devices-sessions/devices-sessions-repository";
 import {EntityWithoutId, UpdateOrFilterModel} from "../common/interfaces";
+import {DbDeviceSession} from "../repositories/interfaces/devices-sessions";
 
 @injectable()
 export class DevicesSessionsService {
@@ -20,7 +21,7 @@ export class DevicesSessionsService {
 		return this.devicesSessionsRepository.updateDeviceSession(_id, updatedFiled);
 	}
 	
-	async getDeviceSessionByFilter (filter: UpdateOrFilterModel): Promise<DeviceSession | null> {
+	async getDeviceSessionByFilter (filter: UpdateOrFilterModel): Promise<DbDeviceSession | null> {
 		return this.devicesSessionsRepository.getDeviceSessionByFilter(filter);
 	}
 	

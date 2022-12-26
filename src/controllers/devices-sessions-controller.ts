@@ -1,11 +1,11 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
+import {getErrorStatus} from "./utils";
 import {DeviceSessionOutputModel} from "../models/devices-sessions/output-models";
 import {DevicesSessionsService} from "../services/devices-sessions-service";
 import {QueryDevicesSessionsRepository} from "../repositories/devices-sessions/query-devices-sessions-repository";
 import {TypedRequestParams} from "../common/interfaces";
 import {ParamDeviceSessionIdInputModel} from "../models/devices-sessions/input-models";
-import {getErrorStatus} from "./utils";
 
 @injectable()
 export class DevicesSessionsController {
@@ -25,9 +25,10 @@ export class DevicesSessionsController {
 		}
 	}
 	
-	async deleteAllOtherDevicesSessions (req: Request, res: Response<void>) {
+	async deleteAllDevicesSessionsExceptCurrent (req: Request, res: Response<void>) {
 		try {
-		
+			await this.devicesSessionsService.deleteAllDevicesSessionsExceptCurrent(String(req.context.session?._id));
+			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
@@ -35,7 +36,20 @@ export class DevicesSessionsController {
 	
 	async deleteDeviceSessionById (req: TypedRequestParams<ParamDeviceSessionIdInputModel>, res: Response<void>) {
 		try {
-		
+			const deviceId = req.params.deviceId;
+			const deletingDeviceSession = await this.devicesSessionsService.getDeviceSessionByFilter({deviceId});
+			
+			if (!deletingDeviceSession) {
+				res.sendStatus(404);
+				return;
+			}
+			
+			if (String(deletingDeviceSession.userId) === String(req.context.user!._id)) {
+				await this.devicesSessionsService.deleteDeviceSessionById(String(deletingDeviceSession._id));
+				res.sendStatus(204);
+			} else {
+				res.sendStatus(403);
+			}
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}

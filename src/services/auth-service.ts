@@ -92,7 +92,10 @@ export class AuthService {
 	async recoverPassword(email: string): Promise<void> {
 		const passwordRecoveryCode = uuidv4();
 		const user = await this.usersService.getUserByFilter({email});
-		await this.usersService.updateUser(String(user?._id), {passwordRecoveryCode});
+		
+		if (user) {
+			await this.usersService.updateUser(String(user?._id), {passwordRecoveryCode});
+		}
 		
 		try {
 			return this.emailManager.recoverPassword(email, passwordRecoveryCode);

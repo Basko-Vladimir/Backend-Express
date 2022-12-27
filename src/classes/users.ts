@@ -18,6 +18,7 @@ export class User {
 	email: string;
 	passwordSalt: string;
 	passwordHash: string;
+	passwordRecoveryCode?: string;
 	emailConfirmation: EmailConfirmation;
 	createdAt: Date;
 	

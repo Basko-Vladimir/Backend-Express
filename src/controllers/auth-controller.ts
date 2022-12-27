@@ -130,7 +130,7 @@ export class AuthController {
 	
 	async recoverPassword (req: TypedRequestBody<EmailInputModel>, res: Response<void>) {
 		try {
-			await this.authService.recoverPassword(req.body.email);
+			await this.authService.recoverPassword(String(req.context.user!._id), req.body.email);
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));

@@ -7,7 +7,7 @@ import {DevicesSessionsService} from "./devices-sessions-service";
 import {EmailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
 import {EntityWithoutId} from "../common/interfaces";
-import {EMAIL_SERVICE_ERROR} from "../common/error-messages";
+import {EMAIL_SERVICE_ERROR_MESSAGE} from "../common/error-messages";
 import {NotFoundError} from "../classes/errors";
 import {DeviceSession} from "../classes/devices-sessions";
 import {DbUser} from "../repositories/interfaces/users-interfaces";
@@ -38,7 +38,7 @@ export class AuthService {
 		} catch (error) {
 			console.error(error)
 			await this.usersService.deleteUser(createdUserId);
-			throw new Error(EMAIL_SERVICE_ERROR);
+			throw new Error(EMAIL_SERVICE_ERROR_MESSAGE);
 		}
 	}
 	
@@ -88,11 +88,14 @@ export class AuthService {
 		return this.devicesSessionsService.deleteDeviceSessionById(deviceSessionId);
 	}
 	
-	async recoverPassword(email: string): Promise<void> {
+	async recoverPassword(id: string, email: string): Promise<void> {
+		const passwordRecoveryCode = uuidv4();
+		await this.usersService.updateUser(id, {passwordRecoveryCode});
+		
 		try {
-			return this.emailManager.recoverPassword(email);
+			return this.emailManager.recoverPassword(email, passwordRecoveryCode);
 		} catch (error) {
-			throw new Error(EMAIL_SERVICE_ERROR);
+			throw new Error(EMAIL_SERVICE_ERROR_MESSAGE);
 		}
 	}
 }

@@ -1,7 +1,9 @@
-import {loginPasswordValidation} from "../auth/login-password-validation";
+import {loginValidation} from "../auth/login-validation";
 import {emailValidation} from "../auth/email-validation";
+import {passwordValidation} from "../auth/password-validation";
 
 export const userRequestBodyValidation = [
-	loginPasswordValidation,
+	loginValidation,
+	passwordValidation("password"),
 	emailValidation
 ].flat();

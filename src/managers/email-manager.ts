@@ -1,4 +1,3 @@
-import {v4 as uuidv4} from "uuid";
 import {EmailInfoModel} from "../models/email-models";
 import { User } from "../classes/users";
 import {EmailAdapter} from "../adapters/email-adapter";
@@ -26,8 +25,7 @@ export class EmailManager {
 		return this.emailAdapter.sendEmail(messageInfo);
 	}
 	
-	async recoverPassword(email: string): Promise<void> {
-		const recoveryCode = uuidv4();
+	async recoverPassword(email: string, recoveryCode: string): Promise<void> {
 		const messageInfo: EmailInfoModel = {
 			from: "Test Backend Server <dev.test.vladimir@gmail.com>",
 			to: email,

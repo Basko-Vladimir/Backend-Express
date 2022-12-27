@@ -23,7 +23,7 @@ export class UsersRepository {
 	async updateUser(userId: string, updatedField: UpdateOrFilterModel): Promise<void> {
 		const { matchedCount } = await UsersModel.updateOne(
 			getFilterByDbId(userId),
-			{updatedField}
+			updatedField
 		);
 		
 		if (!matchedCount) throw new DataBaseError();

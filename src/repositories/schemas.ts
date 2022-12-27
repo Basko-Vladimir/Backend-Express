@@ -112,6 +112,10 @@ export const usersSchema = new Schema<DbUser>({
 		required: true,
 		trim: true
 	},
+	passwordRecoveryCode: {
+		type: String,
+		default: null
+	},
 	createdAt: {
 		type: Date,
 		min: [new Date(), DATE_ERROR_MESSAGE]

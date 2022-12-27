@@ -11,6 +11,7 @@ import {refreshTokenValidation} from "../middlewares/refresh-token-validation";
 import {clientRequestsCountValidation} from "../middlewares/auth/client-requests-count-validation";
 import {iocContainer} from "../composition-root";
 import {AuthController} from "../controllers/auth-controller";
+import {passwordValidation} from "../middlewares/auth/password-validation";
 
 export const authRouter = Router({});
 const authController = iocContainer.resolve(AuthController);
@@ -66,7 +67,17 @@ authRouter.get(
 authRouter.post(
 	"/password-recovery",
 	clientRequestsCountValidation,
+	refreshTokenValidation,
 	emailValidation,
+	requestErrorsValidation,
+	authController.recoverPassword.bind(authController)
+);
+
+authRouter.post(
+	"/new-password",
+	clientRequestsCountValidation,
+	refreshTokenValidation,
+	passwordValidation("newPassword"),
 	requestErrorsValidation,
 	authController.recoverPassword.bind(authController)
 );

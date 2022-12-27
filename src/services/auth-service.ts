@@ -89,9 +89,10 @@ export class AuthService {
 		return this.devicesSessionsService.deleteDeviceSessionById(deviceSessionId);
 	}
 	
-	async recoverPassword(id: string, email: string): Promise<void> {
+	async recoverPassword(email: string): Promise<void> {
 		const passwordRecoveryCode = uuidv4();
-		await this.usersService.updateUser(id, {passwordRecoveryCode});
+		const user = await this.usersService.getUserByFilter({email});
+		await this.usersService.updateUser(String(user?._id), {passwordRecoveryCode});
 		
 		try {
 			return this.emailManager.recoverPassword(email, passwordRecoveryCode);

@@ -68,7 +68,6 @@ authRouter.get(
 authRouter.post(
 	"/password-recovery",
 	clientRequestsCountValidation,
-	refreshTokenValidation,
 	emailValidation,
 	requestErrorsValidation,
 	authController.recoverPassword.bind(authController)
@@ -77,7 +76,6 @@ authRouter.post(
 authRouter.post(
 	"/new-password",
 	clientRequestsCountValidation,
-	refreshTokenValidation,
 	passwordValidation("newPassword"),
 	passwordRecoveryCodeValidation,
 	requestErrorsValidation,

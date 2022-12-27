@@ -35,7 +35,8 @@ export class UsersRepository {
 				{email: userFilter.email},
 				{login: userFilter.login},
 				{passwordHash: userFilter.passwordHash},
-				{"emailConfirmation.confirmationCode": userFilter.confirmationCode }
+				{"emailConfirmation.confirmationCode": userFilter.confirmationCode },
+				{passwordRecoveryCode: userFilter.passwordRecoveryCode }
 			]
 		});
 	}

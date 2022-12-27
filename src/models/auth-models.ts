@@ -11,6 +11,11 @@ export interface RegistrationConfirmationInputModel {
 	code: string;
 }
 
+export interface PasswordRecoveryConfirmationInputModel {
+	newPassword: string;
+	recoveryCode: string;
+}
+
 export interface EmailInputModel {
 	email: string;
 }

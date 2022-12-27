@@ -6,6 +6,7 @@ import {UsersService} from "./users-service";
 import {DevicesSessionsService} from "./devices-sessions-service";
 import {EmailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
+import {PasswordRecoveryConfirmationInputModel} from "../models/auth-models";
 import {EntityWithoutId} from "../common/interfaces";
 import {EMAIL_SERVICE_ERROR_MESSAGE} from "../common/error-messages";
 import {NotFoundError} from "../classes/errors";
@@ -97,5 +98,16 @@ export class AuthService {
 		} catch (error) {
 			throw new Error(EMAIL_SERVICE_ERROR_MESSAGE);
 		}
+	}
+	
+	async confirmPasswordRecovery(
+		user: DbUser,
+		passwordRecoveryData: PasswordRecoveryConfirmationInputModel
+): Promise<void> {
+		const { recoveryCode, newPassword } = passwordRecoveryData;
+		const newPasswordHash = await this.generateHash(newPassword, user.passwordSalt);
+		
+		return this.usersService
+			.updateUser(String(user._id), {passwordHash: newPasswordHash, passwordRecoveryCode: recoveryCode});
 	}
 }

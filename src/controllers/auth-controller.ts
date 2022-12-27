@@ -9,7 +9,8 @@ import {
 	EmailInputModel,
 	LoginInputModel,
 	TokenOutputModel,
-	RegistrationConfirmationInputModel
+	RegistrationConfirmationInputModel,
+	PasswordRecoveryConfirmationInputModel
 } from "../models/auth-models";
 import {CreateUserInputModel} from "../models/users/input-models";
 import {AuthService} from "../services/auth-service";
@@ -131,6 +132,15 @@ export class AuthController {
 	async recoverPassword (req: TypedRequestBody<EmailInputModel>, res: Response<void>) {
 		try {
 			await this.authService.recoverPassword(String(req.context.user!._id), req.body.email);
+			res.sendStatus(204);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	}
+	
+	async confirmPasswordRecovery (req: TypedRequestBody<PasswordRecoveryConfirmationInputModel>, res: Response<void>) {
+		try {
+			await this.authService.confirmPasswordRecovery(req.context.user!, req.body);
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));

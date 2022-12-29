@@ -1,21 +1,21 @@
-import express, { Request, Response } from "express";
-import bodyParser from "body-parser";
+import express from "express";
 import cors from "cors";
-import { clearVideos, videosRouter } from "./routers/videos/videos-router";
+import bodyParser from "body-parser";
+import { bloggersRouter } from "./routers/bloggers-router";
+import { postsRouter } from "./routers/posts-router";
+import {testingRouter} from "./routers/testing-router";
 
 const PORT = process.env.PORT || 5000;
+
 const app = express();
 
 app.use(cors());
 app.use(bodyParser());
 
-app.use("/videos", videosRouter);
-
-app.delete("/testing/all-data", (req: Request, res: Response) => {
-	clearVideos();
-	res.send(204);
-});
+app.use("/bloggers", bloggersRouter);
+app.use("/posts", postsRouter);
+app.use("/testing", testingRouter);
 
 app.listen(PORT, () => {
-	console.log(`Server has been launched on port ${PORT}`);
+	console.log(`Server has been started on port: ${PORT}`);
 });

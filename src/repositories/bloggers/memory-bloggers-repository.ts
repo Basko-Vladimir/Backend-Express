@@ -6,13 +6,13 @@ export const bloggersRepository = {
 	async getAllBloggers(): Promise<IBlogger[]> {
 		return bloggers;
 	},
-	async getBloggerById(id: number): Promise<IBlogger | undefined> {
-		return bloggers.find(item => item.id === id);
+	async getBloggerById(id: string): Promise<IBlogger | null> {
+		return bloggers.find(item => item.id === id) || null;
 	},
 	async deleteAllBloggers(): Promise<void> {
 		bloggers = [];
 	},
-	async deleteBlogger(id: number): Promise<boolean> {
+	async deleteBlogger(id: string): Promise<boolean> {
 		const blogger = bloggers.find(item => item.id === id);
 		
 		if (!blogger) {
@@ -24,7 +24,8 @@ export const bloggersRepository = {
 	},
 	async createBlogger(name: string, youtubeUrl: string): Promise<IBlogger> {
 		const newBlogger: IBlogger = {
-			id: Date.now(),
+			id: String(Date.now()),
+			createdAt: new Date().toISOString(),
 			youtubeUrl,
 			name
 		};
@@ -33,15 +34,15 @@ export const bloggersRepository = {
 		return newBlogger;
 	},
 	async updateBlogger(
-		id: number,
+		id: string,
 		name: string,
 		youtubeUrl: string
-	): Promise<IBlogger | undefined> {
+	): Promise<boolean> {
 		bloggers = bloggers.map(item => item.id === id
 			? {...item, name, youtubeUrl }
 			: item
 		);
 		
-		return bloggers.find(item => item.id === id);
+		return Boolean(bloggers.find(item => item.id === id));
 	}
 }

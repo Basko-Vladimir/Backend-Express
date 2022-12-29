@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { bloggersRepository } from "../../repositories/bloggers/bloggers-repository";
+import { bloggersRepository } from "../../repositories/bloggers/db-bloggers-repository";
 
 export const checkPostRequestBody = [
 	body("title")

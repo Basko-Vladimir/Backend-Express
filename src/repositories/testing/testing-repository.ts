@@ -1,5 +1,5 @@
-import { postsRepository } from "../posts/memory-posts-repository";
-import { bloggersRepository } from "../bloggers/bloggers-repository";
+import { postsRepository } from "../posts/db-posts-repository";
+import { bloggersRepository } from "../bloggers/db-bloggers-repository";
 
 export const testingRepository = {
 	async deleteAllData(): Promise<void> {

@@ -1,9 +1,8 @@
 import express from "express";
-import cors from "cors";
 import bodyParser from "body-parser";
-import { bloggersRouter } from "./routers/bloggers-router";
-import { postsRouter } from "./routers/posts-router";
-import {testingRouter} from "./routers/testing-router";
+import cors from "cors";
+import {runDb} from "./repositories/db";
+import {blogsRouter} from "./routers/blogs-router";
 
 const PORT = process.env.PORT || 5000;
 
@@ -12,10 +11,13 @@ const app = express();
 app.use(cors());
 app.use(bodyParser());
 
-app.use("/bloggers", bloggersRouter);
-app.use("/posts", postsRouter);
-app.use("/testing", testingRouter);
+app.use("/blogs", blogsRouter);
 
-app.listen(PORT, () => {
-	console.log(`Server has been started on port: ${PORT}`);
-});
+const startApp = async () => {
+	await runDb();
+	app.listen(PORT, () => {
+		console.log(`Server has been started on port: ${PORT}!!!`);
+	});
+}
+
+startApp();

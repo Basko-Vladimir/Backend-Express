@@ -1,21 +1,24 @@
 import express, { Request, Response } from "express";
-import bodyParser from "body-parser";
 import cors from "cors";
-import { clearVideos, videosRouter } from "./routers/videos/videos-router";
+import bodyParser from "body-parser";
+
+import { checkAuthorization } from "./middlewares/check-authorization";
+import { checkValidationErrors } from "./middlewares/check-validation-errors";
 
 const PORT = process.env.PORT || 5000;
+
 const app = express();
 
 app.use(cors());
 app.use(bodyParser());
 
-app.use("/videos", videosRouter);
-
-app.delete("/testing/all-data", (req: Request, res: Response) => {
-	clearVideos();
-	res.send(204);
-});
+app.get("/",
+	checkAuthorization,
+	checkValidationErrors,
+	(req: Request, res: Response) => {
+		res.send("ok");
+	});
 
 app.listen(PORT, () => {
-	console.log(`Server has been launched on port ${PORT}`);
+	console.log(`Server has been started on port: ${PORT}`);
 });

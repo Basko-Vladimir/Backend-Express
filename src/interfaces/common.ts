@@ -1,3 +1,3 @@
 export interface IBaseEntity {
-	id: number;
+	id: string;
 }

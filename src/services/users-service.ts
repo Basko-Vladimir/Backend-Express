@@ -1,41 +1,46 @@
-import bcrypt from "bcrypt"
+import {inject, injectable} from "inversify";
 import {User} from "../classes/users";
-import {usersRepository} from "../repositories/users/users-repository";
+import {UsersRepository} from "../repositories/users/users-repository";
 import {CreateUserInputModel} from "../models/users/input-models";
-import {DbUser} from "../repositories/interfaces/users-interfaces";
+import {UserFilter} from "../repositories/interfaces/users-interfaces";
 
-export const usersService = {
-	async getUserById(userId: string): Promise<DbUser> {
-		return usersRepository.getUserById(userId);
-	},
+@injectable()
+export class UsersService {
+	constructor(
+		@inject(UsersRepository) protected usersRepository: UsersRepository,
+	) {}
 	
-	async createUser(userData: CreateUserInputModel): Promise<string> {
-		const { login, email, password } = userData;
-		const passwordSalt = await bcrypt.genSalt(10);
-		const passwordHash = await this._generateHash(password, passwordSalt);
-		
+	async getUserById(userId: string): Promise<User | null> {
+		return this.usersRepository.getUserById(userId);
+	}
+	
+	async getUserByFilter(userFilter: UserFilter): Promise<User | null> {
+		return this.usersRepository.getUserByFilter(userFilter);
+	}
+	
+	async createUser(
+		userData: CreateUserInputModel,
+		passwordHash: string,
+		passwordSalt: string
+	): Promise<string> {
+		const {login, email} = userData;
 		const newUser = new User(login, email, passwordSalt, passwordHash);
-		return usersRepository.createUser(newUser);
-	},
+		return this.usersRepository.createUser(newUser);
+	}
+	
+	async updateUser(userId: string, updatedField: {[key: string]: unknown}) {
+		return this.usersRepository.updateUser(userId, updatedField);
+	}
 	
 	async deleteUser(id: string): Promise<void> {
-		return usersRepository.deleteUser(id);
-	},
+		return this.usersRepository.deleteUser(id);
+	}
 	
 	async deleteAllUsers(): Promise<void> {
-		return usersRepository.deleteAllUsers();
-	},
-	
-	async checkCredentials(login: string, password: string): Promise<string | null> {
-		const user = await usersRepository.getUserByLogin(login);
-		
-		if (!user) return null;
-		
-		const hash = await this._generateHash(password, user.passwordSalt);
-		return hash === user.passwordHash ? String(user._id) : null;
-	},
-	
-	async _generateHash(password: string, salt: string): Promise<string> {
-		return bcrypt.hash(password, salt);
+		return this.usersRepository.deleteAllUsers();
 	}
-};
+	
+	async updateUserConfirmation(user: User): Promise<void> {
+		return this.usersRepository.updateUserConfirmation(user);
+	}
+}

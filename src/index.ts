@@ -7,7 +7,6 @@ import {postsRouter} from "./routers/posts-router";
 import {testingRouter} from "./routers/testing-router";
 import {usersRouter} from "./routers/users-router";
 import {authRouter} from "./routers/auth-router";
-import {commentsRouter} from "./routers/comments-router";
 import {settings} from "./settings";
 
 const PORT = settings.PORT;
@@ -21,7 +20,6 @@ app.use("/auth", authRouter);
 app.use("/blogs", blogsRouter);
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
-app.use("/comments", commentsRouter);
 app.use("/testing", testingRouter);
 
 const startApp = async () => {

@@ -8,3 +8,10 @@ export interface DbUser {
 	passwordHash: string;
 	createdAt: Date;
 }
+
+export interface UserFilter {
+	email?: string;
+	passwordHash?: string;
+	login?: string;
+	confirmationCode?: string;
+}

@@ -1,9 +1,9 @@
-import {DbUser} from "../repositories/interfaces/users-interfaces";
+import {User} from "../classes/users";
 
 declare global {
 	declare namespace Express {
 		export interface Request {
-			user: DbUser | null;
+			user: User | null;
 		}
 	}
 }

@@ -1,4 +1,19 @@
 import {ObjectId} from "mongodb";
+import { v4 as uuidv4 } from "uuid";
+import add from "date-fns/add";
+
+
+class EmailConfirmation {
+	confirmationCode: string;
+	expirationDate: Date;
+	isConfirmed: boolean = false;
+	
+	constructor() {
+		this.confirmationCode = uuidv4();
+		this.expirationDate = add(new Date(), {hours: 1});
+		this.isConfirmed = false;
+	}
+}
 
 export class User {
 	_id: ObjectId | null = null;
@@ -6,6 +21,7 @@ export class User {
 	email: string;
 	passwordSalt: string;
 	passwordHash: string;
+	emailConfirmation: EmailConfirmation;
 	createdAt: Date;
 	
 	constructor(login: string, email: string, salt: string, hash: string) {
@@ -13,6 +29,7 @@ export class User {
 		this.email = email;
 		this.passwordSalt = salt;
 		this.passwordHash = hash;
+		this.emailConfirmation = new EmailConfirmation();
 		this.createdAt = new Date();
 	}
 }

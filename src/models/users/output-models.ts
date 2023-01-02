@@ -1,5 +1,5 @@
-import {SortDirection, UserSortByField} from "../enums";
-import {AllEntitiesOutputModel} from "../common-models";
+import {UserSortByField} from "../enums";
+import {AllEntitiesOutputModel, CommonQueryParamsModel} from "../common-models";
 
 export interface UserOutputModel {
 	id: string;
@@ -10,11 +10,7 @@ export interface UserOutputModel {
 
 export type AllUsersOutputModel = AllEntitiesOutputModel<UserOutputModel>;
 
-export interface UsersQueryParamsOutputModel {
-	sortBy: UserSortByField;
-	sortDirection: SortDirection;
-	pageNumber: number;
-	pageSize: number;
+export interface UsersQueryParamsOutputModel extends CommonQueryParamsModel<UserSortByField> {
 	searchLoginTerm: string;
 	searchEmailTerm: string;
 }

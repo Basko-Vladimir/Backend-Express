@@ -1,7 +1,10 @@
 import {Request, Response, NextFunction} from "express";
-import {queryCommentsRepository} from "../../repositories/comments/query-comments-repository";
 import {ParamCommentIdInputModel} from "../../models/comments/input-models";
-import {getErrorStatus} from "../../routers/utils";
+import {getErrorStatus} from "../../controllers/utils";
+import {iocContainer} from "../../composition-root";
+import {CommentsService} from "../../services/comments-service";
+
+const commentsService = iocContainer.resolve(CommentsService);
 
 export const checkAuthorshipOfCommentUser = async (
 	req: Request<ParamCommentIdInputModel>,
@@ -9,9 +12,9 @@ export const checkAuthorshipOfCommentUser = async (
 	next: NextFunction
 ) => {
 	try {
-		const comment = await queryCommentsRepository.getCommentById(req.params.commentId);
+		const comment = await commentsService.getCommentById(req.params.commentId);
 		
-		if (comment.userId === String(req.user!._id)) {
+		if (String(comment.userId) === String(req.user!._id)) {
 			next();
 		} else {
 			res.sendStatus(403);

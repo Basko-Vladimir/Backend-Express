@@ -9,7 +9,7 @@ export const entityIdParamValidation = <P, T>(
 		res.sendStatus(404);
 		return;
 	}
-	console.log(req.params[param])
+
 	const post: Awaited<T> | null = await callback(req.params[param] as string);
 	post ? next() : res.sendStatus(404);
 };

@@ -59,7 +59,7 @@ authRouter.post(
 	authController.refreshToken.bind(authController)
 );
 
-authRouter.get(
+authRouter.post(
 	"/logout",
 	refreshTokenValidation,
 	authController.logout.bind(authController)

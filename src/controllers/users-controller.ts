@@ -8,10 +8,12 @@ import {getErrorStatus} from "./utils";
 import {CreateUserInputModel} from "../models/users/input-models";
 import {UsersService} from "../services/users-service";
 import {ParamIdInputModel} from "../models/common-models";
+import {AuthService} from "../services/auth-service";
 
 @injectable()
 export class UsersController {
 	constructor(
+		@inject(AuthService) protected authService: AuthService,
 		@inject(UsersService) protected usersService: UsersService,
 		@inject(QueryUsersRepository) protected queryUsersRepository: QueryUsersRepository
 	) {}
@@ -32,7 +34,7 @@ export class UsersController {
 	
 	async createUser(req: TypedRequestBody<CreateUserInputModel>, res: Response<UserOutputModel>) {
 		try {
-			const createdUserId = await this.usersService.createUser(req.body);
+			const createdUserId = await this.authService.registerUser(req.body);
 			const user = await this.queryUsersRepository.getUserById(createdUserId);
 			res.status(201).send(user);
 		} catch (err) {

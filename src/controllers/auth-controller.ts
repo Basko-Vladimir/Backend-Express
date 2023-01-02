@@ -106,7 +106,7 @@ export class AuthController {
 			const userId = String(user!._id);
 			const sessionId = session!._id;
 			const { accessToken, refreshToken } = await this
-				.createNewTokensPair({userId}, "10s", {userId, deviceId: session!.deviceId}, "20d");
+				.createNewTokensPair({userId}, "10s", {userId, deviceId: session!.deviceId}, "20s");
 			const refreshTokenPayload = await this.jwtService.getTokenPayload(refreshToken);
 			
 			await this.authService.updateDeviceSessionData(String(sessionId!), refreshTokenPayload?.iat!);
@@ -122,7 +122,7 @@ export class AuthController {
 	
 	async logout (req: Request, res: Response<void>) {
 		try {
-			// await this.authService.updateUserRefreshToken(String(req.context.user!._id), null);
+			await this.authService.logout(String(req.context.session!._id));
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
@@ -153,10 +153,13 @@ export class AuthController {
 		refreshTokenPayload: JwtPayload,
 		refreshTokenLifetime: string
 	): Promise<{accessToken: string, refreshToken: string}> {
-		const accessToken = await this.jwtService.createJWT(accessTokenPayload, accessTokenLifetime);
-		const refreshToken = await this.jwtService.createJWT(refreshTokenPayload, refreshTokenLifetime);
-		// await this.authService.updateUserRefreshToken(userId, refreshToken);
+		const accessToken = await this.jwtService.createJWT(
+			{...accessTokenPayload, iat: Date.now()}, accessTokenLifetime
+		);
+		const refreshToken = await this.jwtService.createJWT(
+			{...refreshTokenPayload, iat: Date.now()}, refreshTokenLifetime
+		);
 		
-		return { accessToken, refreshToken };
+		return {accessToken, refreshToken};
 	}
 }

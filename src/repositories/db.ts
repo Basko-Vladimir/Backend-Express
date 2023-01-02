@@ -1,24 +1,25 @@
-import { MongoClient } from "mongodb";
-import {IBlogger} from "../interfaces/bloggers-interfaces";
-import {IPost} from "../interfaces/posts-interfaces";
+import {MongoClient} from "mongodb";
+import {DataBaseError} from "../classes/errors";
+import {Blog} from "../classes/blogs";
+import {EntityWithoutId} from "../interfaces/common-interfaces";
+import {Post} from "../classes/posts";
 
-const mongoUri = process.env.MONGO_URI || "mongodb+srv://Vladimir:BaVlaG_192115@cluster0.nqlqdla.mongodb.net/?retryWrites=true&w=majority";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://Vladimir:BaVlaG_192115@cluster0.nqlqdla.mongodb.net/?retryWrites=true&w=majority";
 
-const client = new MongoClient(mongoUri);
-const db = client.db("homework3");
+const client = new MongoClient(MONGO_URI);
+const db = client.db("homework4")
 
-export const bloggersCollection = db.collection<IBlogger>("bloggers");
-export const postsCollection = db.collection<IPost>("posts");
+export const blogsCollection = db.collection<EntityWithoutId<Blog>>("blogs");
+export const postsCollection = db.collection<EntityWithoutId<Post>>("posts");
 
 export async function runDb() {
 	try {
-		//Connect the client to the server
 		await client.connect();
-		// Establish and verify connection
-		await db.command({ping: 1})
-		console.log("Connected successfully to mongo server!!!");
+		await db.command({ping: 1});
+		console.log("Connected successfully to Mongo server!!!");
 	} catch (err) {
-		console.log("Can't connect to mongodb! :(", err);
+		console.log(err);
 		await client.close();
+		throw new DataBaseError("Can't connect to mongodb!");
 	}
 }

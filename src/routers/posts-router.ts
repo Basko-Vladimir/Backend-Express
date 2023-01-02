@@ -1,58 +1,83 @@
-import { Router, Response, Request } from "express";
-import { checkExistingId } from "../middlewares/check-excisting-id";
-import { validationRequestErrors } from "../middlewares/validation-request-errors";
-import { postsRepository } from "../repositories/posts/db-posts-repository";
-import { checkAuthorization } from "../middlewares/check-authorization";
-import { checkPostRequestBody } from "../middlewares/posts/check-post-request-body";
-import { IPostData } from "../interfaces/posts-interfaces";
+import {Request, Response, Router} from "express";
+import {getErrorStatus, countSkipValue, parseQueryParamsValues, setSortValue} from "./utils";
+import {postsService} from "../services/posts-service";
+import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interfaces/common-interfaces";
+import {checkAuthorization} from "../middlewares/check-authorization";
+import {checkPostRequestBody} from "../middlewares/posts/post-request-body-validation";
+import {requestErrorsValidation} from "../middlewares/request-errors-validation";
+import {PostOutputModel} from "../models/posts/output-models";
+import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models";
+import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
+import {CreatePostInputModel, UpdatePostInputModel} from "../models/posts/input-models";
+import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 
 export const postsRouter = Router({});
 
-postsRouter.get("/", async (req: Request, res: Response) => {
-	const posts = await postsRepository.getAllPosts();
-	res.status(200).send(posts);
-});
+postsRouter.get(
+	"/",
+	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<PostOutputModel[]>) => {
+		try {
+			const { sortBy, sortDirection, pageNumber , pageSize } = parseQueryParamsValues(req.query);
+			const skip = countSkipValue(pageNumber, pageSize);
+			const sortSetting = setSortValue(sortBy, sortDirection);
+			const posts = await queryPostsRepository.getAllPosts(skip, pageSize, sortSetting);
+
+			res.status(200).send(posts);
+		}	catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	});
 
 postsRouter.get(
 	"/:id",
-	checkExistingId,
-	validationRequestErrors,
-	async (req: Request<{id: string}>, res:Response) => {
-		const post = await postsRepository.getPostById(req.params.id);
-		post ? res.status(200).send(post) : res.send(404);
-	}
-);
-
-postsRouter.delete(
-	"/:id",
-	checkAuthorization,
-	checkExistingId,
-	validationRequestErrors,
-	async (req: Request<{id: string}>, res: Response) => {
-		const isDeleted = await postsRepository.deletePost(req.params.id);
-		isDeleted ? res.send(204) : res.send(404);
-	}
-);
+	async (req: TypedRequestParams<ParamIdInputModel>, res: Response<PostOutputModel>) => {
+		try {
+			const post = await queryPostsRepository.getPostById(req.params.id);
+			res.status(200).send(post);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	});
 
 postsRouter.post(
 	"/",
 	checkAuthorization,
 	checkPostRequestBody,
-	validationRequestErrors,
-	async (req: Request<{}, {}, IPostData>, res: Response) => {
-		const newPost = await postsRepository.createPost(req.body);
-		res.status(201).send(newPost);
-	}
-);
+	requestErrorsValidation,
+	async (req: TypedRequestBody<CreatePostInputModel>, res: Response<PostOutputModel>) => {
+		try {
+			const { name: blogName } = await queryBlogsRepository.getBlogById(req.body.blogId);
+			const createdPostId = await postsService.createPost({...req.body, blogName});
+			const post = await queryPostsRepository.getPostById(createdPostId);
+			res.status(201).send(post);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	});
 
 postsRouter.put(
 	"/:id",
 	checkAuthorization,
-	checkExistingId,
 	checkPostRequestBody,
-	validationRequestErrors,
-	async (req: Request<{id: string}, {}, IPostData>, res: Response) => {
-		await postsRepository.updatePost(req.params.id, req.body) ? res.send(204) : res.send(404);
-	}
-);
+	requestErrorsValidation,
+	async (req: Request<ParamIdInputModel, {}, UpdatePostInputModel>, res: Response<void>) => {
+		try {
+			await postsService.updatePost({...req.body, ...req.params});
+			res.sendStatus(204);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	});
 
+postsRouter.delete(
+	"/:id",
+	checkAuthorization,
+	requestErrorsValidation,
+	async (req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
+		try {
+			await postsService.deletePost(req.params.id);
+			res.sendStatus(204);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	});

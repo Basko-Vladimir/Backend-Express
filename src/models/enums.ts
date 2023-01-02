@@ -5,7 +5,7 @@ export enum SortDirection {
 
 export enum BlogSortByField {
 	name = "name",
-	youtubeUrl = "youtubeUrl",
+	websiteUrl = "websiteUrl",
 	createdAt = "createdAt"
 }
 

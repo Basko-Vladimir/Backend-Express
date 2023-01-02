@@ -2,12 +2,12 @@ import {ParamsDictionary} from "express-serve-static-core";
 
 export interface CreateBlogInputModel {
 	name: string;
-	youtubeUrl: string;
+	websiteUrl: string;
 }
 
 export interface UpdateBlogInputModel {
 	name: string;
-	youtubeUrl: string;
+	websiteUrl: string;
 }
 
 export interface CreateBlogPostInputModel {

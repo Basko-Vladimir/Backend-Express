@@ -58,8 +58,8 @@ export class AuthService {
 		}
 	}
 	
-	async checkCredentials(login: string, password: string): Promise<string | null> {
-		const user = await this.usersService.getUserByFilter({login});
+	async checkCredentials(loginOrEmail: string, password: string): Promise<string | null> {
+		const user = await this.usersService.getUserByFilter({login: loginOrEmail, email: loginOrEmail});
 		
 		if (!user) return null;
 		

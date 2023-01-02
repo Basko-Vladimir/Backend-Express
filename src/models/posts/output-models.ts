@@ -1,4 +1,6 @@
 import {PostSortByField, SortDirection} from "../enums";
+import {AllEntitiesOutputModel} from "../common-models";
+import {CommentOutputModel} from "../comments/output-models";
 
 export interface PostOutputModel {
 	id: string;
@@ -9,6 +11,8 @@ export interface PostOutputModel {
 	blogName: string;
 	createdAt: string;
 }
+
+export type PostAllCommentsOutputModel = AllEntitiesOutputModel<CommentOutputModel>;
 
 export interface PostsQueryParamsOutputModel {
 	sortBy: PostSortByField;

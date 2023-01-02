@@ -2,9 +2,11 @@ import { ObjectId } from "mongodb";
 import {DbBlog} from "../interfaces/blogs-interfaces";
 import {DbPost} from "../interfaces/posts-interfaces";
 import {DbUser} from "../interfaces/users-interfaces";
+import {DbComment} from "../interfaces/comments-interfaces";
 import {BlogOutputModel} from "../../models/blogs/output-models";
 import { PostOutputModel } from "../../models/posts/output-models";
 import {UserOutputModel} from "../../models/users/output-models";
+import {CommentOutputModel} from "../../models/comments/output-models";
 
 export const getFilterByDbId = (id: string): {_id: ObjectId} => ({_id: new ObjectId(id)});
 
@@ -14,7 +16,7 @@ export const mapDbBlogToBlogOutputModel = (blog: DbBlog): BlogOutputModel => {
 		name: blog.name,
 		youtubeUrl: blog.youtubeUrl,
 		createdAt: blog.createdAt.toISOString()
-	}
+	};
 };
 
 export const mapDbPostToPostOutputModel = (post: DbPost): PostOutputModel => {
@@ -26,7 +28,7 @@ export const mapDbPostToPostOutputModel = (post: DbPost): PostOutputModel => {
 		blogId: String(post.blogId),
 		blogName: post.blogName,
 		createdAt: post.createdAt.toISOString()
-	}
+	};
 };
 
 export const mapDbUserToUserOutputModel = (user: DbUser): UserOutputModel => {
@@ -35,5 +37,15 @@ export const mapDbUserToUserOutputModel = (user: DbUser): UserOutputModel => {
 		login: user.login,
 		email: user.email,
 		createdAt: user.createdAt.toISOString()
-	}
-}
+	};
+};
+
+export const mapDbCommentToCommentOutputModel = (comment: DbComment): CommentOutputModel => {
+	return {
+		id: String(comment._id),
+		content: comment.content,
+		userId: String(comment.userId),
+		userLogin: comment.userLogin,
+		createdAt: comment.createdAt.toISOString()
+	};
+};

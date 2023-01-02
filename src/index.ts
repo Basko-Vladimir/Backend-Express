@@ -7,8 +7,9 @@ import {postsRouter} from "./routers/posts-router";
 import {testingRouter} from "./routers/testing-router";
 import {usersRouter} from "./routers/users-router";
 import {authRouter} from "./routers/auth-router";
+import {settings} from "./settings";
 
-const PORT = process.env.PORT || 5000;
+const PORT = settings.PORT;
 
 const app = express();
 

@@ -1,3 +1,4 @@
+import {ParamsDictionary} from "express-serve-static-core";
 import {PostSortByField, SortDirection} from "../enums";
 
 export interface CreatePostInputModel {
@@ -19,4 +20,8 @@ export interface PostsQueryParamsInputModel {
 	sortDirection?: SortDirection;
 	pageNumber?: string;
 	pageSize?: string;
+}
+
+export interface ParamPostIdInputModel extends ParamsDictionary {
+	postId: string;
 }

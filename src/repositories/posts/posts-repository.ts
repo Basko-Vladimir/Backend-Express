@@ -1,16 +1,20 @@
 import { ObjectId } from "mongodb";
 import {postsCollection} from "../db";
-import {getFilterByDbId} from "../utils/mappers-utils";
-import { DbPost } from "../interfaces/posts-interfaces";
+import {DbPost} from "../interfaces";
+import {getFilterByDbId} from "../mappers-utils";
 import {PostOutputModel} from "../../models/posts/output-models";
-import {DataBaseError, NotFoundError} from "../../classes/errors";
+import {NotFoundError} from "../../classes/errors";
 import { EntityWithoutId } from "../../common/interfaces";
 
 export const postsRepository = {
+	async getPostById(id: string): Promise<DbPost | null> {
+		return postsCollection.findOne(getFilterByDbId(id));
+	},
+	
 	async createPost(postData: EntityWithoutId<DbPost>): Promise<string> {
 		const { insertedId } = await postsCollection.insertOne(postData);
 
-		if (!insertedId) throw new DataBaseError();
+		if (!insertedId) throw new NotFoundError();
 
 		return String(insertedId);
  	},

@@ -8,7 +8,7 @@ import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, EMPTY_SEARCH_VALUE} from "../com
 import { queryUsersRepository } from "../repositories/users/query-users-repository";
 import {usersService} from "../services/users-service";
 import {ParamIdInputModel} from "../models/common-models";
-import {checkAuthorization} from "../middlewares/check-authorization";
+import {basicAuthValidation} from "../middlewares/basic-auth-validation";
 import {userRequestBodyValidation} from "../middlewares/users/user-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 
@@ -36,7 +36,7 @@ usersRouter.get(
 
 usersRouter.post(
 	"/",
-	checkAuthorization,
+	basicAuthValidation,
 	userRequestBodyValidation,
 	requestErrorsValidation,
 	async (req: TypedRequestBody<CreateUserInputModel>, res: Response<UserOutputModel>) => {
@@ -51,7 +51,7 @@ usersRouter.post(
 
 usersRouter.delete(
 	"/:id",
-	checkAuthorization,
+	basicAuthValidation,
 	requestErrorsValidation,
 	async (req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
 		try {

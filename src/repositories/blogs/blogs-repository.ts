@@ -1,7 +1,7 @@
 import {blogsCollection} from "../db";
-import {getFilterByDbId} from "../utils/mappers-utils";
-import {DbBlog} from "../interfaces/blogs-interfaces";
-import {DataBaseError, NotFoundError} from "../../classes/errors";
+import {DbBlog} from "../interfaces";
+import {getFilterByDbId} from "../mappers-utils";
+import {NotFoundError} from "../../classes/errors";
 import {UpdateBlogInputModel} from "../../models/blogs/input-models";
 import { Blog } from "../../classes/blogs";
 import {EntityWithoutId} from "../../common/interfaces";
@@ -14,7 +14,7 @@ export const blogsRepository = {
 	async createBlog(blogData: EntityWithoutId<DbBlog>): Promise<string> {
 		const { insertedId } = await blogsCollection.insertOne(blogData);
 		
-		if (!insertedId) throw new DataBaseError();
+		if (!insertedId) throw new NotFoundError();
 		
 		return String(insertedId);
 	},

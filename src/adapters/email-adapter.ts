@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import {EmailInfoModel} from "../models/email-models";
 import {injectable} from "inversify";
+import {settings} from "../settings";
 
 @injectable()
 export class EmailAdapter {
@@ -9,7 +10,7 @@ export class EmailAdapter {
 			service: "gmail",
 			auth: {
 				user: "dev.test.vladimir@gmail.com",
-				pass: `zehkznqelccslqky`
+				pass: settings.TEST_DEV_EMAIL_PASS
 			},
 		});
 		

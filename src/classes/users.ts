@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import add from "date-fns/add";
 
 
-class EmailConfirmation {
+export class EmailConfirmation {
 	confirmationCode: string;
 	expirationDate: Date;
 	isConfirmed: boolean = false;

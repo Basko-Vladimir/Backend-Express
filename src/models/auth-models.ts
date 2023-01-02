@@ -3,7 +3,7 @@ export interface LoginInputModel {
 	password: string;
 }
 
-export interface LoginOutputModel {
+export interface TokenOutputModel {
 	accessToken: string;
 }
 

@@ -1,39 +1,32 @@
-import {inject, injectable} from "inversify";
-import {BlogsRepository} from "../repositories/blogs/blogs-repository";
+import {blogsRepository} from "../repositories/blogs/blogs-repository";
 import {Blog} from "../classes/blogs";
 import {CreateBlogInputModel, CreateBlogPostInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
 import {NotFoundError} from "../classes/errors";
-import {PostsService} from "./posts-service";
+import {postsService} from "./posts-service";
 import {PostOutputModel} from "../models/posts/output-models";
 
-@injectable()
-export class BlogsService {
-	constructor (
-		@inject(BlogsRepository) protected blogsRepository: BlogsRepository,
-		@inject(PostsService) protected postsService: PostsService
-	) {}
-	
+export const blogsService = {
 	async getBlogById(id: string): Promise<Blog | null> {
-		return this.blogsRepository.getBlogById(id);
-	}
+		return blogsRepository.getBlogById(id);
+	},
 	
 	async createBlog(data: CreateBlogInputModel): Promise<string> {
-		const { name, websiteUrl } = data;
-		const blogData = new Blog(name, websiteUrl);
+		const { name, youtubeUrl } = data;
+		const blogData = new Blog(name, youtubeUrl);
 
-		return this.blogsRepository.createBlog(blogData);
-	}
+		return blogsRepository.createBlog(blogData);
+	},
 	
 	async updateBlog(id: string, data: UpdateBlogInputModel): Promise<void> {
-		return this.blogsRepository.updateBlog(id, data);
-	}
+		return blogsRepository.updateBlog(id, data);
+	},
 	
 	async deleteBlog(id: string): Promise<void> {
-		return this.blogsRepository.deleteBlog(id);
-	}
+		return blogsRepository.deleteBlog(id);
+	},
 	
 	async createPostByBlogId(blogId: string, createPostData: CreateBlogPostInputModel): Promise<string> {
-		const blog = await this.blogsRepository.getBlogById(blogId);
+		const blog = await blogsRepository.getBlogById(blogId);
 		
 		if (!blog) throw new NotFoundError();
 		
@@ -46,10 +39,10 @@ export class BlogsService {
 			blogName: blog.name
 		};
 		
-		return this.postsService.createPost(postData);
-	}
+		return postsService.createPost(postData);
+	},
 	
 	async deleteAllBlogs(): Promise<void> {
-		return this.blogsRepository.deleteAllBlogs();
-	}
-}
+		return blogsRepository.deleteAllBlogs();
+	},
+};

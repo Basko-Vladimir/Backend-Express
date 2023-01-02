@@ -1,8 +1,14 @@
-import {Router} from "express";
-import {iocContainer} from "../composition-root";
-import {TestingController} from "../controllers/testing-controller";
+import {Request, Response, Router} from "express";
+import {testingService} from "../services/testing-service";
+import { getErrorStatus } from "./utils";
 
 export const testingRouter = Router({});
-const testingController = iocContainer.resolve(TestingController);
 
-testingRouter.delete("/all-data", testingController.deleteAllData.bind(testingController));
+testingRouter.delete("/all-data", async (req: Request, res: Response<number>) => {
+	try {
+		await testingService.deleteAllData();
+		res.sendStatus(204);
+	} catch (error) {
+		res.sendStatus(getErrorStatus(error));
+	}
+});

@@ -14,7 +14,7 @@ export const confirmationCodeValidation = body("code")
 			if (user.emailConfirmation.isConfirmed) throw new Error("Confirmation code is confirmed already!");
 			if (user.emailConfirmation.confirmationCode !== code) throw new Error(notValidMessage);
 			
-			meta.req.user = user;
+			meta.req.context = {user};
 			return code;
 		} else {
 			throw new Error(notValidMessage);

@@ -3,12 +3,12 @@ import {ObjectId} from "mongodb";
 export class Blog {
 	_id: ObjectId | null = null;
 	name: string;
-	websiteUrl: string;
+	youtubeUrl: string;
 	createdAt: Date;
 	
-	constructor(name: string, websiteUrl: string) {
+	constructor(name: string, youtubeUrl: string) {
 		this.name = name;
-		this.websiteUrl = websiteUrl;
+		this.youtubeUrl = youtubeUrl;
 		this.createdAt = new Date();
 	}
 }

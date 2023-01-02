@@ -1,11 +1,10 @@
 import {PostOutputModel} from "../posts/output-models";
-import {BlogSortByField} from "../enums";
-import {AllEntitiesOutputModel, CommonQueryParamsModel} from "../common-models";
+import {BlogSortByField, SortDirection} from "../enums";
 
 export interface BlogOutputModel {
 	id: string;
 	name: string;
-	websiteUrl: string;
+	youtubeUrl: string;
 	createdAt: string;
 }
 
@@ -17,8 +16,19 @@ export interface AllBlogsOutputModel {
 	items: BlogOutputModel[];
 }
 
-export interface BlogAllPostsOutputModel extends AllEntitiesOutputModel<PostOutputModel> {}
+export interface BlogAllPostsOutputModel {
+	pagesCount: number;
+	page: number;
+	pageSize: number;
+	totalCount: number;
+	items: PostOutputModel[];
+}
 
-export interface BlogsQueryParamsOutputModel extends CommonQueryParamsModel<BlogSortByField> {
+export interface BlogsQueryParamsOutputModel {
+	sortBy: BlogSortByField;
+	sortDirection: SortDirection;
+	pageNumber: number;
+	pageSize: number;
 	searchNameTerm: string;
 }
+

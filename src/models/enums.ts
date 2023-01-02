@@ -5,7 +5,7 @@ export enum SortDirection {
 
 export enum BlogSortByField {
 	name = "name",
-	websiteUrl = "websiteUrl",
+	youtubeUrl = "youtubeUrl",
 	createdAt = "createdAt"
 }
 
@@ -17,14 +17,3 @@ export enum PostSortByField {
 	content = "content"
 }
 
-export enum UserSortByField {
-	login = "login",
-	email = "email",
-	createdAt = "createdAt"
-}
-
-export enum CommentSortByField {
-	content = "content",
-	userLogin = "userLogin",
-	createdAt = "createdAt"
-}

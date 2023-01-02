@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import {blogsService} from "../services/blogs-service";
-import {checkAuthorization} from "../middlewares/check-authorization";
+import {basicAuthValidation} from "../middlewares/basic-auth-validation";
 import {blogRequestBodyValidation} from "../middlewares/blogs/blog-request-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
 import {ParamIdInputModel} from "../models/common-models";
@@ -64,7 +64,7 @@ blogsRouter.get(
 
 blogsRouter.post(
 	"/",
-	checkAuthorization,
+	basicAuthValidation,
 	blogRequestBodyValidation,
 	requestErrorsValidation,
 	async (req: TypedRequestBody<CreateBlogInputModel>, res: Response<BlogOutputModel>) => {
@@ -79,7 +79,7 @@ blogsRouter.post(
 
 blogsRouter.put(
 	"/:id",
-	checkAuthorization,
+	basicAuthValidation,
 	blogRequestBodyValidation,
 	requestErrorsValidation,
 	async (req: Request<ParamIdInputModel, {}, UpdateBlogInputModel>, res: Response) => {
@@ -93,7 +93,7 @@ blogsRouter.put(
 
 blogsRouter.delete(
 	"/:id",
-	checkAuthorization,
+	basicAuthValidation,
 	requestErrorsValidation,
 	async(req: TypedRequestParams<ParamIdInputModel>, res: Response) => {
 		try {
@@ -106,7 +106,7 @@ blogsRouter.delete(
 
 blogsRouter.post(
 	"/:blogId/posts",
-	checkAuthorization,
+	basicAuthValidation,
 	blogIdParamValidation,
 	postBodyCommonFieldsValidation,
 	requestErrorsValidation,

@@ -7,6 +7,10 @@ import {DataBaseError, NotFoundError} from "../../classes/errors";
 import { EntityWithoutId } from "../../common/interfaces";
 
 export const postsRepository = {
+	async getPostById(id: string): Promise<DbPost | null> {
+		return postsCollection.findOne(getFilterByDbId(id));
+	},
+	
 	async createPost(postData: EntityWithoutId<DbPost>): Promise<string> {
 		const { insertedId } = await postsCollection.insertOne(postData);
 

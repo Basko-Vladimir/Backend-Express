@@ -1,5 +1,5 @@
 import { ParamsDictionary } from "express-serve-static-core";
-import {SortDirection} from "./enums";
+import {SortDirection} from "../common/enums";
 
 export interface ParamIdInputModel extends ParamsDictionary {
 	id: string;

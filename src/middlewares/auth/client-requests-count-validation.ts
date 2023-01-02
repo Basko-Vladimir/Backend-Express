@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from "express";
 import {iocContainer} from "../../composition-root";
 import {ClientRequestsService} from "../../services/client-requests-service";
-import {ClientRequestSortByField} from "../../models/enums";
+import {ClientRequestSortByField} from "../../common/enums";
 import {DbSortDirection} from "../../repositories/interfaces/common-interfaces";
 import {getErrorStatus} from "../../controllers/utils";
 

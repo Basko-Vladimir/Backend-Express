@@ -1,4 +1,4 @@
-import {UserSortByField} from "../enums";
+import {UserSortByField} from "../../common/enums";
 import {AllEntitiesOutputModel, CommonQueryParamsModel} from "../common-models";
 
 export interface UserOutputModel {

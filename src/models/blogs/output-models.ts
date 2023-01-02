@@ -1,5 +1,5 @@
 import {PostOutputModel} from "../posts/output-models";
-import {BlogSortByField} from "../enums";
+import {BlogSortByField} from "../../common/enums";
 import {AllEntitiesOutputModel, CommonQueryParamsModel} from "../common-models";
 
 export interface BlogOutputModel {

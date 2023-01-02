@@ -1,4 +1,4 @@
-import {CommentSortByField} from "../enums";
+import {CommentSortByField} from "../../common/enums";
 import {CommonQueryParamsModel} from "../common-models";
 
 export interface CommentOutputModel {

@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
 import {blogsCollection} from "../db";
-import {DbBlog} from "../interfaces";
-import {getFilterByDbId} from "../mappers-utils";
+import {getFilterByDbId} from "../utils/mappers-utils";
+import {DbBlog} from "../interfaces/blogs-interfaces";
 import {NotFoundError} from "../../classes/errors";
 import {UpdateBlogInputModel} from "../../models/blogs/input-models";
 import { Blog } from "../../classes/blogs";

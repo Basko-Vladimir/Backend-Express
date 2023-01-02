@@ -3,6 +3,7 @@ import {User} from "../classes/users";
 import {UsersRepository} from "../repositories/users/users-repository";
 import {CreateUserInputModel} from "../models/users/input-models";
 import {UserFilter} from "../repositories/interfaces/users-interfaces";
+import {UpdateOrFilterModel} from "../common/interfaces";
 
 @injectable()
 export class UsersService {
@@ -28,7 +29,7 @@ export class UsersService {
 		return this.usersRepository.createUser(newUser);
 	}
 	
-	async updateUser(userId: string, updatedField: {[key: string]: unknown}) {
+	async updateUser(userId: string, updatedField: UpdateOrFilterModel): Promise<void> {
 		return this.usersRepository.updateUser(userId, updatedField);
 	}
 	

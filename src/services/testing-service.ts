@@ -3,6 +3,8 @@ import {BlogsService} from "./blogs-service";
 import {PostsService} from "./posts-service";
 import {UsersService} from "./users-service";
 import {CommentsService} from "./comments-service";
+import {ClientRequestsService} from "./client-requests-service";
+import {DevicesSessionsService} from "./devices-sessions-service";
 
 @injectable()
 export class TestingService {
@@ -10,7 +12,9 @@ export class TestingService {
 		@inject(BlogsService) protected blogsService: BlogsService,
 		@inject(PostsService) protected postsService: PostsService,
 		@inject(UsersService) protected usersService: UsersService,
-		@inject(CommentsService) protected commentsService: CommentsService
+		@inject(CommentsService) protected commentsService: CommentsService,
+		@inject(ClientRequestsService) protected clientRequestsService: ClientRequestsService,
+		@inject(DevicesSessionsService) protected devicesSessionsService: DevicesSessionsService,
 	) {}
 	
 	async deleteAllData(): Promise<void[]> {
@@ -18,7 +22,9 @@ export class TestingService {
 			this.blogsService.deleteAllBlogs(),
 			this.postsService.deleteAllPosts(),
 			this.usersService.deleteAllUsers(),
-			this.commentsService.deleteAllComments()
+			this.commentsService.deleteAllComments(),
+			this.clientRequestsService.deleteAllClientRequests(),
+			this.devicesSessionsService.deleteAllDevicesSessions()
 		]);
 	}
 }

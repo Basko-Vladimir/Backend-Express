@@ -15,7 +15,7 @@ export class UsersController {
 	constructor(
 		@inject(AuthService) protected authService: AuthService,
 		@inject(UsersService) protected usersService: UsersService,
-		@inject(UsersService) protected queryUsersRepository: QueryUsersRepository
+		@inject(QueryUsersRepository) protected queryUsersRepository: QueryUsersRepository
 	) {}
 	
 	async getAllUsers(req: TypedRequestQuery<UsersQueryParamsOutputModel>, res: Response<AllUsersOutputModel>) {

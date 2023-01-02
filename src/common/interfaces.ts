@@ -5,3 +5,7 @@ export interface TypedRequestBody<B> extends Request<{}, {}, B> {}
 export interface TypedRequestQuery<Q> extends Request<{}, {}, {}, Q> {}
 
 export type EntityWithoutId<T> = Omit<T, "id" | "_id">;
+
+export interface UpdateOrFilterModel<T = unknown> {
+	[key: string]: T;
+}

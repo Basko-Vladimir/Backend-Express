@@ -2,17 +2,21 @@ import {inject, injectable} from "inversify";
 import bcrypt from "bcrypt";
 import add from "date-fns/add";
 import {v4 as uuidv4} from "uuid";
+import {UsersService} from "./users-service";
+import {DevicesSessionsService} from "./devices-sessions-service";
 import {EmailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
+import {EntityWithoutId} from "../common/interfaces";
 import {User} from "../classes/users";
-import {UsersService} from "./users-service";
 import {NotFoundError} from "../classes/errors";
+import {DeviceSession} from "../classes/devices-sessions";
 
 @injectable()
 export class AuthService {
 	constructor(
 		@inject(UsersService) protected usersService: UsersService,
 		@inject(EmailManager) protected emailManager: EmailManager,
+		@inject(DevicesSessionsService) protected devicesSessionsService: DevicesSessionsService,
 	) {}
 	
 	async registerUser(userData: CreateUserInputModel): Promise<string> {
@@ -69,5 +73,17 @@ export class AuthService {
 	
 	async generateHash(password: string, salt: string): Promise<string> {
 		return bcrypt.hash(password, salt);
+	}
+	
+	async updateDeviceSessionData(_id: string, issuedAt: number): Promise<void> {
+		return this.devicesSessionsService.updateDeviceSession(_id, {issuedAt});
+	}
+	
+	async createDeviceSession(deviceSessionDataInputModel: EntityWithoutId<DeviceSession>): Promise<string> {
+		return this.devicesSessionsService.createDeviceSession(deviceSessionDataInputModel);
+	}
+	
+	async logout(deviceSessionId: string): Promise<void> {
+		return this.devicesSessionsService.deleteDeviceSessionById(deviceSessionId);
 	}
 }

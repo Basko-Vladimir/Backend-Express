@@ -1,9 +1,14 @@
-import { Request, Response, Router } from "express";
-import { testingRepository } from "../repositories/testing/testing-repository";
+import {Request, Response, Router} from "express";
+import {testingService} from "../services/testing-service";
+import { getErrorStatus } from "./utils";
 
 export const testingRouter = Router({});
 
-testingRouter.delete("/all-data", async (req: Request, res: Response) => {
-	await testingRepository.deleteAllData();
-	res.sendStatus(204);
+testingRouter.delete("/all-data", async (req: Request, res: Response<number>) => {
+	try {
+		await testingService.deleteAllData();
+		res.sendStatus(204);
+	} catch (error) {
+		res.sendStatus(getErrorStatus(error));
+	}
 });

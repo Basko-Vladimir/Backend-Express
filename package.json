@@ -1,12 +1,12 @@
 {
-  "name": "hm-02",
+  "name": "hm-04",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
-    "build-ts": "tsc -w",
+    "build:ts": "tsc -w",
     "start-dev": "nodemon --inspect dist/index.js"
   },
   "dependencies": {

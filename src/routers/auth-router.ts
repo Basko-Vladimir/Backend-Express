@@ -9,6 +9,8 @@ import {emailExistenceValidation} from "../middlewares/auth/email-existence-vali
 import {bearerAuthValidation} from "../middlewares/bearer-auth-validation";
 import {refreshTokenValidation} from "../middlewares/refresh-token-validation";
 import {clientRequestsCountValidation} from "../middlewares/auth/client-requests-count-validation";
+import {passwordValidation} from "../middlewares/auth/password-validation";
+import {passwordRecoveryCodeValidation} from "../middlewares/auth/password-recovery-code-validation";
 import {iocContainer} from "../composition-root";
 import {AuthController} from "../controllers/auth-controller";
 
@@ -61,4 +63,21 @@ authRouter.post(
 	"/logout",
 	refreshTokenValidation,
 	authController.logout.bind(authController)
+);
+
+authRouter.post(
+	"/password-recovery",
+	clientRequestsCountValidation,
+	emailValidation,
+	requestErrorsValidation,
+	authController.recoverPassword.bind(authController)
+);
+
+authRouter.post(
+	"/new-password",
+	clientRequestsCountValidation,
+	passwordValidation("newPassword"),
+	passwordRecoveryCodeValidation,
+	requestErrorsValidation,
+	authController.confirmPasswordRecovery.bind(authController)
 );

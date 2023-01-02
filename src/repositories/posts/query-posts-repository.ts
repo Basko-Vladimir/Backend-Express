@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
 import {injectable} from "inversify";
-import {postsCollection} from "../db";
-import {NotFoundError} from "../../classes/errors";
+import {PostsModel} from "../db";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
-import {getFilterByDbId, mapDbPostToPostOutputModel} from "../utils/mappers-utils";
+import {mapDbPostToPostOutputModel} from "../utils/mappers-utils";
+import {NotFoundError} from "../../classes/errors";
 import {PostOutputModel, PostsQueryParamsOutputModel} from "../../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../../models/blogs/output-models";
 
@@ -15,20 +15,19 @@ export class QueryPostsRepository {
 			const skip = countSkipValue(pageNumber, pageSize);
 			const sortSetting = setSortValue(sortBy, sortDirection);
 			
-			const totalCount = await postsCollection.countDocuments();
-			const blogs = await postsCollection
+			const totalCount = await PostsModel.countDocuments();
+			const posts = await PostsModel
 				.find({})
 				.skip(skip)
 				.limit(pageSize)
-				.sort(sortSetting)
-				.toArray();
+				.sort(sortSetting);
 			
 			return {
 				pagesCount: Math.ceil(totalCount / pageSize),
 				page: pageNumber,
 				pageSize: pageSize,
 				totalCount: totalCount,
-				items: blogs.map(mapDbPostToPostOutputModel)
+				items: posts.map(mapDbPostToPostOutputModel)
 			};
 		} catch {
 			throw new NotFoundError();
@@ -43,15 +42,16 @@ export class QueryPostsRepository {
 			const { sortBy, sortDirection, pageNumber, pageSize } = queryParamsData;
 			const skip = countSkipValue(pageNumber, pageSize);
 			const sortSetting = setSortValue(sortBy, sortDirection);
-			const filterByBlogId = {blogId: new ObjectId(blogId)};
 			
-			const totalCount = await postsCollection.countDocuments(filterByBlogId);
-			const posts = await postsCollection
-				.find(filterByBlogId)
+			const totalCount = await PostsModel
+				.countDocuments()
+				.where("blogId", new ObjectId(blogId));
+			const posts = await PostsModel
+				.find({})
+				.where("blogId", new ObjectId(blogId))
 				.skip(skip)
 				.limit(pageSize)
-				.sort(sortSetting)
-				.toArray();
+				.sort(sortSetting);
 			
 			return {
 				pagesCount: Math.ceil(totalCount / pageSize),
@@ -66,7 +66,7 @@ export class QueryPostsRepository {
 	}
 	
 	async getPostById(id: string): Promise<PostOutputModel> {
-		const post = await postsCollection.findOne(getFilterByDbId(id));
+		const post = await PostsModel.findById(id);
 		
 		if (!post) throw new NotFoundError();
 		

@@ -8,4 +8,5 @@ export interface DbPost {
 	blogId: ObjectId;
 	blogName: string;
 	createdAt: Date;
+	__v: number;
 }

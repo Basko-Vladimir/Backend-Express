@@ -2,13 +2,14 @@ import { body } from "express-validator";
 import {postBodyCommonFieldsValidation} from "./post-body-common-fields-validation";
 import {iocContainer} from "../../composition-root";
 import { BlogsService } from "../../services/blogs-service";
+import {generateMissedPropError} from "../../common/error-messages";
 
 const blogsService = iocContainer.resolve(BlogsService);
 
 export const postRequestFullBodyValidation = [
 	...postBodyCommonFieldsValidation,
 	body("blogId")
-		.exists().withMessage("You didn't provide 'blogId' field")
+		.exists().withMessage(generateMissedPropError("blogId"))
 		.custom(async (value) => {
 			const blog = await blogsService.getBlogById(value);
 			

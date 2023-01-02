@@ -18,8 +18,8 @@ export class BlogsService {
 	}
 	
 	async createBlog(data: CreateBlogInputModel): Promise<string> {
-		const { name, websiteUrl } = data;
-		const blogData = new Blog(name, websiteUrl);
+		const { name, websiteUrl, description } = data;
+		const blogData = new Blog(name, websiteUrl, description);
 
 		return this.blogsRepository.createBlog(blogData);
 	}

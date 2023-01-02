@@ -24,7 +24,7 @@ export class UsersController {
 			const usersOutputModel = await this.queryUsersRepository.getAllUsers({
 				...req.query,
 				searchLoginTerm: searchLoginTerm ? searchLoginTerm.trim() : EMPTY_SEARCH_VALUE,
-				searchEmailTerm: searchLoginTerm ? searchEmailTerm.trim() : EMPTY_SEARCH_VALUE
+				searchEmailTerm: searchEmailTerm ? searchEmailTerm.trim() : EMPTY_SEARCH_VALUE
 			});
 			res.status(200).send(usersOutputModel);
 		} catch (err) {

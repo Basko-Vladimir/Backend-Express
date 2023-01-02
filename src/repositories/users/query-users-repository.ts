@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
-import {usersCollection} from "../db";
+import {UsersModel} from "../db";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
-import {getFilterByDbId, mapDbUserToUserOutputModel} from "../utils/mappers-utils";
+import {mapDbUserToUserOutputModel} from "../utils/mappers-utils";
 import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../../models/users/output-models";
 import {NotFoundError} from "../../classes/errors";
 
@@ -11,18 +11,18 @@ export class QueryUsersRepository {
 		const { sortBy, sortDirection, pageNumber, pageSize, searchEmailTerm, searchLoginTerm } = queryParamsData;
 		const skip = countSkipValue(pageNumber, pageSize);
 		const sortSetting = setSortValue(sortBy, sortDirection);
-		
-		const searchFilter = {$or: [
-				{login: {$regex: searchLoginTerm, $options: "i"}},
-				{email: {$regex: searchEmailTerm, $options: "i"}}
-			]};
-		const totalCount =  await usersCollection.countDocuments(searchFilter);
-		const users = await usersCollection
-			.find(searchFilter)
+
+		const totalCount =  await UsersModel
+			.countDocuments()
+			.where("email", new RegExp(searchEmailTerm, "i"))
+			.where("login", new RegExp(searchLoginTerm, "i"));
+		const users = await UsersModel
+			.find()
+			.where("email", new RegExp(searchEmailTerm, "i"))
+			.where("login", new RegExp(searchLoginTerm, "i"))
 			.skip(skip)
 			.limit(pageSize)
-			.sort(sortSetting)
-			.toArray();
+			.sort(sortSetting);
 		
 		return {
 			pagesCount: Math.ceil(totalCount / pageSize),
@@ -34,7 +34,7 @@ export class QueryUsersRepository {
 	}
 	
 	async getUserById(id: string): Promise<UserOutputModel> {
-		const user = await usersCollection.findOne(getFilterByDbId(id));
+		const user = await UsersModel.findById(id);
 		
 		if (!user) throw new NotFoundError();
 		

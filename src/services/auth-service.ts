@@ -6,10 +6,12 @@ import {UsersService} from "./users-service";
 import {DevicesSessionsService} from "./devices-sessions-service";
 import {EmailManager} from "../managers/email-manager";
 import {CreateUserInputModel} from "../models/users/input-models";
+import {PasswordRecoveryConfirmationInputModel} from "../models/auth-models";
 import {EntityWithoutId} from "../common/interfaces";
-import {User} from "../classes/users";
+import {EMAIL_SERVICE_ERROR_MESSAGE} from "../common/error-messages";
 import {NotFoundError} from "../classes/errors";
 import {DeviceSession} from "../classes/devices-sessions";
+import {DbUser} from "../repositories/interfaces/users-interfaces";
 
 @injectable()
 export class AuthService {
@@ -37,15 +39,15 @@ export class AuthService {
 		} catch (error) {
 			console.error(error)
 			await this.usersService.deleteUser(createdUserId);
-			throw new Error("Some error with email service, try later!")
+			throw new Error(EMAIL_SERVICE_ERROR_MESSAGE);
 		}
 	}
 	
-	async confirmRegistration(user: User): Promise<void> {
+	async confirmRegistration(user: DbUser): Promise<void> {
 		return this.usersService.updateUserConfirmation(user);
 	}
 	
-	async resendRegistrationEmail(user: User): Promise<void> {
+	async resendRegistrationEmail(user: DbUser): Promise<void> {
 		try {
 			const newConfirmationCode = uuidv4();
 			await this.usersService.updateUser(String(user._id), {
@@ -85,5 +87,31 @@ export class AuthService {
 	
 	async logout(deviceSessionId: string): Promise<void> {
 		return this.devicesSessionsService.deleteDeviceSessionById(deviceSessionId);
+	}
+	
+	async recoverPassword(email: string): Promise<void> {
+		const passwordRecoveryCode = uuidv4();
+		const user = await this.usersService.getUserByFilter({email});
+		
+		if (user) {
+			await this.usersService.updateUser(String(user?._id), {passwordRecoveryCode});
+		}
+		
+		try {
+			return this.emailManager.recoverPassword(email, passwordRecoveryCode);
+		} catch (error) {
+			throw new Error(EMAIL_SERVICE_ERROR_MESSAGE);
+		}
+	}
+	
+	async confirmPasswordRecovery(
+		user: DbUser,
+		passwordRecoveryData: PasswordRecoveryConfirmationInputModel
+): Promise<void> {
+		const { recoveryCode, newPassword } = passwordRecoveryData;
+		const newPasswordHash = await this.generateHash(newPassword, user.passwordSalt);
+		
+		return this.usersService
+			.updateUser(String(user._id), {passwordHash: newPasswordHash, passwordRecoveryCode: recoveryCode});
 	}
 }

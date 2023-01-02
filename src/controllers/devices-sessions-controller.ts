@@ -1,6 +1,5 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
-import {ObjectId} from "mongodb";
 import {getErrorStatus} from "./utils";
 import {DeviceSessionOutputModel} from "../models/devices-sessions/output-models";
 import {DevicesSessionsService} from "../services/devices-sessions-service";

@@ -7,8 +7,10 @@ export interface DbUser {
 	email: string;
 	passwordSalt: string;
 	passwordHash: string;
+	passwordRecoveryCode: string;
 	emailConfirmation: EmailConfirmation;
 	createdAt: Date;
+	__v: number;
 }
 
 export interface UserFilter {
@@ -16,4 +18,5 @@ export interface UserFilter {
 	passwordHash?: string;
 	login?: string;
 	confirmationCode?: string;
+	passwordRecoveryCode?: string;
 }

@@ -1,13 +1,25 @@
 import { body } from "express-validator";
+import { MIN_STRINGS_LENGTH, postsConstants } from "../../common/constants";
+import {generateLengthRangeErrorMessage, generateMissedPropError} from "../../common/error-messages";
 
+const { MAX_CONTENT_LENGTH, MAX_SHORT_DESCRIPTION_LENGTH, MAX_TITLE_LENGTH } = postsConstants;
 export const postBodyCommonFieldsValidation = [
 	body("title")
-		.exists().withMessage("You didn't provide 'title' field")
-		.trim().isLength({min: 1, max: 30}).withMessage("Name should be from 1 to 30 chars"),
+		.exists()
+		.withMessage(generateMissedPropError("title"))
+		.trim()
+		.isLength({min: MIN_STRINGS_LENGTH, max: MAX_TITLE_LENGTH})
+		.withMessage(generateLengthRangeErrorMessage("title", MIN_STRINGS_LENGTH, MAX_TITLE_LENGTH)),
 	body("shortDescription")
-		.exists().withMessage("You didn't provide 'shortDescription' field")
-		.trim().isLength({min: 1, max: 100}).withMessage("Name should be from 1 to 100 chars"),
+		.exists()
+		.withMessage(generateMissedPropError("shortDescription"))
+		.trim()
+		.isLength({min: MIN_STRINGS_LENGTH, max: MAX_SHORT_DESCRIPTION_LENGTH})
+		.withMessage(generateLengthRangeErrorMessage("shortDescription", MIN_STRINGS_LENGTH, MAX_SHORT_DESCRIPTION_LENGTH)),
 	body("content")
-		.exists().withMessage("You didn't provide 'content' field")
-		.trim().isLength({min: 1, max: 1000}).withMessage("Name should be from 1 to 1000 chars")
+		.exists()
+		.withMessage(generateMissedPropError("content"))
+		.trim()
+		.isLength({min: MIN_STRINGS_LENGTH, max: MAX_CONTENT_LENGTH})
+		.withMessage(generateLengthRangeErrorMessage("content", MIN_STRINGS_LENGTH, MAX_CONTENT_LENGTH))
 ];

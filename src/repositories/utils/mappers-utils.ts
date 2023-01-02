@@ -17,6 +17,7 @@ export const mapDbBlogToBlogOutputModel = (blog: DbBlog): BlogOutputModel => {
 		id: String(blog._id),
 		name: blog.name,
 		websiteUrl: blog.websiteUrl,
+		description: blog.description,
 		createdAt: blog.createdAt.toISOString()
 	};
 };

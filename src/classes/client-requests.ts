@@ -1,7 +1,5 @@
-import {ObjectId} from "mongodb";
 
 export class ClientRequest {
-	_id: ObjectId | null = null;
 	endpoint: string;
 	ip: string;
 	createTimeStamp: number;

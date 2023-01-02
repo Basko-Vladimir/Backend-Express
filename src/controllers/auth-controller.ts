@@ -6,10 +6,11 @@ import {v4 as uuidv4} from "uuid";
 import {getErrorStatus} from "./utils";
 import {
 	CurrentUserDataOutputModel,
-	EmailResendingInputModel,
+	EmailInputModel,
 	LoginInputModel,
 	TokenOutputModel,
-	RegistrationConfirmationInputModel
+	RegistrationConfirmationInputModel,
+	PasswordRecoveryConfirmationInputModel
 } from "../models/auth-models";
 import {CreateUserInputModel} from "../models/users/input-models";
 import {AuthService} from "../services/auth-service";
@@ -90,7 +91,7 @@ export class AuthController {
 		}
 	}
 	
-	async resendRegistrationEmail (req: TypedRequestBody<EmailResendingInputModel>, res: Response<void>) {
+	async resendRegistrationEmail (req: TypedRequestBody<EmailInputModel>, res: Response<void>) {
 		try {
 			await this.authService.resendRegistrationEmail(req.context.user!);
 			res.sendStatus(204);
@@ -122,6 +123,24 @@ export class AuthController {
 	async logout (req: Request, res: Response<void>) {
 		try {
 			await this.authService.logout(String(req.context.session!._id));
+			res.sendStatus(204);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	}
+	
+	async recoverPassword (req: TypedRequestBody<EmailInputModel>, res: Response<void>) {
+		try {
+			await this.authService.recoverPassword(req.body.email);
+			res.sendStatus(204);
+		} catch (error) {
+			res.sendStatus(getErrorStatus(error));
+		}
+	}
+	
+	async confirmPasswordRecovery (req: TypedRequestBody<PasswordRecoveryConfirmationInputModel>, res: Response<void>) {
+		try {
+			await this.authService.confirmPasswordRecovery(req.context.user!, req.body);
 			res.sendStatus(204);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));

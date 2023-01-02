@@ -1,17 +1,16 @@
 import {ObjectId} from "mongodb";
 
 export class Comment {
-	_id: ObjectId | null = null;
 	content: string;
 	postId: ObjectId;
 	userId: ObjectId;
 	userLogin: string;
 	createdAt: Date;
 	
-	constructor(content: string, userLogin: string, userId: string, postId: string) {
+	constructor(content: string, userLogin: string, userId: ObjectId, postId: ObjectId) {
 		this.content = content;
-		this.postId = new ObjectId(postId);
-		this.userId = new ObjectId(userId);
+		this.postId = postId;
+		this.userId = userId;
 		this.userLogin = userLogin;
 		this.createdAt = new Date();
 	}

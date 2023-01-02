@@ -2,7 +2,7 @@ import {inject, injectable} from "inversify";
 import {User} from "../classes/users";
 import {UsersRepository} from "../repositories/users/users-repository";
 import {CreateUserInputModel} from "../models/users/input-models";
-import {UserFilter} from "../repositories/interfaces/users-interfaces";
+import {DbUser, UserFilter} from "../repositories/interfaces/users-interfaces";
 import {UpdateOrFilterModel} from "../common/interfaces";
 
 @injectable()
@@ -11,11 +11,11 @@ export class UsersService {
 		@inject(UsersRepository) protected usersRepository: UsersRepository,
 	) {}
 	
-	async getUserById(userId: string): Promise<User | null> {
+	async getUserById(userId: string): Promise<DbUser | null> {
 		return this.usersRepository.getUserById(userId);
 	}
 	
-	async getUserByFilter(userFilter: UserFilter): Promise<User | null> {
+	async getUserByFilter(userFilter: UserFilter): Promise<DbUser | null> {
 		return this.usersRepository.getUserByFilter(userFilter);
 	}
 	
@@ -26,6 +26,7 @@ export class UsersService {
 	): Promise<string> {
 		const {login, email} = userData;
 		const newUser = new User(login, email, passwordSalt, passwordHash);
+		
 		return this.usersRepository.createUser(newUser);
 	}
 	

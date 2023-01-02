@@ -1,16 +1,15 @@
 import {injectable} from "inversify";
-import {commentsCollection} from "../db";
+import {CommentsModel} from "../db";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
-import {getFilterByDbId, mapDbCommentToCommentOutputModel} from "../utils/mappers-utils";
+import {mapDbCommentToCommentOutputModel} from "../utils/mappers-utils";
 import {CommentOutputModel, CommentQueryParamsOutputModel} from "../../models/comments/output-models";
 import {PostAllCommentsOutputModel} from "../../models/posts/output-models";
 import {NotFoundError} from "../../classes/errors";
-import {ObjectId} from "mongodb";
 
 @injectable()
 export class QueryCommentsRepository {
 	async getCommentById(id: string): Promise<CommentOutputModel> {
-		const comment = await commentsCollection.findOne(getFilterByDbId(id));
+		const comment = await CommentsModel.findById(id);
 		
 		if (!comment) throw new NotFoundError();
 		
@@ -25,15 +24,16 @@ export class QueryCommentsRepository {
 			const { sortBy, sortDirection, pageNumber, pageSize } = queryParams;
 			const skip = countSkipValue(pageNumber, pageSize);
 			const sortSetting = setSortValue(sortBy, sortDirection);
-			const filterByPostId = {postId: new ObjectId(postId)};
 			
-			const totalCount = await commentsCollection.countDocuments(filterByPostId);
-			const comments = await commentsCollection
-				.find(filterByPostId)
+			const totalCount = await CommentsModel
+				.countDocuments()
+				.where("postId", postId);
+			const comments = await CommentsModel
+				.find()
+				.where("postId", postId)
 				.skip(skip)
 				.limit(pageSize)
-				.sort(sortSetting)
-				.toArray();
+				.sort(sortSetting);
 			
 			return {
 				pagesCount: Math.ceil(totalCount / pageSize),

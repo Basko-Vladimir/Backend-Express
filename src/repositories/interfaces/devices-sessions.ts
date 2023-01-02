@@ -8,4 +8,5 @@ export interface DbDeviceSession {
 	deviceName?: string;
 	ip: string;
 	userId: ObjectId;
+	__v: number;
 }

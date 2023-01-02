@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import add from "date-fns/add";
 
 
-export class EmailConfirmation {
+class EmailConfirmation {
 	confirmationCode: string;
 	expirationDate: Date;
 	isConfirmed: boolean = false;
@@ -22,7 +22,6 @@ export class User {
 	passwordSalt: string;
 	passwordHash: string;
 	emailConfirmation: EmailConfirmation;
-	refreshToken: string | null;
 	createdAt: Date;
 	
 	constructor(login: string, email: string, salt: string, hash: string) {
@@ -32,6 +31,5 @@ export class User {
 		this.passwordHash = hash;
 		this.emailConfirmation = new EmailConfirmation();
 		this.createdAt = new Date();
-		this.refreshToken = null;
 	}
 }

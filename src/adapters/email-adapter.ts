@@ -9,7 +9,7 @@ export class EmailAdapter {
 			service: "gmail",
 			auth: {
 				user: "dev.test.vladimir@gmail.com",
-				pass: `czpslaqrdtyiuuan`
+				pass: `zehkznqelccslqky`
 			},
 		});
 		

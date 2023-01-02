@@ -1,31 +1,30 @@
 import { ObjectId } from "mongodb";
 import {postsCollection} from "../db";
-import {getFilterByDbId, mapDbPostToPostOutputModel} from "../mappers-utils";
-import { SortSetting } from "../interfaces";
+import {getFilterByDbId, mapDbPostToPostOutputModel} from "../utils/mappers-utils";
+import {countSkipValue, setSortValue} from "../utils/common-utils";
 import {NotFoundError} from "../../classes/errors";
-import {PostOutputModel} from "../../models/posts/output-models";
+import {PostOutputModel, PostsQueryParamsOutputModel} from "../../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../../models/blogs/output-models";
 
 export const queryPostsRepository = {
-	async getAllPosts(
-		skip: number,
-		limit: number,
-		pageNumber: number,
-		sortSetting: SortSetting,
-	): Promise<BlogAllPostsOutputModel> {
+	async getAllPosts(queryParamsData: PostsQueryParamsOutputModel): Promise<BlogAllPostsOutputModel> {
 		try {
+			const { sortBy, sortDirection, pageNumber, pageSize } = queryParamsData;
+			const skip = countSkipValue(pageNumber, pageSize);
+			const sortSetting = setSortValue(sortBy, sortDirection);
+			
 			const totalCount = await postsCollection.countDocuments();
 			const blogs = await postsCollection
 				.find({})
 				.skip(skip)
-				.limit(limit)
+				.limit(pageSize)
 				.sort(sortSetting)
 				.toArray();
 			
 			return {
-				pagesCount: Math.ceil(totalCount / limit),
+				pagesCount: Math.ceil(totalCount / pageSize),
 				page: pageNumber,
-				pageSize: limit,
+				pageSize: pageSize,
 				totalCount: totalCount,
 				items: blogs.map(mapDbPostToPostOutputModel)
 			};
@@ -35,27 +34,27 @@ export const queryPostsRepository = {
 	},
 	
 	async getAllPostsByBlogId(
-		skip: number,
-		limit: number,
-		pageNumber: number,
-		sortSetting: SortSetting,
+		queryParamsData: PostsQueryParamsOutputModel,
 		blogId: string
 	): Promise<BlogAllPostsOutputModel> {
 		try {
+			const { sortBy, sortDirection, pageNumber, pageSize } = queryParamsData;
+			const skip = countSkipValue(pageNumber, pageSize);
+			const sortSetting = setSortValue(sortBy, sortDirection);
 			const totalCount = await postsCollection
 				.countDocuments({blogId: new ObjectId(blogId)});
 			
 			const posts = await postsCollection
 				.find({blogId: new ObjectId(blogId)})
 				.skip(skip)
-				.limit(limit)
+				.limit(pageSize)
 				.sort(sortSetting)
 				.toArray();
 			
 			return {
-				pagesCount: Math.ceil(totalCount / limit),
+				pagesCount: Math.ceil(totalCount / pageSize),
 				page: pageNumber,
-				pageSize: limit,
+				pageSize: pageSize,
 				totalCount: totalCount,
 				items: posts.map(mapDbPostToPostOutputModel)
 			};

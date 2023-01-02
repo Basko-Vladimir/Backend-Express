@@ -1,4 +1,6 @@
 import {PostOutputModel} from "../posts/output-models";
+import {BlogSortByField, SortDirection} from "../enums";
+import {AllEntitiesOutputModel} from "../common-models";
 
 export interface BlogOutputModel {
 	id: string;
@@ -15,10 +17,12 @@ export interface AllBlogsOutputModel {
 	items: BlogOutputModel[];
 }
 
-export interface BlogAllPostsOutputModel {
-	pagesCount: number;
-	page: number;
+export type BlogAllPostsOutputModel = AllEntitiesOutputModel<PostOutputModel>;
+
+export interface BlogsQueryParamsOutputModel {
+	sortBy: BlogSortByField;
+	sortDirection: SortDirection;
+	pageNumber: number;
 	pageSize: number;
-	totalCount: number;
-	items: PostOutputModel[];
+	searchNameTerm: string;
 }

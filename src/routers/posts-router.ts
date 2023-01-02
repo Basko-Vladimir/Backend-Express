@@ -1,27 +1,33 @@
 import {Request, Response, Router} from "express";
-import {getErrorStatus, countSkipValue, parseQueryParamsValues, setSortValue} from "./utils";
+import {getErrorStatus} from "./utils";
 import {postsService} from "../services/posts-service";
-import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../interfaces/common-interfaces";
 import {checkAuthorization} from "../middlewares/check-authorization";
 import {postRequestFullBodyValidation} from "../middlewares/posts/post-request-full-body-validation";
 import {requestErrorsValidation} from "../middlewares/request-errors-validation";
-import {PostOutputModel} from "../models/posts/output-models";
-import {ParamIdInputModel, QueryParamsInputModel} from "../models/common-models";
+import {PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
+import {ParamIdInputModel} from "../models/common-models";
 import {queryPostsRepository} from "../repositories/posts/query-posts-repository";
-import {CreatePostInputModel, UpdatePostInputModel} from "../models/posts/input-models";
+import {CreatePostInputModel, PostsQueryParamsInputModel, UpdatePostInputModel} from "../models/posts/input-models";
 import {queryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
+import {TypedRequestBody, TypedRequestParams, TypedRequestQuery } from "../common/interfaces";
+import {PostSortByField, SortDirection} from "../models/enums";
+import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from "../common/constants";
 
 export const postsRouter = Router({});
 
 postsRouter.get(
 	"/",
-	async (req: TypedRequestQuery<QueryParamsInputModel>, res: Response<BlogAllPostsOutputModel>) => {
+	async (req: TypedRequestQuery<PostsQueryParamsInputModel>, res: Response<BlogAllPostsOutputModel>) => {
 		try {
-			const { sortBy, sortDirection, pageNumber , pageSize } = parseQueryParamsValues(req.query);
-			const skip = countSkipValue(pageNumber, pageSize);
-			const sortSetting = setSortValue(sortBy, sortDirection);
-			const postsOutputModel = await queryPostsRepository.getAllPosts(skip, pageSize, pageNumber, sortSetting);
+			const { sortBy, sortDirection, pageNumber , pageSize } = req.query;
+			const queryParamsData: PostsQueryParamsOutputModel = {
+				sortBy: sortBy || PostSortByField.createdAt,
+				sortDirection: sortDirection ? SortDirection[sortDirection] : SortDirection.desc,
+				pageNumber: Number(pageNumber) || DEFAULT_PAGE_NUMBER,
+				pageSize: Number(pageSize) || DEFAULT_PAGE_SIZE
+			};
+			const postsOutputModel = await queryPostsRepository.getAllPosts(queryParamsData);
 
 			res.status(200).send(postsOutputModel);
 		}	catch (error) {

@@ -1,5 +1,5 @@
 import {ObjectId} from "mongodb";
-import {EntityWithoutId} from "../interfaces/common-interfaces";
+import { EntityWithoutId } from "../common/interfaces";
 
 export class Post {
 	_id: ObjectId | null = null;

@@ -34,3 +34,9 @@ export enum ClientRequestSortByField {
 	ip = "ip",
 	createTimeStamp = "createTimeStamp"
 }
+
+export enum LikeStatus {
+	NONE = "none",
+	LIKE = "like",
+	DISLIKE = "dislike"
+}

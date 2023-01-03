@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import {CommentsModel} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {DataBaseError, NotFoundError} from "../../classes/errors";
-import {Comment} from "../../classes/comments";
+import {Comment, LikesInfo} from "../../classes/comments";
 
 @injectable()
 export class CommentsRepository {
@@ -39,5 +39,15 @@ export class CommentsRepository {
 		if (!comment) throw new NotFoundError();
 		
 		return comment;
+	}
+	
+	async updateLikeStatus (commentId: string, likeInfo: LikesInfo): Promise<void> {
+			const { myStatus, likesCount, dislikesCount } = likeInfo;
+			const { matchedCount } = await CommentsModel.updateOne(
+				getFilterByDbId(commentId),
+				{likesInfo: {myStatus, likesCount, dislikesCount}}
+			);
+			
+			if (!matchedCount) throw new NotFoundError();
 	}
 }

@@ -4,17 +4,16 @@ import {DbPost} from "./interfaces/posts-interfaces";
 import {DbUser} from "./interfaces/users-interfaces";
 import {DbComment} from "./interfaces/comments-interfaces";
 import {
-	MIN_STRINGS_LENGTH,
 	blogsConstants,
-	postsConstants, usersConstants, commentsConstants
+	commentsConstants,
+	MIN_STRINGS_LENGTH,
+	postsConstants,
+	usersConstants
 } from "../common/constants";
-import {
-	DATE_ERROR_MESSAGE,
-	generateLengthErrorMessage,
-	generateRegExpError
-} from "../common/error-messages";
+import {DATE_ERROR_MESSAGE, generateLengthErrorMessage, generateRegExpError} from "../common/error-messages";
 import {DbClientRequest} from "./interfaces/client-requests";
 import {DbDeviceSession} from "./interfaces/devices-sessions";
+import {LikeStatus} from "../common/enums";
 
 // Blogs collection Schema
 const { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH, MAX_WEBSITE_URL_LENGTH, WEBSITE_URL_REG_EXP } = blogsConstants;
@@ -168,6 +167,23 @@ export const commentsSchema = new Schema<DbComment>({
 	createdAt: {
 		type: Date,
 		min: [new Date(), DATE_ERROR_MESSAGE]
+	},
+	likesInfo: {
+		likesCount: {
+			type: Number,
+			required: true,
+			min: 0
+		},
+		dislikesCount: {
+			type: Number,
+			required: true,
+			min: 0
+		},
+		myStatus: {
+			type: String,
+			enum: [LikeStatus.LIKE, LikeStatus.DISLIKE, LikeStatus.NONE],
+			required: true
+		}
 	}
 });
 

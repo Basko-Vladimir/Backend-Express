@@ -13,7 +13,7 @@ import {PostsService} from "../services/posts-service";
 import {CreateCommentInputModel} from "../models/comments/input-models";
 import {CommentOutputModel, CommentQueryParamsOutputModel} from "../models/comments/output-models";
 import {QueryCommentsRepository} from "../repositories/comments/query-comments-repository";
-import {Comment} from "../classes/comments";
+import {CommentDataDTO} from "../classes/comments";
 
 @injectable()
 export class PostsController {
@@ -74,11 +74,12 @@ export class PostsController {
 	async createCommentByPostId(req: Request<ParamPostIdInputModel, {}, CreateCommentInputModel>, res: Response<CommentOutputModel>) {
 		try {
 			const { user } = req.context;
-			const commentData: Omit<Comment, "createdAt"> = {
+			const commentData: CommentDataDTO = {
 				content: req.body.content,
 				userId: user!._id,
 				userLogin: user!.login,
 				postId: new ObjectId(req.params.postId)
+				
 			};
 			const commentId = await this.postsService.createCommentByPostId(commentData);
 			const comment = await this.queryCommentsRepository.getCommentById(commentId);

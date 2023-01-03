@@ -1,4 +1,4 @@
-import {PostSortByField} from "../enums";
+import {PostSortByField} from "../../common/enums";
 import {AllEntitiesOutputModel, CommonQueryParamsModel} from "../common-models";
 import {CommentOutputModel} from "../comments/output-models";
 

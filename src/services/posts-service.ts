@@ -2,7 +2,7 @@ import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import {CommentsService} from "./comments-service";
 import {Post} from "../classes/posts";
-import {Comment} from "../classes/comments";
+import {CommentDataDTO} from "../classes/comments";
 import {PostsRepository} from "../repositories/posts/posts-repository";
 import {DbPost} from "../repositories/interfaces/posts-interfaces";
 import {PostOutputModel} from "../models/posts/output-models";
@@ -47,7 +47,7 @@ export class PostsService {
 		return this.postsRepository.deleteAllPosts();
 	}
 	
-	async createCommentByPostId(commentData: Omit<Comment, "createdAt">): Promise<string> {
+	async createCommentByPostId(commentData: CommentDataDTO): Promise<string> {
 		return this.commentsService.createComment(commentData);
 	}
 }

@@ -1,6 +1,7 @@
 import {inject, injectable} from "inversify";
 import {CommentsRepository} from "../repositories/comments/comments-repository";
-import {Comment} from "../classes/comments";
+import {Comment, CommentDataDTO, LikesInfo} from "../classes/comments";
+import {LikeStatus} from "../common/enums";
 
 @injectable()
 export class CommentsService {
@@ -9,7 +10,7 @@ export class CommentsService {
 	) {}
 	
 	async createComment(
-		commentData: Omit<Comment, "createdAt">
+		commentData: CommentDataDTO
 	): Promise<string> {
 		const { content, userLogin, userId, postId } = commentData;
 		const newComment = new Comment(content, userLogin, userId, postId);
@@ -31,5 +32,50 @@ export class CommentsService {
 	
 	async getCommentById(id: string): Promise<Comment> {
 		return this.commentsRepository.getCommentById(id);
+	}
+	
+	async updateLikeStatus (commentId: string, newStatus: LikeStatus): Promise<void> {
+		const { likesInfo: { likesCount, dislikesCount, myStatus }} = await this.getCommentById(commentId);
+		let actualLikesCount = likesCount;
+		let actualDislikesCount = dislikesCount;
+		let actualStatus = newStatus;
+		
+		switch (myStatus) {
+			case LikeStatus.NONE: {
+				if (newStatus === LikeStatus.LIKE) {
+					actualLikesCount++;
+				} else if (newStatus === LikeStatus.DISLIKE) {
+					actualDislikesCount++;
+				}
+				break;
+			}
+			case LikeStatus.LIKE: {
+				if (newStatus === LikeStatus.LIKE) {
+					actualLikesCount--;
+					actualStatus = LikeStatus.NONE;
+				} else if (newStatus === LikeStatus.DISLIKE) {
+					actualLikesCount--;
+					actualDislikesCount++;
+				}
+				break;
+			}
+			case LikeStatus.DISLIKE: {
+				if (newStatus === LikeStatus.LIKE) {
+					actualLikesCount++;
+					actualDislikesCount--;
+				} else if (newStatus === LikeStatus.DISLIKE) {
+					actualDislikesCount--;
+					actualStatus = LikeStatus.NONE;
+				}
+			}
+		}
+
+		const commentLikeInfo: LikesInfo = {
+			myStatus: actualStatus,
+			likesCount: actualLikesCount,
+			dislikesCount: actualDislikesCount,
+		};
+		
+		return this.commentsRepository.updateLikeStatus(commentId, commentLikeInfo);
 	}
 }

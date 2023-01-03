@@ -1,5 +1,5 @@
 import { query } from "express-validator";
-import {SortDirection} from "../models/enums";
+import {SortDirection} from "../common/enums";
 import {DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE} from "../common/constants";
 
 export const commonQueryParamsSanitization = [

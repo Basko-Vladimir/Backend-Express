@@ -49,7 +49,8 @@ export const mapDbCommentToCommentOutputModel = (comment: DbComment): CommentOut
 		content: comment.content,
 		userId: String(comment.userId),
 		userLogin: comment.userLogin,
-		createdAt: comment.createdAt.toISOString()
+		createdAt: comment.createdAt.toISOString(),
+		likesInfo: comment.likesInfo
 	};
 };
 

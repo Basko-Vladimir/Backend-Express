@@ -1,11 +1,15 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
+import {getErrorStatus} from "./utils";
 import {TypedRequestParams} from "../common/interfaces";
 import {ParamIdInputModel} from "../models/common-models";
 import {CommentOutputModel} from "../models/comments/output-models";
 import {QueryCommentsRepository} from "../repositories/comments/query-comments-repository";
-import {getErrorStatus} from "./utils";
-import {CreateCommentInputModel, ParamCommentIdInputModel} from "../models/comments/input-models";
+import {
+	CreateCommentInputModel,
+	ParamCommentIdInputModel,
+	UpdateLikeStatusInputModel
+} from "../models/comments/input-models";
 import {CommentsService} from "../services/comments-service";
 
 @injectable()
@@ -36,6 +40,15 @@ export class CommentsController {
 	async updateComment (req: Request<ParamCommentIdInputModel, {}, CreateCommentInputModel>, res: Response<void>) {
 		try {
 			await this.commentsService.updateComment(req.params.commentId, req.body.content);
+			res.sendStatus(204);
+		} catch (err) {
+			res.sendStatus(getErrorStatus(err));
+		}
+	}
+	
+	async updateLikeStatus (req: Request<ParamCommentIdInputModel, {}, UpdateLikeStatusInputModel>, res: Response<void>) {
+		try {
+			await this.commentsService.updateLikeStatus(req.params.commentId, req.body.likeStatus);
 			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));

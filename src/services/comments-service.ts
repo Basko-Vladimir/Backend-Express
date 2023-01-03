@@ -36,25 +36,44 @@ export class CommentsService {
 	
 	async updateLikeStatus (commentId: string, newStatus: LikeStatus): Promise<void> {
 		const { likesInfo: { likesCount, dislikesCount, myStatus }} = await this.getCommentById(commentId);
-		let newLikesCount = likesCount;
-		let newDislikesCount = dislikesCount;
+		let actualLikesCount = likesCount;
+		let actualDislikesCount = dislikesCount;
+		let actualStatus = newStatus;
 		
-		if (myStatus === LikeStatus.DISLIKE && newStatus === LikeStatus.LIKE) {
-			newLikesCount++;
-			newDislikesCount--;
-		} else if (newStatus === LikeStatus.LIKE) {
-			newLikesCount++;
-		} else if (myStatus === LikeStatus.LIKE && newStatus === LikeStatus.DISLIKE) {
-			newLikesCount--;
-			newDislikesCount++;
-		} else if (newStatus === LikeStatus.DISLIKE) {
-			newDislikesCount++;
+		switch (myStatus) {
+			case LikeStatus.NONE: {
+				if (newStatus === LikeStatus.LIKE) {
+					actualLikesCount++;
+				} else if (newStatus === LikeStatus.DISLIKE) {
+					actualDislikesCount++;
+				}
+				break;
+			}
+			case LikeStatus.LIKE: {
+				if (newStatus === LikeStatus.LIKE) {
+					actualLikesCount--;
+					actualStatus = LikeStatus.NONE;
+				} else if (newStatus === LikeStatus.DISLIKE) {
+					actualLikesCount--;
+					actualDislikesCount++;
+				}
+				break;
+			}
+			case LikeStatus.DISLIKE: {
+				if (newStatus === LikeStatus.LIKE) {
+					actualLikesCount++;
+					actualDislikesCount--;
+				} else if (newStatus === LikeStatus.DISLIKE) {
+					actualDislikesCount--;
+					actualStatus = LikeStatus.NONE;
+				}
+			}
 		}
-		
+
 		const commentLikeInfo: LikesInfo = {
-			myStatus: newStatus,
-			likesCount: newLikesCount,
-			dislikesCount: newDislikesCount,
+			myStatus: actualStatus,
+			likesCount: actualLikesCount,
+			dislikesCount: actualDislikesCount,
 		};
 		
 		return this.commentsRepository.updateLikeStatus(commentId, commentLikeInfo);

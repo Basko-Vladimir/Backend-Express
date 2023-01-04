@@ -36,7 +36,7 @@ export enum ClientRequestSortByField {
 }
 
 export enum LikeStatus {
-	NONE = "none",
-	LIKE = "like",
-	DISLIKE = "dislike"
+	NONE = "None",
+	LIKE = "Like",
+	DISLIKE = "Dislike"
 }

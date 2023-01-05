@@ -69,8 +69,9 @@ export class AuthService {
 		
 		if (!user) return null;
 		
-		const hash = await this.generateHash(password, user.passwordSalt);
-		return hash === user.passwordHash ? String(user._id) : null;
+		const isMatchedUser = await bcrypt.compare(password, user.passwordHash);
+		
+		return isMatchedUser ? String(user._id) : null;
 	}
 	
 	async generateHash(password: string, salt: string): Promise<string> {

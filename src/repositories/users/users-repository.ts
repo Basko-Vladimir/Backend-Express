@@ -30,15 +30,10 @@ export class UsersRepository {
 	}
 	
 	async getUserByFilter(userFilter: UserFilter): Promise<DbUser | null> {
-		return UsersModel.findOne({
-			$or: [
-				{email: userFilter.email},
-				{login: userFilter.login},
-				{passwordHash: userFilter.passwordHash},
-				{"emailConfirmation.confirmationCode": userFilter.confirmationCode },
-				{passwordRecoveryCode: userFilter.passwordRecoveryCode }
-			]
-		});
+		const filter = Object.keys(userFilter)
+			.map(field => ({ [field]: userFilter[field as keyof UserFilter] }));
+		
+		return UsersModel.findOne({ $or: filter });
 	}
 	
 	async deleteUser(id: string): Promise<void> {

@@ -11,7 +11,6 @@ import {
 	UpdateLikeStatusInputModel
 } from "../models/comments/input-models";
 import {CommentsService} from "../services/comments-service";
-import {LikeStatus} from "../common/enums";
 
 @injectable()
 export class CommentsController {

@@ -11,6 +11,7 @@ import {
 	UpdateLikeStatusInputModel
 } from "../models/comments/input-models";
 import {CommentsService} from "../services/comments-service";
+import {LikeStatus} from "../common/enums";
 
 @injectable()
 export class CommentsController {
@@ -22,7 +23,13 @@ export class CommentsController {
 	async getCommentById(req: TypedRequestParams<ParamIdInputModel>, res: Response<CommentOutputModel>) {
 		try {
 			const comment = await this.queryCommentsRepository.getCommentById(req.params.id);
-			res.status(200).send(comment);
+			res.status(200).send({
+				...comment,
+				likesInfo: {
+					...comment.likesInfo,
+					myStatus: LikeStatus.NONE
+				}
+			});
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}

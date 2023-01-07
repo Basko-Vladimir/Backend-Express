@@ -9,7 +9,6 @@ import {PostOutputModel} from "../../models/posts/output-models";
 import {UserOutputModel} from "../../models/users/output-models";
 import {CommentOutputModel} from "../../models/comments/output-models";
 import {DeviceSessionOutputModel} from "../../models/devices-sessions/output-models";
-import {LikeStatus} from "../../common/enums";
 
 export const getFilterByDbId = (id: string): {_id: ObjectId} => ({_id: new ObjectId(id)});
 
@@ -51,10 +50,7 @@ export const mapDbCommentToCommentOutputModel = (comment: DbComment): CommentOut
 		userId: String(comment.userId),
 		userLogin: comment.userLogin,
 		createdAt: comment.createdAt.toISOString(),
-		likesInfo: {
-			...comment.likesInfo,
-			myStatus: LikeStatus.NONE
-		}
+		likesInfo: comment.likesInfo
 	};
 };
 

@@ -23,13 +23,7 @@ export class CommentsController {
 	async getCommentById(req: TypedRequestParams<ParamIdInputModel>, res: Response<CommentOutputModel>) {
 		try {
 			const comment = await this.queryCommentsRepository.getCommentById(req.params.id);
-			res.status(200).send({
-				...comment,
-				likesInfo: {
-					...comment.likesInfo,
-					myStatus: LikeStatus.NONE
-				}
-			});
+			res.status(200).send(comment);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}

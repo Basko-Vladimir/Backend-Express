@@ -51,11 +51,14 @@ export class CommentsService {
 			}
 			case LikeStatus.LIKE: {
 				if (newStatus === LikeStatus.LIKE) {
-					actualLikesCount--;
-					actualStatus = LikeStatus.NONE;
+					actualLikesCount++;
 				} else if (newStatus === LikeStatus.DISLIKE) {
 					actualLikesCount--;
 					actualDislikesCount++;
+					actualStatus = LikeStatus.DISLIKE;
+				} else {
+					actualLikesCount--;
+					actualStatus = LikeStatus.NONE;
 				}
 				break;
 			}
@@ -63,7 +66,10 @@ export class CommentsService {
 				if (newStatus === LikeStatus.LIKE) {
 					actualLikesCount++;
 					actualDislikesCount--;
+					actualStatus = LikeStatus.LIKE;
 				} else if (newStatus === LikeStatus.DISLIKE) {
+					actualDislikesCount++;
+				} else {
 					actualDislikesCount--;
 					actualStatus = LikeStatus.NONE;
 				}

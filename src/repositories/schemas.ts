@@ -229,5 +229,9 @@ export const devicesSessionsSchema = new Schema<DbDeviceSession>({
 		type: String,
 		required: true,
 		trim: true
+	},
+	userId: {
+		type: Types.ObjectId,
+		required: true
 	}
 });

@@ -2,6 +2,7 @@ import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
 import {getErrorStatus} from "./utils";
 import {TypedRequestParams} from "../common/interfaces";
+import {LikeStatus} from "../common/enums";
 import {ParamIdInputModel} from "../models/common-models";
 import {CommentOutputModel} from "../models/comments/output-models";
 import {
@@ -11,17 +12,25 @@ import {
 } from "../models/comments/input-models";
 import {QueryCommentsRepository} from "../repositories/comments/query-comments-repository";
 import {CommentsService} from "../services/comments-service";
+import {DevicesSessionsService} from "../services/devices-sessions-service";
 
 @injectable()
 export class CommentsController {
 	constructor(
 		@inject(CommentsService) protected commentsService: CommentsService,
-		@inject(QueryCommentsRepository) protected queryCommentsRepository: QueryCommentsRepository
+		@inject(QueryCommentsRepository) protected queryCommentsRepository: QueryCommentsRepository,
+		@inject(DevicesSessionsService) protected  devicesSessionsService: DevicesSessionsService
 	) {}
 	
 	async getCommentById(req: TypedRequestParams<ParamIdInputModel>, res: Response<CommentOutputModel>) {
 		try {
 			const comment = await this.queryCommentsRepository.getCommentById(req.params.id);
+			const isAuthorized = await this.devicesSessionsService.getDeviceSessionByFilter({userId: comment.userId});
+			
+			if (!isAuthorized) {
+				comment.likesInfo.myStatus = LikeStatus.NONE;
+			}
+			
 			res.status(200).send(comment);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));

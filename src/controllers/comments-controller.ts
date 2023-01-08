@@ -4,12 +4,12 @@ import {getErrorStatus} from "./utils";
 import {TypedRequestParams} from "../common/interfaces";
 import {ParamIdInputModel} from "../models/common-models";
 import {CommentOutputModel} from "../models/comments/output-models";
-import {QueryCommentsRepository} from "../repositories/comments/query-comments-repository";
 import {
 	CreateCommentInputModel,
 	ParamCommentIdInputModel,
 	UpdateLikeStatusInputModel
 } from "../models/comments/input-models";
+import {QueryCommentsRepository} from "../repositories/comments/query-comments-repository";
 import {CommentsService} from "../services/comments-service";
 
 @injectable()

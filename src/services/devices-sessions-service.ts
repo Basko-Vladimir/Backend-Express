@@ -1,8 +1,8 @@
 import {inject, injectable} from "inversify";
 import {DeviceSession} from "../classes/devices-sessions";
 import {DevicesSessionsRepository} from "../repositories/devices-sessions/devices-sessions-repository";
+import {DbDeviceSession} from "../repositories/interfaces/devices-sessions-interfaces";
 import {EntityWithoutId, UpdateOrFilterModel} from "../common/interfaces";
-import {DbDeviceSession} from "../repositories/interfaces/devices-sessions";
 
 @injectable()
 export class DevicesSessionsService {

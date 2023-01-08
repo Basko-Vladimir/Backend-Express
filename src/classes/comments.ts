@@ -12,7 +12,6 @@ export class Comment {
 	postId: ObjectId;
 	userId: ObjectId;
 	userLogin: string;
-	likesInfo: LikesInfo;
 	createdAt: Date;
 	
 	constructor(content: string, userLogin: string, userId: ObjectId, postId: ObjectId) {
@@ -21,11 +20,6 @@ export class Comment {
 		this.userId = userId;
 		this.userLogin = userLogin;
 		this.createdAt = new Date();
-		this.likesInfo = {
-			likesCount: 0,
-			dislikesCount: 0,
-			myStatus: LikeStatus.NONE
-		}
 	}
 }
 

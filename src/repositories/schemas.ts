@@ -3,6 +3,9 @@ import {DbBlog} from "./interfaces/blogs-interfaces";
 import {DbPost} from "./interfaces/posts-interfaces";
 import {DbUser} from "./interfaces/users-interfaces";
 import {DbComment} from "./interfaces/comments-interfaces";
+import {DbClientRequest} from "./interfaces/client-requests-interfaces";
+import {DbDeviceSession} from "./interfaces/devices-sessions-interfaces";
+import {DbLike} from "./interfaces/likes-interfaces";
 import {
 	blogsConstants,
 	commentsConstants,
@@ -11,8 +14,6 @@ import {
 	usersConstants
 } from "../common/constants";
 import {DATE_ERROR_MESSAGE, generateLengthErrorMessage, generateRegExpError} from "../common/error-messages";
-import {DbClientRequest} from "./interfaces/client-requests";
-import {DbDeviceSession} from "./interfaces/devices-sessions";
 import {LikeStatus} from "../common/enums";
 
 // Blogs collection Schema
@@ -167,23 +168,23 @@ export const commentsSchema = new Schema<DbComment>({
 	createdAt: {
 		type: Date,
 		min: [new Date(), DATE_ERROR_MESSAGE]
+	}
+});
+
+// Likes collection Schema
+export const likesSchema = new Schema<DbLike>({
+	userId: {
+		type: Types.ObjectId,
+		required: true
 	},
-	likesInfo: {
-		likesCount: {
-			type: Number,
-			required: true,
-			min: 0
-		},
-		dislikesCount: {
-			type: Number,
-			required: true,
-			min: 0
-		},
-		myStatus: {
-			type: String,
-			enum: [LikeStatus.LIKE, LikeStatus.DISLIKE, LikeStatus.NONE],
-			required: true
-		}
+	commentId: {
+		type: Types.ObjectId,
+		required: true
+	},
+	status: {
+		type: String,
+		enum: [LikeStatus.LIKE, LikeStatus.DISLIKE, LikeStatus.NONE],
+		required: true
 	}
 });
 

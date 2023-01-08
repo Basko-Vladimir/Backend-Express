@@ -2,8 +2,8 @@ import {inject, injectable} from "inversify";
 import {ClientRequest} from "../classes/client-requests";
 import {ClientRequestsRepository} from "../repositories/client-requests/client-requests-repository";
 import {DbSortDirection} from "../repositories/interfaces/common-interfaces";
+import {DbClientRequest} from "../repositories/interfaces/client-requests-interfaces";
 import {UpdateOrFilterModel} from "../common/interfaces";
-import {DbClientRequest} from "../repositories/interfaces/client-requests";
 
 @injectable()
 export class ClientRequestsService {

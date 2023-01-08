@@ -28,7 +28,7 @@ export class CommentsController {
 			const isAuthorized = await this.devicesSessionsService.getDeviceSessionByFilter({userId: comment.userId});
 			
 			if (!isAuthorized) {
-				comment.likesInfo.myStatus = LikeStatus.NONE;
+				// comment.likesInfo.myStatus = LikeStatus.NONE;
 			}
 			
 			res.status(200).send(comment);
@@ -57,7 +57,7 @@ export class CommentsController {
 	
 	async updateLikeStatus (req: Request<ParamCommentIdInputModel, {}, UpdateLikeStatusInputModel>, res: Response<void>) {
 		try {
-			await this.commentsService.updateLikeStatus(req.params.commentId, req.body.likeStatus);
+			// await this.commentsService.updateLikeStatus(req.params.commentId, req.body.likeStatus);
 			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));

@@ -34,54 +34,54 @@ export class CommentsService {
 		return this.commentsRepository.getCommentById(id);
 	}
 	
-	async updateLikeStatus (commentId: string, newStatus: LikeStatus): Promise<void> {
-		const { likesInfo: { likesCount, dislikesCount, myStatus }} = await this.getCommentById(commentId);
-		let actualLikesCount = likesCount;
-		let actualDislikesCount = dislikesCount;
-		let actualStatus = newStatus;
-		
-		switch (myStatus) {
-			case LikeStatus.NONE: {
-				if (newStatus === LikeStatus.LIKE) {
-					actualLikesCount++;
-				} else if (newStatus === LikeStatus.DISLIKE) {
-					actualDislikesCount++;
-				}
-				break;
-			}
-			case LikeStatus.LIKE: {
-				if (newStatus === LikeStatus.LIKE) {
-					actualLikesCount++;
-				} else if (newStatus === LikeStatus.DISLIKE) {
-					actualLikesCount--;
-					actualDislikesCount++;
-					actualStatus = LikeStatus.DISLIKE;
-				} else {
-					actualLikesCount--;
-					actualStatus = LikeStatus.NONE;
-				}
-				break;
-			}
-			case LikeStatus.DISLIKE: {
-				if (newStatus === LikeStatus.LIKE) {
-					actualLikesCount++;
-					actualDislikesCount--;
-					actualStatus = LikeStatus.LIKE;
-				} else if (newStatus === LikeStatus.DISLIKE) {
-					actualDislikesCount++;
-				} else {
-					actualDislikesCount--;
-					actualStatus = LikeStatus.NONE;
-				}
-			}
-		}
-
-		const commentLikeInfo: LikesInfo = {
-			myStatus: actualStatus,
-			likesCount: actualLikesCount,
-			dislikesCount: actualDislikesCount,
-		};
-		
-		return this.commentsRepository.updateLikeStatus(commentId, commentLikeInfo);
-	}
+	// async updateLikeStatus (commentId: string, newStatus: LikeStatus): Promise<void> {
+	// 	const { likesInfo: { likesCount, dislikesCount, myStatus }} = await this.getCommentById(commentId);
+	// 	let actualLikesCount = likesCount;
+	// 	let actualDislikesCount = dislikesCount;
+	// 	let actualStatus = newStatus;
+	//
+	// 	switch (myStatus) {
+	// 		case LikeStatus.NONE: {
+	// 			if (newStatus === LikeStatus.LIKE) {
+	// 				actualLikesCount++;
+	// 			} else if (newStatus === LikeStatus.DISLIKE) {
+	// 				actualDislikesCount++;
+	// 			}
+	// 			break;
+	// 		}
+	// 		case LikeStatus.LIKE: {
+	// 			if (newStatus === LikeStatus.LIKE) {
+	// 				actualLikesCount++;
+	// 			} else if (newStatus === LikeStatus.DISLIKE) {
+	// 				actualLikesCount--;
+	// 				actualDislikesCount++;
+	// 				actualStatus = LikeStatus.DISLIKE;
+	// 			} else {
+	// 				actualLikesCount--;
+	// 				actualStatus = LikeStatus.NONE;
+	// 			}
+	// 			break;
+	// 		}
+	// 		case LikeStatus.DISLIKE: {
+	// 			if (newStatus === LikeStatus.LIKE) {
+	// 				actualLikesCount++;
+	// 				actualDislikesCount--;
+	// 				actualStatus = LikeStatus.LIKE;
+	// 			} else if (newStatus === LikeStatus.DISLIKE) {
+	// 				actualDislikesCount++;
+	// 			} else {
+	// 				actualDislikesCount--;
+	// 				actualStatus = LikeStatus.NONE;
+	// 			}
+	// 		}
+	// 	}
+	//
+	// 	const commentLikeInfo: LikesInfo = {
+	// 		myStatus: actualStatus,
+	// 		likesCount: actualLikesCount,
+	// 		dislikesCount: actualDislikesCount,
+	// 	};
+	//
+	// 	return this.commentsRepository.updateLikeStatus(commentId, commentLikeInfo);
+	// }
 }

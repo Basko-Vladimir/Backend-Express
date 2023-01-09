@@ -6,6 +6,7 @@ import {requestErrorsValidation} from "../middlewares/request-errors-validation"
 import {iocContainer} from "../composition-root";
 import {CommentsController} from "../controllers/comments-controller";
 import {likesInputDataValidation} from "../middlewares/comments/likes-input-data-validation";
+import {commentIdParamValidation} from "../middlewares/comments/comment-id-param-validation";
 
 export const commentsRouter = Router({});
 const commentsController = iocContainer.resolve(CommentsController);
@@ -30,6 +31,7 @@ commentsRouter.put(
 
 commentsRouter.put(
 	"/:commentId/like-status",
+	commentIdParamValidation,
 	bearerAuthValidation,
 	likesInputDataValidation,
 	requestErrorsValidation,

@@ -1,5 +1,5 @@
 import {CommonQueryParamsModel} from "../common-models";
-import {CommentSortByField} from "../../common/enums";
+import {CommentSortByField, LikeStatus} from "../../common/enums";
 
 export interface CommentOutputModel {
 	id: string;
@@ -7,6 +7,14 @@ export interface CommentOutputModel {
 	userId: string;
 	userLogin: string;
 	createdAt: string;
+}
+
+export interface FullCommentOutputModel extends CommentOutputModel{
+	likesInfo: {
+		likesCount: number;
+		dislikesCount: number;
+		myStatus: LikeStatus
+	};
 }
 
 export interface CommentQueryParamsOutputModel extends CommonQueryParamsModel<CommentSortByField> {}

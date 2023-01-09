@@ -1,11 +1,4 @@
 import {ObjectId} from "mongodb";
-import {LikeStatus} from "../common/enums";
-
-export interface LikesInfo {
-	likesCount: number;
-	dislikesCount: number;
-	myStatus: LikeStatus
-}
 
 export class Comment {
 	content: string;

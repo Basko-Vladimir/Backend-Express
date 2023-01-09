@@ -29,4 +29,8 @@ export class LikesRepository {
 		
 		if (!matchedCount) throw new DataBaseError();
 	}
+	
+	async deleteAllLikes(): Promise<void> {
+		await LikesModel.deleteMany({});
+	}
 }

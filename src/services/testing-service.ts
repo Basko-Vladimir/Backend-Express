@@ -5,6 +5,7 @@ import {UsersService} from "./users-service";
 import {CommentsService} from "./comments-service";
 import {ClientRequestsService} from "./client-requests-service";
 import {DevicesSessionsService} from "./devices-sessions-service";
+import { LikesService } from "./likes-service";
 
 @injectable()
 export class TestingService {
@@ -15,6 +16,7 @@ export class TestingService {
 		@inject(CommentsService) protected commentsService: CommentsService,
 		@inject(ClientRequestsService) protected clientRequestsService: ClientRequestsService,
 		@inject(DevicesSessionsService) protected devicesSessionsService: DevicesSessionsService,
+		@inject(LikesService) protected likesService: LikesService,
 	) {}
 	
 	async deleteAllData(): Promise<void[]> {
@@ -24,7 +26,8 @@ export class TestingService {
 			this.usersService.deleteAllUsers(),
 			this.commentsService.deleteAllComments(),
 			this.clientRequestsService.deleteAllClientRequests(),
-			this.devicesSessionsService.deleteAllDevicesSessions()
+			this.devicesSessionsService.deleteAllDevicesSessions(),
+			this.likesService.deleteAllLikes()
 		]);
 	}
 }

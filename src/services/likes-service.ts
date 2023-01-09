@@ -24,4 +24,8 @@ export class LikesService {
 	async updateLike (likeId: string, status: LikeStatus): Promise<void> {
 		return this.likesRepository.updateLike(likeId, status);
 	}
+	
+	async deleteAllLikes(): Promise<void> {
+		return this.likesRepository.deleteAllLikes();
+	}
 }

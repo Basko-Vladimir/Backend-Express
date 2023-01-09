@@ -119,7 +119,7 @@ export class PostsController {
 				.status(200)
 				.send({
 					...allCommentsByPostId,
-					items: [...fullComments]
+					items: fullComments
 				});
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));

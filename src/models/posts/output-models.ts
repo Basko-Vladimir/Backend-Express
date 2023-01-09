@@ -1,6 +1,6 @@
 import {PostSortByField} from "../../common/enums";
 import {AllEntitiesOutputModel, CommonQueryParamsModel} from "../common-models";
-import {CommentOutputModel} from "../comments/output-models";
+import {CommentOutputModel, FullCommentOutputModel} from "../comments/output-models";
 
 export interface PostOutputModel {
 	id: string;
@@ -13,5 +13,6 @@ export interface PostOutputModel {
 }
 
 export type PostAllCommentsOutputModel = AllEntitiesOutputModel<CommentOutputModel>;
+export type PostAllFullCommentsOutputModel = AllEntitiesOutputModel<FullCommentOutputModel>;
 
 export interface PostsQueryParamsOutputModel extends CommonQueryParamsModel<PostSortByField> {}

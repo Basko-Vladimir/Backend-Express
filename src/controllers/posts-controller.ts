@@ -3,12 +3,17 @@ import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
 import {getErrorStatus, getFullCommentOutputModel} from "./utils";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
-import {PostAllCommentsOutputModel, PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
+import {
+	PostAllFullCommentsOutputModel,
+	PostOutputModel,
+	PostsQueryParamsOutputModel
+} from "../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
 import {CreateCommentInputModel} from "../models/comments/input-models";
 import {ParamIdInputModel} from "../models/common-models";
 import {CreatePostInputModel, ParamPostIdInputModel, UpdatePostInputModel} from "../models/posts/input-models";
-import { CommentQueryParamsOutputModel,
+import {
+	CommentQueryParamsOutputModel,
 	FullCommentOutputModel
 } from "../models/comments/output-models";
 import {QueryPostsRepository} from "../repositories/posts/query-posts-repository";
@@ -16,7 +21,6 @@ import {QueryBlogsRepository} from "../repositories/blogs/query-blogs-repository
 import {QueryCommentsRepository} from "../repositories/comments/query-comments-repository";
 import {QueryLikesRepository} from "../repositories/likes/query-likes-repository";
 import {PostsService} from "../services/posts-service";
-import {LikesService} from "../services/likes-service";
 import {CommentDataDTO} from "../classes/comments";
 
 @injectable()
@@ -26,7 +30,6 @@ export class PostsController {
 		@inject(QueryPostsRepository) protected queryPostsRepository: QueryPostsRepository,
 		@inject(QueryBlogsRepository) protected queryBlogsRepository: QueryBlogsRepository,
 		@inject(QueryCommentsRepository) protected queryCommentsRepository: QueryCommentsRepository,
-		@inject(LikesService) protected likesService: LikesService,
 		@inject(QueryLikesRepository) protected queryLikesRepository: QueryLikesRepository,
 	) {}
 	
@@ -87,11 +90,9 @@ export class PostsController {
 				postId: new ObjectId(req.params.postId)
 			};
 			const commentId = await this.postsService.createCommentByPostId(commentData);
-			
-			await this.likesService.createLike(String(user!._id), commentId);
-			
 			const comment = await this.queryCommentsRepository.getCommentById(commentId);
-			const likesInfo = await this.queryLikesRepository.getLikesInfo(String(user!._id), commentId);
+			const likesInfo = await this.queryLikesRepository.getLikesInfo(String(commentData.userId), commentId);
+			
 			const fullCommentInfo = getFullCommentOutputModel(comment, likesInfo);
 			
 			res.status(201).send(fullCommentInfo);
@@ -102,13 +103,24 @@ export class PostsController {
 	
 	async getAllCommentsByPostId (
 		req: Request<ParamPostIdInputModel, {}, {}, CommentQueryParamsOutputModel>,
-		res: Response<PostAllCommentsOutputModel>
+		res: Response<PostAllFullCommentsOutputModel>
 	) {
 		try {
-			const allCommentsByPostId = await this.queryCommentsRepository
-				.getAllCommentsByPostId(req.query, req.params.postId);
+			const allCommentsByPostId = await this.queryCommentsRepository.getAllCommentsByPostId(req.query, req.params.postId);
+			const comments = allCommentsByPostId.items;
+			const fullComments = [];
 			
-			res.status(200).send(allCommentsByPostId);
+			for (let i = 0; i < comments.length; i++) {
+				const commentLikesInfo = await this.queryLikesRepository.getLikesInfo(comments[i].userId, comments[i].id)
+				fullComments.push(getFullCommentOutputModel(comments[i], commentLikesInfo));
+			}
+			
+			res
+				.status(200)
+				.send({
+					...allCommentsByPostId,
+					items: [...fullComments]
+				});
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}

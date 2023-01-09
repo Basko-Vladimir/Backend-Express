@@ -1,6 +1,7 @@
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import {CommentsService} from "./comments-service";
+import {LikesService} from "./likes-service";
 import {Post} from "../classes/posts";
 import {CommentDataDTO} from "../classes/comments";
 import {PostsRepository} from "../repositories/posts/posts-repository";
@@ -12,7 +13,8 @@ import {UpdatePostInputModel} from "../models/posts/input-models";
 export class PostsService {
 	constructor(
 		@inject(PostsRepository) protected postsRepository: PostsRepository,
-		@inject(CommentsService) protected commentsService: CommentsService
+		@inject(CommentsService) protected commentsService: CommentsService,
+		@inject(LikesService) protected likesService: LikesService
 	) {
 	}
 	
@@ -48,6 +50,10 @@ export class PostsService {
 	}
 	
 	async createCommentByPostId(commentData: CommentDataDTO): Promise<string> {
-		return this.commentsService.createComment(commentData);
+		const commentId = await this.commentsService.createComment(commentData);
+		
+		await this.likesService.createLike(String(commentData.userId), commentId);
+		
+		return commentId;
 	}
 }

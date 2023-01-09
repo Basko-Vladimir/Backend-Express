@@ -1,12 +1,16 @@
 import {inject, injectable} from "inversify";
 import {CommentsRepository} from "../repositories/comments/comments-repository";
-import {Comment, CommentDataDTO, LikesInfo} from "../classes/comments";
+import {Comment, CommentDataDTO} from "../classes/comments";
 import {LikeStatus} from "../common/enums";
+import {QueryLikesRepository} from "../repositories/likes/query-likes-repository";
+import {LikesService} from "./likes-service";
 
 @injectable()
 export class CommentsService {
 	constructor(
-		@inject(CommentsRepository) protected commentsRepository: CommentsRepository
+		@inject(CommentsRepository) protected commentsRepository: CommentsRepository,
+		@inject(QueryLikesRepository) protected queryLikesRepository: QueryLikesRepository,
+		@inject(LikesService) protected likesService: LikesService
 	) {}
 	
 	async createComment(
@@ -34,54 +38,13 @@ export class CommentsService {
 		return this.commentsRepository.getCommentById(id);
 	}
 	
-	async updateLikeStatus (commentId: string, newStatus: LikeStatus): Promise<void> {
-		const { likesInfo: { likesCount, dislikesCount, myStatus }} = await this.getCommentById(commentId);
-		let actualLikesCount = likesCount;
-		let actualDislikesCount = dislikesCount;
-		let actualStatus = newStatus;
+	async updateLikeStatus (userId: string, commentId: string, newStatus: LikeStatus): Promise<void> {
+		const existingLike = await this.likesService.getLikeByFilter({userId, commentId});
 		
-		switch (myStatus) {
-			case LikeStatus.NONE: {
-				if (newStatus === LikeStatus.LIKE) {
-					actualLikesCount++;
-				} else if (newStatus === LikeStatus.DISLIKE) {
-					actualDislikesCount++;
-				}
-				break;
-			}
-			case LikeStatus.LIKE: {
-				if (newStatus === LikeStatus.LIKE) {
-					actualLikesCount++;
-				} else if (newStatus === LikeStatus.DISLIKE) {
-					actualLikesCount--;
-					actualDislikesCount++;
-					actualStatus = LikeStatus.DISLIKE;
-				} else {
-					actualLikesCount--;
-					actualStatus = LikeStatus.NONE;
-				}
-				break;
-			}
-			case LikeStatus.DISLIKE: {
-				if (newStatus === LikeStatus.LIKE) {
-					actualLikesCount++;
-					actualDislikesCount--;
-					actualStatus = LikeStatus.LIKE;
-				} else if (newStatus === LikeStatus.DISLIKE) {
-					actualDislikesCount++;
-				} else {
-					actualDislikesCount--;
-					actualStatus = LikeStatus.NONE;
-				}
-			}
+		if (existingLike) {
+			return this.likesService.updateLike(String(existingLike?._id), newStatus);
+		} else {
+			await this.likesService.createLike(userId, commentId, newStatus);
 		}
-
-		const commentLikeInfo: LikesInfo = {
-			myStatus: actualStatus,
-			likesCount: actualLikesCount,
-			dislikesCount: actualDislikesCount,
-		};
-		
-		return this.commentsRepository.updateLikeStatus(commentId, commentLikeInfo);
 	}
 }

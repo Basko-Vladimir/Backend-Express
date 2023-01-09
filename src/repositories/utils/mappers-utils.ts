@@ -3,7 +3,7 @@ import {DbBlog} from "../interfaces/blogs-interfaces";
 import {DbPost} from "../interfaces/posts-interfaces";
 import {DbUser} from "../interfaces/users-interfaces";
 import {DbComment} from "../interfaces/comments-interfaces";
-import {DbDeviceSession} from "../interfaces/devices-sessions";
+import {DbDeviceSession} from "../interfaces/devices-sessions-interfaces";
 import {BlogOutputModel} from "../../models/blogs/output-models";
 import {PostOutputModel} from "../../models/posts/output-models";
 import {UserOutputModel} from "../../models/users/output-models";
@@ -50,7 +50,6 @@ export const mapDbCommentToCommentOutputModel = (comment: DbComment): CommentOut
 		userId: String(comment.userId),
 		userLogin: comment.userLogin,
 		createdAt: comment.createdAt.toISOString(),
-		likesInfo: comment.likesInfo
 	};
 };
 

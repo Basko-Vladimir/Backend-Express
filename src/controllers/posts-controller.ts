@@ -1,18 +1,22 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
+import {getErrorStatus, getFullCommentOutputModel} from "./utils";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../common/interfaces";
 import {PostAllCommentsOutputModel, PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
-import {QueryPostsRepository} from "../repositories/posts/query-posts-repository";
-import {QueryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
-import {getErrorStatus} from "./utils";
+import {CreateCommentInputModel} from "../models/comments/input-models";
 import {ParamIdInputModel} from "../models/common-models";
 import {CreatePostInputModel, ParamPostIdInputModel, UpdatePostInputModel} from "../models/posts/input-models";
-import {PostsService} from "../services/posts-service";
-import {CreateCommentInputModel} from "../models/comments/input-models";
-import {CommentOutputModel, CommentQueryParamsOutputModel} from "../models/comments/output-models";
+import { CommentQueryParamsOutputModel,
+	FullCommentOutputModel
+} from "../models/comments/output-models";
+import {QueryPostsRepository} from "../repositories/posts/query-posts-repository";
+import {QueryBlogsRepository} from "../repositories/blogs/query-blogs-repository";
 import {QueryCommentsRepository} from "../repositories/comments/query-comments-repository";
+import {QueryLikesRepository} from "../repositories/likes/query-likes-repository";
+import {PostsService} from "../services/posts-service";
+import {LikesService} from "../services/likes-service";
 import {CommentDataDTO} from "../classes/comments";
 
 @injectable()
@@ -21,7 +25,9 @@ export class PostsController {
 		@inject(PostsService) protected postsService: PostsService,
 		@inject(QueryPostsRepository) protected queryPostsRepository: QueryPostsRepository,
 		@inject(QueryBlogsRepository) protected queryBlogsRepository: QueryBlogsRepository,
-		@inject(QueryCommentsRepository) protected queryCommentsRepository: QueryCommentsRepository
+		@inject(QueryCommentsRepository) protected queryCommentsRepository: QueryCommentsRepository,
+		@inject(LikesService) protected likesService: LikesService,
+		@inject(QueryLikesRepository) protected queryLikesRepository: QueryLikesRepository,
 	) {}
 	
 	async getAllPosts(req: TypedRequestQuery<PostsQueryParamsOutputModel>, res: Response<BlogAllPostsOutputModel>) {
@@ -71,7 +77,7 @@ export class PostsController {
 		}
 	}
 	
-	async createCommentByPostId(req: Request<ParamPostIdInputModel, {}, CreateCommentInputModel>, res: Response<CommentOutputModel>) {
+	async createCommentByPostId(req: Request<ParamPostIdInputModel, {}, CreateCommentInputModel>, res: Response<FullCommentOutputModel>) {
 		try {
 			const { user } = req.context;
 			const commentData: CommentDataDTO = {
@@ -79,11 +85,16 @@ export class PostsController {
 				userId: user!._id,
 				userLogin: user!.login,
 				postId: new ObjectId(req.params.postId)
-				
 			};
 			const commentId = await this.postsService.createCommentByPostId(commentData);
+			
+			await this.likesService.createLike(String(user!._id), commentId);
+			
 			const comment = await this.queryCommentsRepository.getCommentById(commentId);
-			res.status(201).send(comment);
+			const likesInfo = await this.queryLikesRepository.getLikesInfo(String(user!._id), commentId);
+			const fullCommentInfo = getFullCommentOutputModel(comment, likesInfo);
+			
+			res.status(201).send(fullCommentInfo);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}

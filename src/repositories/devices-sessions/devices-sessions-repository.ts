@@ -5,7 +5,7 @@ import {getFilterByDbId} from "../utils/mappers-utils";
 import {EntityWithoutId, UpdateOrFilterModel} from "../../common/interfaces";
 import {DeviceSession} from "../../classes/devices-sessions";
 import {DataBaseError} from "../../classes/errors";
-import {DbDeviceSession} from "../interfaces/devices-sessions";
+import {DbDeviceSession} from "../interfaces/devices-sessions-interfaces";
 
 @injectable()
 export class DevicesSessionsRepository {

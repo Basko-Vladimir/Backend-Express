@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import {ClientRequestsModel} from "../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {DbSortDirection} from "../interfaces/common-interfaces";
-import {DbClientRequest} from "../interfaces/client-requests";
+import {DbClientRequest} from "../interfaces/client-requests-interfaces";
 import {ClientRequest} from "../../classes/client-requests";
 import {DataBaseError} from "../../classes/errors";
 import {UpdateOrFilterModel} from "../../common/interfaces";

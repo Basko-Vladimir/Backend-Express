@@ -5,6 +5,7 @@ import {
 	clientRequestsSchema,
 	commentsSchema,
 	devicesSessionsSchema,
+	likesSchema,
 	postsSchema,
 	usersSchema
 } from "./schemas";
@@ -17,6 +18,7 @@ export const UsersModel = mongoose.model("users", usersSchema);
 export const CommentsModel = mongoose.model("comments", commentsSchema);
 export const ClientRequestsModel = mongoose.model("requests", clientRequestsSchema);
 export const DevicesSessionsModel = mongoose.model("devices_sessions", devicesSessionsSchema);
+export const LikesModel = mongoose.model("likes", likesSchema);
 
 export async function runDb() {
 	try {

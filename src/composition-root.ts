@@ -30,6 +30,10 @@ import {QueryDevicesSessionsRepository} from "./repositories/devices-sessions/qu
 import {DevicesSessionsService} from "./services/devices-sessions-service";
 import {DevicesSessionsController} from "./controllers/devices-sessions-controller";
 
+import {LikesRepository} from "./repositories/likes/likes-repository";
+import {QueryLikesRepository} from "./repositories/likes/query-likes-repository";
+import {LikesService} from "./services/likes-service";
+
 import {TestingController} from "./controllers/testing-controller";
 import {TestingService} from "./services/testing-service";
 
@@ -54,6 +58,7 @@ iocContainer.bind(QueryPostsRepository).to(QueryPostsRepository);
 iocContainer.bind(QueryUsersRepository).to(QueryUsersRepository);
 iocContainer.bind(QueryCommentsRepository).to(QueryCommentsRepository);
 iocContainer.bind(QueryDevicesSessionsRepository).to(QueryDevicesSessionsRepository);
+iocContainer.bind(QueryLikesRepository).to(QueryLikesRepository);
 
 // CUD repositories
 iocContainer.bind(BlogsRepository).to(BlogsRepository);
@@ -62,6 +67,7 @@ iocContainer.bind(UsersRepository).to(UsersRepository);
 iocContainer.bind(CommentsRepository).to(CommentsRepository);
 iocContainer.bind(ClientRequestsRepository).to(ClientRequestsRepository);
 iocContainer.bind(DevicesSessionsRepository).to(DevicesSessionsRepository);
+iocContainer.bind(LikesRepository).to(LikesRepository);
 
 // services
 iocContainer.bind(BlogsService).to(BlogsService);
@@ -73,6 +79,7 @@ iocContainer.bind(ClientRequestsService).to(ClientRequestsService);
 iocContainer.bind(DevicesSessionsService).to(DevicesSessionsService);
 iocContainer.bind(TestingService).to(TestingService);
 iocContainer.bind(JwtService).to(JwtService);
+iocContainer.bind(LikesService).to(LikesService);
 
 // controllers
 iocContainer.bind(BlogsController).to(BlogsController);

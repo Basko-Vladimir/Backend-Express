@@ -21,13 +21,13 @@ export class AuthService {
 		@inject(DevicesSessionsService) protected devicesSessionsService: DevicesSessionsService,
 	) {}
 	
-	async registerUser(userData: CreateUserInputModel): Promise<string> {
+	async registerUser(userData: CreateUserInputModel, isConfirmedByDefault = false): Promise<string> {
 		const { password } = userData;
 		const passwordSalt = await bcrypt.genSalt(10);
 		const passwordHash = await this.generateHash(password, passwordSalt);
 		
 		const createdUserId = await this.usersService.createUser(
-			userData, passwordHash, passwordSalt
+			userData, passwordHash, passwordSalt, isConfirmedByDefault
 		);
 		const createdUser = await this.usersService.getUserById(createdUserId);
 		

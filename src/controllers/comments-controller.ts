@@ -2,7 +2,6 @@ import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
 import {getErrorStatus, getFullCommentOutputModel} from "./utils";
 import {TypedRequestParams} from "../common/interfaces";
-import {LikeStatus} from "../common/enums";
 import {ParamIdInputModel} from "../models/common-models";
 import {CommentOutputModel} from "../models/comments/output-models";
 import {UpdateLikeStatusInputModel} from "../models/likes/input-models";
@@ -11,6 +10,8 @@ import {QueryCommentsRepository} from "../repositories/comments/query-comments-r
 import {QueryLikesRepository} from "../repositories/likes/query-likes-repository";
 import {CommentsService} from "../services/comments-service";
 import {DevicesSessionsService} from "../services/devices-sessions-service";
+import {JwtService} from "../services/jwt-service";
+import {UsersService} from "../services/users-service";
 
 @injectable()
 export class CommentsController {
@@ -18,20 +19,23 @@ export class CommentsController {
 		@inject(CommentsService) protected commentsService: CommentsService,
 		@inject(QueryCommentsRepository) protected queryCommentsRepository: QueryCommentsRepository,
 		@inject(DevicesSessionsService) protected  devicesSessionsService: DevicesSessionsService,
-		@inject(QueryLikesRepository) protected  queryLikesRepository: QueryLikesRepository
+		@inject(QueryLikesRepository) protected  queryLikesRepository: QueryLikesRepository,
+		@inject(JwtService) protected jwtService: JwtService,
+		@inject(UsersService) protected usersService: UsersService,
 	) {}
 	
 	async getCommentById(req: TypedRequestParams<ParamIdInputModel>, res: Response<CommentOutputModel>) {
 		try {
+			const token = req.headers.authorization?.split(" ")[1];
+			const tokenPayload = token && await this.jwtService.getTokenPayload(token);
+			const user = tokenPayload && await this.usersService.getUserById(tokenPayload.userId);
+			const userId = user ? String(user._id) : null;
+			
 			const comment = await this.queryCommentsRepository.getCommentById(req.params.id);
-			const likesInfo = await this.queryLikesRepository.getLikesInfo(comment.userId, comment.id);
+			const likesInfo = await this.queryLikesRepository.getLikesInfo(userId, comment.id);
+			
 			const fullCommentInfo = getFullCommentOutputModel(comment, likesInfo);
-			const isAuthorized = await this.devicesSessionsService.getDeviceSessionByFilter({userId: comment.userId});
-			
-			if (!isAuthorized) {
-				fullCommentInfo.likesInfo.myStatus = LikeStatus.NONE;
-			}
-			
+
 			res.status(200).send(fullCommentInfo);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));

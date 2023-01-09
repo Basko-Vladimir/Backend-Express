@@ -34,7 +34,7 @@ export class UsersController {
 	
 	async createUser(req: TypedRequestBody<CreateUserInputModel>, res: Response<UserOutputModel>) {
 		try {
-			const createdUserId = await this.authService.registerUser(req.body);
+			const createdUserId = await this.authService.registerUser(req.body, true);
 			const user = await this.queryUsersRepository.getUserById(createdUserId);
 			res.status(201).send(user);
 		} catch (err) {

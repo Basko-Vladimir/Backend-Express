@@ -22,10 +22,11 @@ export class UsersService {
 	async createUser(
 		userData: CreateUserInputModel,
 		passwordHash: string,
-		passwordSalt: string
+		passwordSalt: string,
+		isConfirmedByDefault: boolean
 	): Promise<string> {
 		const {login, email} = userData;
-		const newUser = new User(login, email, passwordSalt, passwordHash);
+		const newUser = new User(login, email, passwordSalt, passwordHash, isConfirmedByDefault);
 		
 		return this.usersRepository.createUser(newUser);
 	}

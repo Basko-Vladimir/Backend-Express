@@ -5,18 +5,22 @@ import {LikeStatus} from "../../common/enums";
 
 @injectable()
 export class QueryLikesRepository {
-	async getLikesInfo (userId: string, commentId: string): Promise<LikesInfoOutputModel> {
+	async getLikesInfo (userId: string | null, commentId: string): Promise<LikesInfoOutputModel> {
 		const likesCount = await LikesModel
 			.countDocuments({commentId, status: LikeStatus.LIKE});
 		const dislikesCount = await LikesModel
 			.countDocuments({commentId, status: LikeStatus.DISLIKE});
-		const currentUserLike = await LikesModel
-			.findOne({userId, commentId});
+		let likeStatus = LikeStatus.NONE;
+
+		if (userId) {
+			const like = await LikesModel.findOne({userId, commentId});
+			likeStatus = like ? like.status : likeStatus;
+		}
 		
 		return {
 			likesCount,
 			dislikesCount,
-			likeStatus: currentUserLike ? currentUserLike.status : LikeStatus.NONE
+			likeStatus
 		}
 	}
 }

@@ -6,10 +6,10 @@ export class EmailConfirmation {
 	expirationDate: Date;
 	isConfirmed: boolean = false;
 	
-	constructor() {
+	constructor(isConfirmed: boolean) {
 		this.confirmationCode = uuidv4();
 		this.expirationDate = add(new Date(), {hours: 1});
-		this.isConfirmed = false;
+		this.isConfirmed = isConfirmed;
 	}
 }
 
@@ -22,12 +22,12 @@ export class User {
 	emailConfirmation: EmailConfirmation;
 	createdAt: Date;
 	
-	constructor(login: string, email: string, salt: string, hash: string) {
+	constructor(login: string, email: string, salt: string, hash: string, isConfirmed: boolean = false) {
 		this.login = login;
 		this.email = email;
 		this.passwordSalt = salt;
 		this.passwordHash = hash;
-		this.emailConfirmation = new EmailConfirmation();
+		this.emailConfirmation = new EmailConfirmation(isConfirmed);
 		this.createdAt = new Date();
 	}
 }

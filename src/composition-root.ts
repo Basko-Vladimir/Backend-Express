@@ -2,47 +2,47 @@ import "reflect-metadata"; // !important since inversify use reflect-metadata in
 													 // import of reflect-metadata should be before import of inversify
 import {Container} from "inversify";
 
-import {BlogsRepository} from "./repositories/blogs/blogs-repository";
-import {QueryBlogsRepository} from "./repositories/blogs/query-blogs-repository";
-import {BlogsService} from "./services/blogs-service";
-import {BlogsController} from "./controllers/blogs-controller";
+import {BlogsRepository} from "./infrastructure/repositories/blogs/blogs-repository";
+import {QueryBlogsRepository} from "./infrastructure/repositories/blogs/query-blogs-repository";
+import {BlogsService} from "./application/services/blogs-service";
+import {BlogsController} from "./api/controllers/blogs-controller";
 
-import {PostsRepository} from "./repositories/posts/posts-repository";
-import {QueryPostsRepository} from "./repositories/posts/query-posts-repository";
-import {PostsService} from "./services/posts-service";
-import {PostsController} from "./controllers/posts-controller";
+import {PostsRepository} from "./infrastructure/repositories/posts/posts-repository";
+import {QueryPostsRepository} from "./infrastructure/repositories/posts/query-posts-repository";
+import {PostsService} from "./application/services/posts-service";
+import {PostsController} from "./api/controllers/posts-controller";
 
-import {QueryUsersRepository} from "./repositories/users/query-users-repository";
-import {UsersRepository} from "./repositories/users/users-repository";
-import {UsersController} from "./controllers/users-controller";
-import {UsersService} from "./services/users-service";
+import {QueryUsersRepository} from "./infrastructure/repositories/users/query-users-repository";
+import {UsersRepository} from "./infrastructure/repositories/users/users-repository";
+import {UsersController} from "./api/controllers/users-controller";
+import {UsersService} from "./application/services/users-service";
 
-import {CommentsRepository} from "./repositories/comments/comments-repository";
-import {QueryCommentsRepository} from "./repositories/comments/query-comments-repository";
-import {CommentsService} from "./services/comments-service";
-import {CommentsController} from "./controllers/comments-controller";
+import {CommentsRepository} from "./infrastructure/repositories/comments/comments-repository";
+import {QueryCommentsRepository} from "./infrastructure/repositories/comments/query-comments-repository";
+import {CommentsService} from "./application/services/comments-service";
+import {CommentsController} from "./api/controllers/comments-controller";
 
-import {ClientRequestsService} from "./services/client-requests-service";
-import {ClientRequestsRepository} from "./repositories/client-requests/client-requests-repository";
+import {ClientRequestsService} from "./application/services/client-requests-service";
+import {ClientRequestsRepository} from "./infrastructure/repositories/client-requests/client-requests-repository";
 
-import {DevicesSessionsRepository} from "./repositories/devices-sessions/devices-sessions-repository";
-import {QueryDevicesSessionsRepository} from "./repositories/devices-sessions/query-devices-sessions-repository";
-import {DevicesSessionsService} from "./services/devices-sessions-service";
-import {DevicesSessionsController} from "./controllers/devices-sessions-controller";
+import {DevicesSessionsRepository} from "./infrastructure/repositories/devices-sessions/devices-sessions-repository";
+import {QueryDevicesSessionsRepository} from "./infrastructure/repositories/devices-sessions/query-devices-sessions-repository";
+import {DevicesSessionsService} from "./application/services/devices-sessions-service";
+import {DevicesSessionsController} from "./api/controllers/devices-sessions-controller";
 
-import {LikesRepository} from "./repositories/likes/likes-repository";
-import {QueryLikesRepository} from "./repositories/likes/query-likes-repository";
-import {LikesService} from "./services/likes-service";
+import {LikesRepository} from "./infrastructure/repositories/likes/likes-repository";
+import {QueryLikesRepository} from "./infrastructure/repositories/likes/query-likes-repository";
+import {LikesService} from "./application/services/likes-service";
 
-import {TestingController} from "./controllers/testing-controller";
-import {TestingService} from "./services/testing-service";
+import {TestingController} from "./api/controllers/testing-controller";
+import {TestingService} from "./application/services/testing-service";
 
-import {AuthService} from "./services/auth-service";
-import {AuthController} from "./controllers/auth-controller";
+import {AuthService} from "./application/services/auth-service";
+import {AuthController} from "./api/controllers/auth-controller";
 
-import {JwtService} from "./services/jwt-service";
-import {EmailAdapter} from "./adapters/email-adapter";
-import {EmailManager} from "./managers/email-manager";
+import {JwtService} from "./application/services/jwt-service";
+import {EmailAdapter} from "./infrastructure/adapters/email-adapter";
+import {EmailManager} from "./application/managers/email-manager";
 
 export const iocContainer = new Container();
 

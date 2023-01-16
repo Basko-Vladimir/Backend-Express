@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import {UsersModel} from "../../db";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
 import {mapDbUserToUserOutputModel} from "../utils/mappers-utils";
-import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../../../application/models/users/output-models";
+import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../../../api/models/users/output-models";
 import { NotFoundError } from "../../../common/errors/errors-types";
 
 @injectable()

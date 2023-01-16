@@ -1,6 +1,6 @@
 import {inject, injectable} from "inversify";
 import {CommentsRepository} from "../../infrastructure/repositories/comments/comments-repository";
-import {Comment, CommentDataDTO} from "../../domain/classes/comments";
+import {Comment, CommentDataDTO} from "../../domain/entities/comments";
 import {LikeStatus} from "../../common/enums";
 import {QueryLikesRepository} from "../../infrastructure/repositories/likes/query-likes-repository";
 import {LikesService} from "./likes-service";

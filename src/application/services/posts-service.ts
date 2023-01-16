@@ -2,12 +2,12 @@ import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import {CommentsService} from "./comments-service";
 import {LikesService} from "./likes-service";
-import {Post} from "../../domain/classes/posts";
-import {CommentDataDTO} from "../../domain/classes/comments";
+import {Post} from "../../domain/entities/posts";
+import {CommentDataDTO} from "../../domain/entities/comments";
 import {PostsRepository} from "../../infrastructure/repositories/posts/posts-repository";
 import {DbPost} from "../../infrastructure/repositories/interfaces/posts-interfaces";
-import {PostOutputModel} from "../models/posts/output-models";
-import {UpdatePostInputModel} from "../models/posts/input-models";
+import {PostOutputModel} from "../../api/models/posts/output-models";
+import {UpdatePostInputModel} from "../../api/models/posts/input-models";
 
 @injectable()
 export class PostsService {

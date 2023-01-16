@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from "express";
-import {ParamBlogIdInputModel} from "../../../application/models/blogs/input-models";
+import {ParamBlogIdInputModel} from "../../models/blogs/input-models";
 import {iocContainer} from "../../../composition-root";
 import {BlogsService} from "../../../application/services/blogs-service";
 

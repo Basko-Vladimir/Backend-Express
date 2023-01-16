@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from "express";
-import {ParamPostIdInputModel} from "../../../application/models/posts/input-models";
+import {ParamPostIdInputModel} from "../../models/posts/input-models";
 import {getErrorStatus} from "../../controllers/utils";
 import {iocContainer} from "../../../composition-root";
 import { PostsService } from "../../../application/services/posts-service";

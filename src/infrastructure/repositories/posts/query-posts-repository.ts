@@ -1,10 +1,10 @@
 import { ObjectId } from "mongodb";
 import {injectable} from "inversify";
-import {PostsModel} from "../../db";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
 import {mapDbPostToPostOutputModel} from "../utils/mappers-utils";
-import {PostOutputModel, PostsQueryParamsOutputModel} from "../../../application/models/posts/output-models";
-import {BlogAllPostsOutputModel} from "../../../application/models/blogs/output-models";
+import {PostsModel} from "../../db";
+import {PostOutputModel, PostsQueryParamsOutputModel} from "../../../api/models/posts/output-models";
+import {BlogAllPostsOutputModel} from "../../../api/models/blogs/output-models";
 import { NotFoundError } from "../../../common/errors/errors-types";
 
 @injectable()

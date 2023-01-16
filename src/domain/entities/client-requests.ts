@@ -1,4 +1,3 @@
-
 export class ClientRequest {
 	endpoint: string;
 	ip: string;

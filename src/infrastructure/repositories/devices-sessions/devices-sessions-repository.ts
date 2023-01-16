@@ -3,7 +3,7 @@ import {ObjectId} from "mongodb";
 import {DevicesSessionsModel} from "../../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {EntityWithoutId, UpdateOrFilterModel} from "../../../common/interfaces";
-import {DeviceSession} from "../../../domain/classes/devices-sessions";
+import {DeviceSession} from "../../../domain/entities/devices-sessions";
 import {DbDeviceSession} from "../interfaces/devices-sessions-interfaces";
 import {DataBaseError} from "../../../common/errors/errors-types";
 

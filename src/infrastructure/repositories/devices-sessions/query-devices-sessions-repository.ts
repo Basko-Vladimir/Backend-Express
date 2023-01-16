@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
-import {DevicesSessionsModel} from "../../db";
 import {mapDbDeviceSessionToDeviceSessionOutputModel} from "../utils/mappers-utils";
-import {DeviceSessionOutputModel} from "../../../application/models/devices-sessions/output-models";
+import {DevicesSessionsModel} from "../../db";
+import {DeviceSessionOutputModel} from "../../../api/models/devices-sessions/output-models";
 import {UpdateOrFilterModel} from "../../../common/interfaces";
 
 @injectable()

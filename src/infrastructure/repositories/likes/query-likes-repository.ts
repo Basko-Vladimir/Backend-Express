@@ -1,6 +1,6 @@
 import {injectable} from "inversify";
 import {LikesModel} from "../../db";
-import {LikesInfoOutputModel} from "../../../application/models/likes/output-models";
+import {LikesInfoOutputModel} from "../../../api/models/likes/output-models";
 import {LikeStatus} from "../../../common/enums";
 
 @injectable()

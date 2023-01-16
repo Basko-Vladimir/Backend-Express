@@ -1,4 +1,4 @@
-import {ApiErrorOutputModel} from "../../application/models/errors-models";
+import {ApiErrorOutputModel} from "../../api/models/errors-models";
 
 export class DataBaseError extends Error {
 	constructor(message?: string) {

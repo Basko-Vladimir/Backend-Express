@@ -1,5 +1,4 @@
 import {Schema, Types} from "mongoose";
-import {DbBlog} from "../infrastructure/repositories/interfaces/blogs-interfaces";
 import {DbPost} from "../infrastructure/repositories/interfaces/posts-interfaces";
 import {DbUser} from "../infrastructure/repositories/interfaces/users-interfaces";
 import {DbComment} from "../infrastructure/repositories/interfaces/comments-interfaces";
@@ -7,7 +6,6 @@ import {DbClientRequest} from "../infrastructure/repositories/interfaces/client-
 import {DbDeviceSession} from "../infrastructure/repositories/interfaces/devices-sessions-interfaces";
 import {DbLike} from "../infrastructure/repositories/interfaces/likes-interfaces";
 import {
-	blogsConstants,
 	commentsConstants,
 	MIN_STRINGS_LENGTH,
 	postsConstants,
@@ -15,36 +13,6 @@ import {
 } from "../common/constants";
 import {DATE_ERROR_MESSAGE, generateLengthErrorMessage, generateRegExpError} from "../common/errors/error-messages";
 import {LikeStatus} from "../common/enums";
-
-// Blogs collection Schema
-const { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH, MAX_WEBSITE_URL_LENGTH, WEBSITE_URL_REG_EXP } = blogsConstants;
-export const blogsSchema = new Schema<DbBlog>({
-	name: {
-		type: String,
-		required: true,
-		trim: true,
-		minlength: [MIN_STRINGS_LENGTH, generateLengthErrorMessage("name", MIN_STRINGS_LENGTH, "min")],
-		maxlength: [MAX_NAME_LENGTH, generateLengthErrorMessage("name", MAX_NAME_LENGTH, "max")]
-	},
-	websiteUrl: {
-		type: String,
-		required: true,
-		trim: true,
-		maxlength: [MAX_WEBSITE_URL_LENGTH, generateLengthErrorMessage("websiteUrl", MAX_WEBSITE_URL_LENGTH, "max")],
-		validate: [WEBSITE_URL_REG_EXP, generateRegExpError("websiteUrl", WEBSITE_URL_REG_EXP)]
-	},
-	description: {
-		type: String,
-		required: true,
-		trim: true,
-		minlength: [MIN_STRINGS_LENGTH, generateLengthErrorMessage("description", MIN_STRINGS_LENGTH, "min")],
-		maxlength: [MAX_DESCRIPTION_LENGTH, generateLengthErrorMessage("description", MAX_DESCRIPTION_LENGTH, "max")]
-	},
-	createdAt: {
-		type: Date,
-		min: [new Date(), DATE_ERROR_MESSAGE]
-	}
-});
 
 // Posts collection Schema
 const { MAX_TITLE_LENGTH, MAX_SHORT_DESCRIPTION_LENGTH, MAX_CONTENT_LENGTH } = postsConstants;

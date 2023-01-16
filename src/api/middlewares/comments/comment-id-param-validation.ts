@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from "express";
 import {getErrorStatus} from "../../controllers/utils";
 import {iocContainer} from "../../../composition-root";
-import {ParamCommentIdInputModel} from "../../../application/models/comments/input-models";
+import {ParamCommentIdInputModel} from "../../models/comments/input-models";
 import {CommentsService} from "../../../application/services/comments-service";
 
 const commentsService = iocContainer.resolve(CommentsService);

@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
-import {User} from "../../domain/classes/users";
+import {User} from "../../domain/entities/users";
 import {UsersRepository} from "../../infrastructure/repositories/users/users-repository";
-import {CreateUserInputModel} from "../models/users/input-models";
+import {CreateUserInputModel} from "../../api/models/users/input-models";
 import {DbUser, UserFilter} from "../../infrastructure/repositories/interfaces/users-interfaces";
 import {UpdateOrFilterModel} from "../../common/interfaces";
 

@@ -1,5 +1,5 @@
 import {ObjectId} from "mongodb";
-import { EmailConfirmation } from "../../../domain/classes/users";
+import { EmailConfirmation } from "../../../domain/entities/users";
 
 export interface DbUser {
 	_id: ObjectId;

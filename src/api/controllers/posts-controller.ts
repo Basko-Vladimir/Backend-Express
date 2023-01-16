@@ -7,21 +7,21 @@ import {
 	PostAllFullCommentsOutputModel,
 	PostOutputModel,
 	PostsQueryParamsOutputModel
-} from "../../application/models/posts/output-models";
-import {BlogAllPostsOutputModel} from "../../application/models/blogs/output-models";
-import {CreateCommentInputModel} from "../../application/models/comments/input-models";
-import {ParamIdInputModel} from "../../application/models/common-models";
-import {CreatePostInputModel, ParamPostIdInputModel, UpdatePostInputModel} from "../../application/models/posts/input-models";
+} from "../models/posts/output-models";
+import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
+import {CreateCommentInputModel} from "../models/comments/input-models";
+import {ParamIdInputModel} from "../models/common-models";
+import {CreatePostInputModel, ParamPostIdInputModel, UpdatePostInputModel} from "../models/posts/input-models";
 import {
 	CommentQueryParamsOutputModel,
 	FullCommentOutputModel
-} from "../../application/models/comments/output-models";
+} from "../models/comments/output-models";
 import {QueryPostsRepository} from "../../infrastructure/repositories/posts/query-posts-repository";
 import {QueryBlogsRepository} from "../../infrastructure/repositories/blogs/query-blogs-repository";
 import {QueryCommentsRepository} from "../../infrastructure/repositories/comments/query-comments-repository";
 import {QueryLikesRepository} from "../../infrastructure/repositories/likes/query-likes-repository";
 import {PostsService} from "../../application/services/posts-service";
-import {CommentDataDTO} from "../../domain/classes/comments";
+import {CommentDataDTO} from "../../domain/entities/comments";
 
 @injectable()
 export class PostsController {

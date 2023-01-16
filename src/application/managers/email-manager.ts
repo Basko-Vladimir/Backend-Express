@@ -1,7 +1,7 @@
-import {EmailInfoModel} from "../models/email-models";
-import { User } from "../../domain/classes/users";
-import {EmailAdapter} from "../../infrastructure/adapters/email-adapter";
 import {inject, injectable} from "inversify";
+import {EmailInfoModel} from "../../api/models/email-models";
+import { User } from "../../domain/entities/users";
+import {EmailAdapter} from "../../infrastructure/adapters/email-adapter";
 
 @injectable()
 export class EmailManager {

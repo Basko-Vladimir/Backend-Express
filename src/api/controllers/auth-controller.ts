@@ -11,12 +11,12 @@ import {
 	TokenOutputModel,
 	RegistrationConfirmationInputModel,
 	PasswordRecoveryConfirmationInputModel
-} from "../../application/models/auth-models";
-import {CreateUserInputModel} from "../../application/models/users/input-models";
+} from "../models/auth-models";
+import {CreateUserInputModel} from "../models/users/input-models";
 import {AuthService} from "../../application/services/auth-service";
 import {JwtService} from "../../application/services/jwt-service";
 import {EntityWithoutId, TypedRequestBody} from "../../common/interfaces";
-import {DeviceSession} from "../../domain/classes/devices-sessions";
+import {DeviceSession} from "../../domain/entities/devices-sessions";
 
 @injectable()
 export class AuthController {

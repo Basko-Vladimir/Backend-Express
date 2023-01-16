@@ -1,9 +1,9 @@
 import {injectable} from "inversify";
-import {CommentsModel} from "../../db";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
 import {mapDbCommentToCommentOutputModel} from "../utils/mappers-utils";
-import {CommentOutputModel, CommentQueryParamsOutputModel} from "../../../application/models/comments/output-models";
-import {PostAllCommentsOutputModel} from "../../../application/models/posts/output-models";
+import {CommentsModel} from "../../db";
+import {CommentOutputModel, CommentQueryParamsOutputModel} from "../../../api/models/comments/output-models";
+import {PostAllCommentsOutputModel} from "../../../api/models/posts/output-models";
 import {NotFoundError} from "../../../common/errors/errors-types";
 
 @injectable()

@@ -1,5 +1,5 @@
-import {CommentOutputModel, FullCommentOutputModel} from "../../application/models/comments/output-models";
-import {LikesInfoOutputModel} from "../../application/models/likes/output-models";
+import {CommentOutputModel, FullCommentOutputModel} from "../models/comments/output-models";
+import {LikesInfoOutputModel} from "../models/likes/output-models";
 import { DataBaseError } from "../../common/errors/errors-types";
 
 export const getErrorStatus = (error: unknown): number => {

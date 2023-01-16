@@ -3,8 +3,8 @@ import {injectable} from "inversify";
 import {PostsModel} from "../../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import { DbPost } from "../interfaces/posts-interfaces";
-import {Post} from "../../../domain/classes/posts";
-import {UpdatePostInputModel} from "../../../application/models/posts/input-models";
+import {Post} from "../../../domain/entities/posts";
+import {UpdatePostInputModel} from "../../../api/models/posts/input-models";
 import { DataBaseError, NotFoundError } from "../../../common/errors/errors-types";
 
 @injectable()

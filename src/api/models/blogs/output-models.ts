@@ -1,6 +1,5 @@
 import {PostOutputModel} from "../posts/output-models";
-import {BlogSortByField} from "../../../common/enums";
-import {AllEntitiesOutputModel, CommonQueryParamsModel} from "../common-models";
+import {AllEntitiesOutputModel, } from "../common-models";
 
 export interface BlogOutputModel {
 	id: string;
@@ -19,7 +18,3 @@ export interface AllBlogsOutputModel {
 }
 
 export interface BlogAllPostsOutputModel extends AllEntitiesOutputModel<PostOutputModel> {}
-
-export interface BlogsQueryParamsOutputModel extends CommonQueryParamsModel<BlogSortByField> {
-	searchNameTerm: string;
-}

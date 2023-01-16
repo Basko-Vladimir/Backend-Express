@@ -1,10 +1,10 @@
 import {inject, injectable} from "inversify";
 import {BlogsRepository} from "../../infrastructure/repositories/blogs/blogs-repository";
-import {Blog} from "../../domain/classes/blogs";
-import {CreateBlogInputModel, CreateBlogPostInputModel, UpdateBlogInputModel} from "../models/blogs/input-models";
+import {CreateBlogInputModel, CreateBlogPostInputModel, UpdateBlogInputModel} from "../../api/models/blogs/input-models";
 import {PostsService} from "./posts-service";
-import {PostOutputModel} from "../models/posts/output-models";
+import {PostOutputModel} from "../../api/models/posts/output-models";
 import { NotFoundError } from "../../common/errors/errors-types";
+import {BlogModel, IBlog} from "../../domain/blogs/BlogTypes";
 
 @injectable()
 export class BlogsService {
@@ -13,19 +13,26 @@ export class BlogsService {
 		@inject(PostsService) protected postsService: PostsService
 	) {}
 	
-	async getBlogById(id: string): Promise<Blog | null> {
+	async getBlogById(id: string): Promise<IBlog | null> {
 		return this.blogsRepository.getBlogById(id);
 	}
 	
 	async createBlog(data: CreateBlogInputModel): Promise<string> {
 		const { name, websiteUrl, description } = data;
-		const blogData = new Blog(name, websiteUrl, description);
+		const newEntity = await BlogModel.createEntity(name, websiteUrl, description);
+		
+		const createdBlog = await this.blogsRepository.save(newEntity);
 
-		return this.blogsRepository.createBlog(blogData);
+		return String(createdBlog._id);
 	}
 	
 	async updateBlog(id: string, data: UpdateBlogInputModel): Promise<void> {
-		return this.blogsRepository.updateBlog(id, data);
+		const targetBlog = await this.getBlogById(id);
+		
+		if (targetBlog) {
+			const updatedBlog = await targetBlog.updateData(data);
+			await this.blogsRepository.save(updatedBlog);
+		}
 	}
 	
 	async deleteBlog(id: string): Promise<void> {

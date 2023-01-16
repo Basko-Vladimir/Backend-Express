@@ -1,11 +1,11 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
 import {getErrorStatus} from "./utils";
-import {DeviceSessionOutputModel} from "../../application/models/devices-sessions/output-models";
+import {DeviceSessionOutputModel} from "../models/devices-sessions/output-models";
 import {DevicesSessionsService} from "../../application/services/devices-sessions-service";
 import {QueryDevicesSessionsRepository} from "../../infrastructure/repositories/devices-sessions/query-devices-sessions-repository";
 import {TypedRequestParams} from "../../common/interfaces";
-import {ParamDeviceSessionIdInputModel} from "../../application/models/devices-sessions/input-models";
+import {ParamDeviceSessionIdInputModel} from "../models/devices-sessions/input-models";
 
 @injectable()
 export class DevicesSessionsController {

@@ -1,13 +1,13 @@
 import {inject, injectable} from "inversify";
 import {Response} from "express";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../../common/interfaces";
-import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../../application/models/users/output-models";
+import {AllUsersOutputModel, UserOutputModel, UsersQueryParamsOutputModel} from "../models/users/output-models";
 import {QueryUsersRepository} from "../../infrastructure/repositories/users/query-users-repository";
 import {EMPTY_SEARCH_VALUE} from "../../common/constants";
 import {getErrorStatus} from "./utils";
-import {CreateUserInputModel} from "../../application/models/users/input-models";
+import {CreateUserInputModel} from "../models/users/input-models";
 import {UsersService} from "../../application/services/users-service";
-import {ParamIdInputModel} from "../../application/models/common-models";
+import {ParamIdInputModel} from "../models/common-models";
 import {AuthService} from "../../application/services/auth-service";
 
 @injectable()

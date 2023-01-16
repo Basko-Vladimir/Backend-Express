@@ -1,7 +1,7 @@
 import {injectable} from "inversify";
 import {CommentsModel} from "../../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
-import {Comment} from "../../../domain/classes/comments";
+import {Comment} from "../../../domain/entities/comments";
 import { DataBaseError, NotFoundError } from "../../../common/errors/errors-types";
 
 @injectable()

@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {ClientRequest} from "../../domain/classes/client-requests";
+import {ClientRequest} from "../../domain/entities/client-requests";
 import {ClientRequestsRepository} from "../../infrastructure/repositories/client-requests/client-requests-repository";
 import {DbSortDirection} from "../../infrastructure/repositories/interfaces/common-interfaces";
 import {DbClientRequest} from "../../infrastructure/repositories/interfaces/client-requests-interfaces";

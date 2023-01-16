@@ -1,4 +1,6 @@
 import {ParamsDictionary} from "express-serve-static-core";
+import {CommonQueryParamsModel} from "../common-models";
+import {BlogSortByField} from "../../../common/enums";
 
 export interface CreateBlogInputModel {
 	name: string;
@@ -20,4 +22,7 @@ export interface CreateBlogPostInputModel {
 
 export interface ParamBlogIdInputModel extends ParamsDictionary {
 	blogId: string;
+}
+export interface BlogsQueryParamsInputModel extends CommonQueryParamsModel<BlogSortByField> {
+	searchNameTerm: string;
 }

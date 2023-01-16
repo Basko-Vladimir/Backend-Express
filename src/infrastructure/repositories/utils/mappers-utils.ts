@@ -1,18 +1,18 @@
 import {ObjectId} from "mongodb";
-import {DbBlog} from "../interfaces/blogs-interfaces";
 import {DbPost} from "../interfaces/posts-interfaces";
 import {DbUser} from "../interfaces/users-interfaces";
 import {DbComment} from "../interfaces/comments-interfaces";
 import {DbDeviceSession} from "../interfaces/devices-sessions-interfaces";
-import {BlogOutputModel} from "../../../application/models/blogs/output-models";
-import {PostOutputModel} from "../../../application/models/posts/output-models";
-import {UserOutputModel} from "../../../application/models/users/output-models";
-import {CommentOutputModel} from "../../../application/models/comments/output-models";
-import {DeviceSessionOutputModel} from "../../../application/models/devices-sessions/output-models";
+import {BlogOutputModel} from "../../../api/models/blogs/output-models";
+import {PostOutputModel} from "../../../api/models/posts/output-models";
+import {UserOutputModel} from "../../../api/models/users/output-models";
+import {CommentOutputModel} from "../../../api/models/comments/output-models";
+import {DeviceSessionOutputModel} from "../../../api/models/devices-sessions/output-models";
+import {IBlog} from "../../../domain/blogs/BlogTypes";
 
 export const getFilterByDbId = (id: string): {_id: ObjectId} => ({_id: new ObjectId(id)});
 
-export const mapDbBlogToBlogOutputModel = (blog: DbBlog): BlogOutputModel => {
+export const mapDbBlogToBlogOutputModel = (blog: IBlog): BlogOutputModel => {
 	return {
 		id: String(blog._id),
 		name: blog.name,

@@ -2,7 +2,6 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import { DataBaseError } from "../common/errors/errors-types";
 import {
-	blogsSchema,
 	clientRequestsSchema,
 	commentsSchema,
 	devicesSessionsSchema,
@@ -12,7 +11,6 @@ import {
 } from "../domain/schemas";
 import {settings} from "../settings";
 
-export const BlogsModel = mongoose.model("blogs", blogsSchema);
 export const PostsModel = mongoose.model("posts", postsSchema);
 export const UsersModel = mongoose.model("users", usersSchema);
 export const CommentsModel = mongoose.model("comments", commentsSchema);

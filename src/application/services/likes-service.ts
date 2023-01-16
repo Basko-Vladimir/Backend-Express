@@ -1,6 +1,6 @@
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
-import {Like} from "../../domain/classes/likes";
+import {Like} from "../../domain/entities/likes";
 import { LikesRepository } from "../../infrastructure/repositories/likes/likes-repository";
 import { DbLike } from "../../infrastructure/repositories/interfaces/likes-interfaces";
 import {UpdateOrFilterModel} from "../../common/interfaces";

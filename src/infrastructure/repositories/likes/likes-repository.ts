@@ -1,10 +1,10 @@
 import {injectable} from "inversify";
-import {LikesModel} from "../../db";
-import {Like} from "../../../domain/classes/likes";
-import {LikeStatus} from "../../../common/enums";
-import {UpdateOrFilterModel} from "../../../common/interfaces";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {DbLike} from "../interfaces/likes-interfaces";
+import {LikesModel} from "../../db";
+import {Like} from "../../../domain/entities/likes";
+import {LikeStatus} from "../../../common/enums";
+import {UpdateOrFilterModel} from "../../../common/interfaces";
 import {DataBaseError} from "../../../common/errors/errors-types";
 
 @injectable()

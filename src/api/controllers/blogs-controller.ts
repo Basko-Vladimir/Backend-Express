@@ -1,24 +1,24 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
+import {getErrorStatus} from "./utils";
+import {EMPTY_SEARCH_VALUE} from "../../common/constants";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../../common/interfaces";
+import {ParamIdInputModel} from "../models/common-models";
+import {PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
+import {
+	CreateBlogInputModel,
+	ParamBlogIdInputModel,
+	CreateBlogPostInputModel,
+	UpdateBlogInputModel,
+	BlogsQueryParamsInputModel
+} from "../models/blogs/input-models";
 import {
 	AllBlogsOutputModel,
 	BlogAllPostsOutputModel,
-	BlogOutputModel,
-	BlogsQueryParamsOutputModel
-} from "../../application/models/blogs/output-models";
-import {QueryBlogsRepository} from "../../infrastructure/repositories/blogs/query-blogs-repository";
-import {EMPTY_SEARCH_VALUE} from "../../common/constants";
-import {getErrorStatus} from "./utils";
-import {ParamIdInputModel} from "../../application/models/common-models";
-import {
-	CreateBlogInputModel,
-	CreateBlogPostInputModel,
-	ParamBlogIdInputModel,
-	UpdateBlogInputModel
-} from "../../application/models/blogs/input-models";
+	BlogOutputModel
+} from "../models/blogs/output-models";
 import {BlogsService} from "../../application/services/blogs-service";
-import {PostOutputModel, PostsQueryParamsOutputModel} from "../../application/models/posts/output-models";
+import {QueryBlogsRepository} from "../../infrastructure/repositories/blogs/query-blogs-repository";
 import {QueryPostsRepository} from "../../infrastructure/repositories/posts/query-posts-repository";
 
 @injectable()
@@ -29,7 +29,7 @@ export class BlogsController {
 		@inject(QueryPostsRepository) protected queryPostsRepository: QueryPostsRepository
 	) {}
 	
-	async getAllBlogs (req: TypedRequestQuery<BlogsQueryParamsOutputModel>, res: Response<AllBlogsOutputModel>) {
+	async getAllBlogs (req: TypedRequestQuery<BlogsQueryParamsInputModel>, res: Response<AllBlogsOutputModel>) {
 		try {
 			const {searchNameTerm} = req.query;
 			const blogsOutputModel = await this.queryBlogsRepository.getAllBlogs({

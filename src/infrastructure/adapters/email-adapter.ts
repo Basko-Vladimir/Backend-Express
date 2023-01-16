@@ -1,6 +1,6 @@
-import nodemailer from "nodemailer";
-import {EmailInfoModel} from "../../application/models/email-models";
 import {injectable} from "inversify";
+import nodemailer from "nodemailer";
+import {EmailInfoModel} from "../../api/models/email-models";
 import {settings} from "../../settings";
 
 @injectable()

@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import {UsersModel} from "../../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {DbUser, UserFilter} from "../interfaces/users-interfaces";
-import { User } from "../../../domain/classes/users";
+import { User } from "../../../domain/entities/users";
 import {EntityWithoutId, UpdateOrFilterModel} from "../../../common/interfaces";
 import { DataBaseError, NotFoundError } from "../../../common/errors/errors-types";
 

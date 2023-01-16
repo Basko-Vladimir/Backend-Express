@@ -1,5 +1,5 @@
 import {inject, injectable} from "inversify";
-import {DeviceSession} from "../../domain/classes/devices-sessions";
+import {DeviceSession} from "../../domain/entities/devices-sessions";
 import {DevicesSessionsRepository} from "../../infrastructure/repositories/devices-sessions/devices-sessions-repository";
 import {DbDeviceSession} from "../../infrastructure/repositories/interfaces/devices-sessions-interfaces";
 import {EntityWithoutId, UpdateOrFilterModel} from "../../common/interfaces";

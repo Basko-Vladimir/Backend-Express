@@ -3,7 +3,7 @@ import {ClientRequestsModel} from "../../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
 import {DbSortDirection} from "../interfaces/common-interfaces";
 import {DbClientRequest} from "../interfaces/client-requests-interfaces";
-import {ClientRequest} from "../../../domain/classes/client-requests";
+import {ClientRequest} from "../../../domain/entities/client-requests";
 import {UpdateOrFilterModel} from "../../../common/interfaces";
 import {DataBaseError} from "../../../common/errors/errors-types";
 

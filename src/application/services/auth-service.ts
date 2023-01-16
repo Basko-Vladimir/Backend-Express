@@ -5,11 +5,11 @@ import {v4 as uuidv4} from "uuid";
 import {UsersService} from "./users-service";
 import {DevicesSessionsService} from "./devices-sessions-service";
 import {EmailManager} from "../managers/email-manager";
-import {CreateUserInputModel} from "../models/users/input-models";
-import {PasswordRecoveryConfirmationInputModel} from "../models/auth-models";
+import {CreateUserInputModel} from "../../api/models/users/input-models";
+import {PasswordRecoveryConfirmationInputModel} from "../../api/models/auth-models";
 import {EntityWithoutId} from "../../common/interfaces";
 import {EMAIL_SERVICE_ERROR_MESSAGE} from "../../common/errors/error-messages";
-import {DeviceSession} from "../../domain/classes/devices-sessions";
+import {DeviceSession} from "../../domain/entities/devices-sessions";
 import {DbUser} from "../../infrastructure/repositories/interfaces/users-interfaces";
 import {NotFoundError} from "../../common/errors/errors-types";
 

@@ -6,12 +6,10 @@ import {
 	commentsSchema,
 	devicesSessionsSchema,
 	likesSchema,
-	postsSchema,
 	usersSchema
 } from "../domain/schemas";
 import {settings} from "../settings";
 
-export const PostsModel = mongoose.model("posts", postsSchema);
 export const UsersModel = mongoose.model("users", usersSchema);
 export const CommentsModel = mongoose.model("comments", commentsSchema);
 export const ClientRequestsModel = mongoose.model("requests", clientRequestsSchema);

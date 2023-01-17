@@ -1,8 +1,8 @@
 import {Schema} from "mongoose";
-import {BlogModel, IBlog, IBlogMethods, IBlogModel} from "./BlogTypes";
+import {BlogModel, IBlog, IBlogMethods, IBlogModel, IBlogProps} from "./BlogTypes";
 import {blogsConstants, MIN_STRINGS_LENGTH} from "../../common/constants";
 import {generateLengthErrorMessage, generateRegExpError} from "../../common/errors/error-messages";
-import {UpdateBlogInputModel} from "../../api/models/blogs/input-models";
+import {IPost, IPostProps, PostModel} from "../posts/PostTypes";
 
 const { MAX_NAME_LENGTH, MAX_DESCRIPTION_LENGTH, MAX_WEBSITE_URL_LENGTH, WEBSITE_URL_REG_EXP } = blogsConstants;
 export const blogSchema = new Schema<IBlog, IBlogModel, IBlogMethods>({
@@ -33,7 +33,7 @@ export const blogSchema = new Schema<IBlog, IBlogModel, IBlogMethods>({
 	}
 });
 
-blogSchema.method("updateData", function(data: UpdateBlogInputModel) {
+blogSchema.method("updateBlogData", function(data: Omit<IBlogProps, "createdAt">): IBlog {
 	const that = this as IBlog;
 	const { name, websiteUrl, description } = data;
 	
@@ -44,8 +44,12 @@ blogSchema.method("updateData", function(data: UpdateBlogInputModel) {
 	return that;
 });
 
+blogSchema.method("createPost", function(data: IPostProps): IPost {
+	return new PostModel(data);
+});
+
 blogSchema.static(
-	"createEntity",
+	"createBlogEntity",
 	function (
 		name: string,
 		websiteUrl: string,

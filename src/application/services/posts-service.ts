@@ -1,44 +1,42 @@
-import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import {CommentsService} from "./comments-service";
 import {LikesService} from "./likes-service";
-import {Post} from "../../domain/entities/posts";
 import {CommentDataDTO} from "../../domain/entities/comments";
 import {PostsRepository} from "../../infrastructure/repositories/posts/posts-repository";
-import {DbPost} from "../../infrastructure/repositories/interfaces/posts-interfaces";
-import {PostOutputModel} from "../../api/models/posts/output-models";
 import {UpdatePostInputModel} from "../../api/models/posts/input-models";
+import {IPost} from "../../domain/posts/PostTypes";
+import {BlogsService} from "./blogs-service";
+import {NotFoundError} from "../../common/errors/errors-types";
+import {CreateBlogPostInputModel} from "../../api/models/blogs/input-models";
 
 @injectable()
 export class PostsService {
 	constructor(
 		@inject(PostsRepository) protected postsRepository: PostsRepository,
 		@inject(CommentsService) protected commentsService: CommentsService,
-		@inject(LikesService) protected likesService: LikesService
+		@inject(LikesService) protected likesService: LikesService,
+		@inject(BlogsService) protected blogsService: BlogsService
 	) {
 	}
 	
-	async getPostById(id: string): Promise<DbPost | null> {
+	async getPostById(id: string): Promise<IPost | null> {
 		return this.postsRepository.getPostById(id);
 	}
 	
 	async createPost(
-		postData: Omit<PostOutputModel, "id" | "createdAt">,
+		blogId: string,
+		postData: CreateBlogPostInputModel
 	): Promise<string> {
-		const {title, content, shortDescription, blogId, blogName} = postData;
-		const newPostData = new Post({
-			title,
-			content,
-			shortDescription,
-			blogName,
-			blogId: new ObjectId(blogId)
-		});
-		
-		return await this.postsRepository.createPost(newPostData);
+		return this.blogsService.createPostByBlogId(blogId, postData)
 	}
 	
 	async updatePost(id: string, postData: UpdatePostInputModel): Promise<void> {
-		return this.postsRepository.updatePost(id, postData);
+		const targetPost = await this.getPostById(id);
+		
+		if (!targetPost) throw new NotFoundError();
+		
+		const updatedPost = targetPost.updatePostData(postData);
+		await this.postsRepository.save(updatedPost);
 	}
 	
 	async deletePost(id: string): Promise<void> {

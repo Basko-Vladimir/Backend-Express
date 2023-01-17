@@ -1,5 +1,4 @@
 import {Schema, Types} from "mongoose";
-import {DbPost} from "../infrastructure/repositories/interfaces/posts-interfaces";
 import {DbUser} from "../infrastructure/repositories/interfaces/users-interfaces";
 import {DbComment} from "../infrastructure/repositories/interfaces/comments-interfaces";
 import {DbClientRequest} from "../infrastructure/repositories/interfaces/client-requests-interfaces";
@@ -7,51 +6,10 @@ import {DbDeviceSession} from "../infrastructure/repositories/interfaces/devices
 import {DbLike} from "../infrastructure/repositories/interfaces/likes-interfaces";
 import {
 	commentsConstants,
-	MIN_STRINGS_LENGTH,
-	postsConstants,
 	usersConstants
 } from "../common/constants";
 import {DATE_ERROR_MESSAGE, generateLengthErrorMessage, generateRegExpError} from "../common/errors/error-messages";
 import {LikeStatus} from "../common/enums";
-
-// Posts collection Schema
-const { MAX_TITLE_LENGTH, MAX_SHORT_DESCRIPTION_LENGTH, MAX_CONTENT_LENGTH } = postsConstants;
-export const postsSchema = new Schema<DbPost>({
-	title: {
-		type: String,
-		required: true,
-		trim: true,
-		minlength: [MIN_STRINGS_LENGTH, generateLengthErrorMessage("title", MIN_STRINGS_LENGTH, "min")],
-		maxlength: [MAX_TITLE_LENGTH, generateLengthErrorMessage("title", MAX_TITLE_LENGTH, "max")]
-	},
-	shortDescription: {
-		type: String,
-		required: true,
-		trim: true,
-		minlength: [MIN_STRINGS_LENGTH, generateLengthErrorMessage("shortDescription", MIN_STRINGS_LENGTH, "min")],
-		maxlength: [MAX_SHORT_DESCRIPTION_LENGTH, generateLengthErrorMessage("shortDescription", MAX_SHORT_DESCRIPTION_LENGTH, "max")]
-	},
-	content: {
-		type: String,
-		required: true,
-		trim: true,
-		minlength: [MIN_STRINGS_LENGTH, generateLengthErrorMessage("content", MIN_STRINGS_LENGTH, "min")],
-		maxlength: [MAX_CONTENT_LENGTH, generateLengthErrorMessage("content", MAX_CONTENT_LENGTH, "max")]
-	},
-	blogName: {
-		type: String,
-		required: true,
-		trim: true
-	},
-	blogId: {
-		type: Types.ObjectId,
-		required: true
-	},
-	createdAt: {
-		type: Date,
-		min: [new Date(), DATE_ERROR_MESSAGE]
-	}
-});
 
 // Users collection Schema
 const { MIN_LOGIN_LENGTH, MAX_LOGIN_LENGTH, LOGIN_REG_EXP, EMAIL_REG_EXP } = usersConstants;

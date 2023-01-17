@@ -53,8 +53,8 @@ export class PostsController {
 	
 	async createPost (req: TypedRequestBody<CreatePostInputModel>, res: Response<PostOutputModel>) {
 		try {
-			const {name: blogName} = await this.queryBlogsRepository.getBlogById(req.body.blogId);
-			const createdPostId = await this.postsService.createPost({...req.body, blogName});
+			const { blogId, ...restProps } = req.body;
+			const createdPostId = await this.postsService.createPost(blogId, restProps);
 			const post = await this.queryPostsRepository.getPostById(createdPostId);
 			res.status(201).send(post);
 		} catch (error) {

@@ -1,29 +1,23 @@
 import { ObjectId } from "mongodb";
 import {injectable} from "inversify";
-import {PostsModel} from "../../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
-import { DbPost } from "../interfaces/posts-interfaces";
-import {Post} from "../../../domain/entities/posts";
 import {UpdatePostInputModel} from "../../../api/models/posts/input-models";
-import { DataBaseError, NotFoundError } from "../../../common/errors/errors-types";
+import { NotFoundError } from "../../../common/errors/errors-types";
+import {IPost, PostModel} from "../../../domain/posts/PostTypes";
 
 @injectable()
 export class PostsRepository {
-	async getPostById(id: string): Promise<DbPost | null> {
-		return PostsModel.findById(id);
+	async getPostById(id: string): Promise<IPost | null> {
+		return PostModel.findById(id);
 	}
 	
-	async createPost(postData: Post): Promise<string> {
-		const createdPost = await PostsModel.create(postData);
-		
-		if (!createdPost) throw new DataBaseError();
-		
-		return String(createdPost._id);
+	async save(post: IPost): Promise<IPost> {
+		return post.save();
 	}
 	
 	async updatePost(id: string, postData: UpdatePostInputModel): Promise<void> {
 		const { blogId, shortDescription, title, content } = postData;
-		const { matchedCount } = await PostsModel.updateOne(
+		const { matchedCount } = await PostModel.updateOne(
 			getFilterByDbId(id),
 			{shortDescription, title, content, blogId: new ObjectId(blogId)}
 		);
@@ -32,12 +26,12 @@ export class PostsRepository {
 	}
 	
 	async deletePost(id: string): Promise<void> {
-		const { deletedCount } = await PostsModel.deleteOne(getFilterByDbId(id));
+		const { deletedCount } = await PostModel.deleteOne(getFilterByDbId(id));
 		
 		if (!deletedCount) throw new NotFoundError();
 	}
 	
 	async deleteAllPosts(): Promise<void> {
-		await PostsModel.deleteMany({});
+		await PostModel.deleteMany({});
 	}
 }

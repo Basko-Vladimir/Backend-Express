@@ -1,27 +1,22 @@
 import {injectable} from "inversify";
-import {CommentsModel} from "../../db";
 import {getFilterByDbId} from "../utils/mappers-utils";
-import {Comment} from "../../../domain/entities/comments";
-import { DataBaseError, NotFoundError } from "../../../common/errors/errors-types";
+import {NotFoundError} from "../../../common/errors/errors-types";
+import {CommentModel, IComment} from "../../../domain/comments/CommentTypes";
 
 @injectable()
 export class CommentsRepository {
-	async createComment(comment: Comment): Promise<string> {
-		const createdComment = await CommentsModel.create(comment);
-		
-		if (!createdComment) throw new DataBaseError();
-		
-		return String(createdComment._id);
+	async save(comment: IComment): Promise<IComment> {
+		return comment.save();
 	}
 	
 	async deleteComment(id: string): Promise<void> {
-		const { deletedCount } = await CommentsModel.deleteOne(getFilterByDbId(id));
+		const {deletedCount} = await CommentModel.deleteOne(getFilterByDbId(id));
 		
 		if (!deletedCount) throw new NotFoundError();
 	}
 	
 	async updateComment(id: string, content: string): Promise<void> {
-		const { matchedCount } = await CommentsModel.updateOne(
+		const {matchedCount} = await CommentModel.updateOne(
 			getFilterByDbId(id),
 			{content}
 		);
@@ -30,11 +25,11 @@ export class CommentsRepository {
 	}
 	
 	async deleteAllComments(): Promise<void> {
-		await CommentsModel.deleteMany({});
+		await CommentModel.deleteMany({});
 	}
 	
-	async getCommentById(id: string): Promise<Comment> {
-		const comment = await CommentsModel.findById(id);
+	async getCommentById(id: string): Promise<IComment> {
+		const comment = await CommentModel.findById(id);
 		
 		if (!comment) throw new NotFoundError();
 		

@@ -1,40 +1,43 @@
 import {inject, injectable} from "inversify";
+import {LikesService} from "./likes-service";
 import {CommentsRepository} from "../../infrastructure/repositories/comments/comments-repository";
-import {Comment, CommentDataDTO} from "../../domain/entities/comments";
 import {LikeStatus} from "../../common/enums";
 import {QueryLikesRepository} from "../../infrastructure/repositories/likes/query-likes-repository";
-import {LikesService} from "./likes-service";
+import {IComment} from "../../domain/comments/CommentTypes";
+import {CommentDataDTO} from "../../api/models/comments/input-models";
+import {PostsService} from "./posts-service";
 
 @injectable()
 export class CommentsService {
 	constructor(
 		@inject(CommentsRepository) protected commentsRepository: CommentsRepository,
 		@inject(QueryLikesRepository) protected queryLikesRepository: QueryLikesRepository,
-		@inject(LikesService) protected likesService: LikesService
+		@inject(LikesService) protected likesService: LikesService,
+		@inject(PostsService) protected postsService: PostsService
 	) {}
 	
 	async createComment(
 		commentData: CommentDataDTO
 	): Promise<string> {
-		const { content, userLogin, userId, postId } = commentData;
-		const newComment = new Comment(content, userLogin, userId, postId);
+		return this.postsService.createCommentByPostId(commentData);
+	}
+	
+	async updateComment(commentId: string, content: string): Promise<void> {
+		const targetComment = await this.getCommentById(commentId);
+		const updatedComment = targetComment.updateCommentContent(content);
 		
-		return this.commentsRepository.createComment(newComment);
+		await this.commentsRepository.save(updatedComment);
 	}
 	
 	async deleteComment(commentId: string): Promise<void> {
 		return this.commentsRepository.deleteComment(commentId);
 	}
 	
-	async updateComment(commentId: string, content: string): Promise<void> {
-		return this.commentsRepository.updateComment(commentId, content);
-	}
-	
 	async deleteAllComments(): Promise<void> {
 		return this.commentsRepository.deleteAllComments();
 	}
 	
-	async getCommentById(id: string): Promise<Comment> {
+	async getCommentById(id: string): Promise<IComment> {
 		return this.commentsRepository.getCommentById(id);
 	}
 	

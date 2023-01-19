@@ -9,7 +9,7 @@ import {
 	PostsQueryParamsOutputModel
 } from "../models/posts/output-models";
 import {BlogAllPostsOutputModel} from "../models/blogs/output-models";
-import {CreateCommentInputModel} from "../models/comments/input-models";
+import {CommentDataDTO, CreateCommentInputModel} from "../models/comments/input-models";
 import {ParamIdInputModel} from "../models/common-models";
 import {CreatePostInputModel, ParamPostIdInputModel, UpdatePostInputModel} from "../models/posts/input-models";
 import {
@@ -21,7 +21,6 @@ import {QueryBlogsRepository} from "../../infrastructure/repositories/blogs/quer
 import {QueryCommentsRepository} from "../../infrastructure/repositories/comments/query-comments-repository";
 import {QueryLikesRepository} from "../../infrastructure/repositories/likes/query-likes-repository";
 import {PostsService} from "../../application/services/posts-service";
-import {CommentDataDTO} from "../../domain/entities/comments";
 
 @injectable()
 export class PostsController {

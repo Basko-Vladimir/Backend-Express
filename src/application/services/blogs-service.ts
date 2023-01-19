@@ -51,8 +51,8 @@ export class BlogsService {
 			blogId: targetBlog._id
 		});
 		
-		await this.postsRepository.save(createdPost);
-		return String(createdPost._id);
+		const savedPost = await this.postsRepository.save(createdPost);
+		return String(savedPost._id);
 	}
 	
 	async deleteAllBlogs(): Promise<void> {

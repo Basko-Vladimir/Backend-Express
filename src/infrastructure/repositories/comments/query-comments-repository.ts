@@ -1,15 +1,15 @@
 import {injectable} from "inversify";
 import {countSkipValue, setSortValue} from "../utils/common-utils";
 import {mapDbCommentToCommentOutputModel} from "../utils/mappers-utils";
-import {CommentsModel} from "../../db";
 import {CommentOutputModel, CommentQueryParamsOutputModel} from "../../../api/models/comments/output-models";
 import {PostAllCommentsOutputModel} from "../../../api/models/posts/output-models";
 import {NotFoundError} from "../../../common/errors/errors-types";
+import { CommentModel } from "../../../domain/comments/CommentTypes";
 
 @injectable()
 export class QueryCommentsRepository {
 	async getCommentById(id: string): Promise<CommentOutputModel> {
-		const comment = await CommentsModel.findById(id);
+		const comment = await CommentModel.findById(id);
 		
 		if (!comment) throw new NotFoundError();
 		
@@ -25,10 +25,10 @@ export class QueryCommentsRepository {
 			const skip = countSkipValue(pageNumber, pageSize);
 			const sortSetting = setSortValue(sortBy, sortDirection);
 			
-			const totalCount = await CommentsModel
+			const totalCount = await CommentModel
 				.countDocuments()
 				.where("postId", postId);
-			const comments = await CommentsModel
+			const comments = await CommentModel
 				.find()
 				.where("postId", postId)
 				.skip(skip)

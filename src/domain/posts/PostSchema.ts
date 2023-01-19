@@ -2,6 +2,8 @@ import {Schema, Types} from "mongoose";
 import {IPost, IPostMethods, IPostModel, IPostProps} from "./PostTypes";
 import {MIN_STRINGS_LENGTH, postsConstants} from "../../common/constants";
 import {generateLengthErrorMessage} from "../../common/errors/error-messages";
+import {CommentDataDTO} from "../../api/models/comments/input-models";
+import {CommentModel, IComment} from "../comments/CommentTypes";
 
 const { MAX_TITLE_LENGTH, MAX_SHORT_DESCRIPTION_LENGTH, MAX_CONTENT_LENGTH } = postsConstants;
 export const postSchema = new Schema<IPost, IPostModel, IPostMethods>({
@@ -51,4 +53,8 @@ postSchema.method("updatePostData", function(newData: Omit<IPostProps, "blogName
 	that.shortDescription = shortDescription;
 	
 	return that;
+});
+
+postSchema.method("createComment", function (comment: CommentDataDTO): IComment {
+	return new CommentModel(comment);
 });

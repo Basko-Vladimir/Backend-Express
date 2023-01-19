@@ -1,19 +1,19 @@
 import {inject, injectable} from "inversify";
-import {CommentsService} from "./comments-service";
 import {LikesService} from "./likes-service";
-import {CommentDataDTO} from "../../domain/entities/comments";
 import {PostsRepository} from "../../infrastructure/repositories/posts/posts-repository";
 import {UpdatePostInputModel} from "../../api/models/posts/input-models";
 import {IPost} from "../../domain/posts/PostTypes";
 import {BlogsService} from "./blogs-service";
 import {NotFoundError} from "../../common/errors/errors-types";
 import {CreateBlogPostInputModel} from "../../api/models/blogs/input-models";
+import {CommentDataDTO} from "../../api/models/comments/input-models";
+import {CommentsRepository} from "../../infrastructure/repositories/comments/comments-repository";
 
 @injectable()
 export class PostsService {
 	constructor(
 		@inject(PostsRepository) protected postsRepository: PostsRepository,
-		@inject(CommentsService) protected commentsService: CommentsService,
+		@inject(CommentsRepository) protected commentsRepository: CommentsRepository,
 		@inject(LikesService) protected likesService: LikesService,
 		@inject(BlogsService) protected blogsService: BlogsService
 	) {
@@ -48,10 +48,13 @@ export class PostsService {
 	}
 	
 	async createCommentByPostId(commentData: CommentDataDTO): Promise<string> {
-		const commentId = await this.commentsService.createComment(commentData);
+		const targetPost = await this.getPostById(String(commentData.postId));
 		
-		await this.likesService.createLike(String(commentData.userId), commentId);
+		if (!targetPost) throw new NotFoundError();
 		
-		return commentId;
+		const createdComment = targetPost.createComment(commentData);
+		const savedComment = await this.commentsRepository.save(createdComment);
+		
+		return String(savedComment._id);
 	}
 }

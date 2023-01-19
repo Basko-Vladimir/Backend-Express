@@ -1,5 +1,5 @@
 import {ObjectId} from "mongodb";
-import { EmailConfirmation } from "../../../domain/entities/users";
+import { IEmailConfirmation } from "../../../domain/users/UserTypes";
 
 export interface DbUser {
 	_id: ObjectId;
@@ -8,7 +8,7 @@ export interface DbUser {
 	passwordSalt: string;
 	passwordHash: string;
 	passwordRecoveryCode: string;
-	emailConfirmation: EmailConfirmation;
+	emailConfirmation: IEmailConfirmation;
 	createdAt: Date;
 	__v: number;
 }
@@ -17,6 +17,6 @@ export interface UserFilter {
 	email?: string;
 	passwordHash?: string;
 	login?: string;
-	confirmationCode?: string;
+	"emailConfirmation.confirmationCode"?: string;
 	passwordRecoveryCode?: string;
 }

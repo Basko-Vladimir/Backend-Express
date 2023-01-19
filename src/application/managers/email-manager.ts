@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import {EmailInfoModel} from "../../api/models/email-models";
-import { User } from "../../domain/entities/users";
 import {EmailAdapter} from "../../infrastructure/adapters/email-adapter";
+import {IUser} from "../../domain/users/UserTypes";
 
 @injectable()
 export class EmailManager {
@@ -9,7 +9,7 @@ export class EmailManager {
 		@inject(EmailAdapter) protected emailAdapter: EmailAdapter
 	) {}
 	
-	async sendRegistrationEmail(userData: User): Promise<void> {
+	async sendRegistrationEmail(userData: IUser): Promise<void> {
 		const messageInfo: EmailInfoModel = {
 			from: "Test Backend Server <dev.test.vladimir@gmail.com>",
 			to: userData.email,

@@ -1,68 +1,11 @@
 import {Schema, Types} from "mongoose";
-import {DbUser} from "../infrastructure/repositories/interfaces/users-interfaces";
 import {DbComment} from "../infrastructure/repositories/interfaces/comments-interfaces";
 import {DbClientRequest} from "../infrastructure/repositories/interfaces/client-requests-interfaces";
 import {DbDeviceSession} from "../infrastructure/repositories/interfaces/devices-sessions-interfaces";
 import {DbLike} from "../infrastructure/repositories/interfaces/likes-interfaces";
-import {
-	commentsConstants,
-	usersConstants
-} from "../common/constants";
-import {DATE_ERROR_MESSAGE, generateLengthErrorMessage, generateRegExpError} from "../common/errors/error-messages";
+import {commentsConstants} from "../common/constants";
+import {DATE_ERROR_MESSAGE, generateLengthErrorMessage} from "../common/errors/error-messages";
 import {LikeStatus} from "../common/enums";
-
-// Users collection Schema
-const { MIN_LOGIN_LENGTH, MAX_LOGIN_LENGTH, LOGIN_REG_EXP, EMAIL_REG_EXP } = usersConstants;
-export const usersSchema = new Schema<DbUser>({
-	login: {
-		type: String,
-		required: true,
-		trim: true,
-		minlength: [MIN_LOGIN_LENGTH, generateLengthErrorMessage("login", MIN_LOGIN_LENGTH, "min")],
-		maxlength: [MAX_LOGIN_LENGTH, generateLengthErrorMessage("login", MAX_LOGIN_LENGTH, "max")],
-		validate: [LOGIN_REG_EXP, generateRegExpError("login", LOGIN_REG_EXP)]
-	},
-	email: {
-		type: String,
-		required: true,
-		trim: true,
-		validate: [EMAIL_REG_EXP, generateRegExpError("email", EMAIL_REG_EXP)]
-	},
-	passwordSalt: {
-		type: String,
-		required: true,
-		trim: true
-	},
-	passwordHash: {
-		type: String,
-		required: true,
-		trim: true
-	},
-	passwordRecoveryCode: {
-		type: String,
-		default: null
-	},
-	createdAt: {
-		type: Date,
-		min: [new Date(), DATE_ERROR_MESSAGE]
-	},
-	emailConfirmation: {
-		confirmationCode: {
-			type: String,
-			required: true,
-			trim: true
-		},
-		isConfirmed: {
-			type: Boolean,
-			required: true,
-			default: false
-		},
-		expirationDate: {
-			type: Date,
-			min: [new Date(), DATE_ERROR_MESSAGE]
-		}
-	}
-});
 
 // Comments collection Schema
 export const commentsSchema = new Schema<DbComment>({

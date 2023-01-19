@@ -5,12 +5,10 @@ import {
 	clientRequestsSchema,
 	commentsSchema,
 	devicesSessionsSchema,
-	likesSchema,
-	usersSchema
+	likesSchema
 } from "../domain/schemas";
 import {settings} from "../settings";
 
-export const UsersModel = mongoose.model("users", usersSchema);
 export const CommentsModel = mongoose.model("comments", commentsSchema);
 export const ClientRequestsModel = mongoose.model("requests", clientRequestsSchema);
 export const DevicesSessionsModel = mongoose.model("devices_sessions", devicesSessionsSchema);

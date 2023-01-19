@@ -1,5 +1,4 @@
 import {ObjectId} from "mongodb";
-import {DbUser} from "../interfaces/users-interfaces";
 import {DbComment} from "../interfaces/comments-interfaces";
 import {DbDeviceSession} from "../interfaces/devices-sessions-interfaces";
 import {BlogOutputModel} from "../../../api/models/blogs/output-models";
@@ -9,6 +8,7 @@ import {CommentOutputModel} from "../../../api/models/comments/output-models";
 import {DeviceSessionOutputModel} from "../../../api/models/devices-sessions/output-models";
 import {IBlog} from "../../../domain/blogs/BlogTypes";
 import {IPost} from "../../../domain/posts/PostTypes";
+import {IUser} from "../../../domain/users/UserTypes";
 
 export const getFilterByDbId = (id: string): {_id: ObjectId} => ({_id: new ObjectId(id)});
 
@@ -34,7 +34,7 @@ export const mapDbPostToPostOutputModel = (post: IPost): PostOutputModel => {
 	};
 };
 
-export const mapDbUserToUserOutputModel = (user: DbUser): UserOutputModel => {
+export const mapDbUserToUserOutputModel = (user: IUser): UserOutputModel => {
 	return {
 		id: String(user._id),
 		login: user.login,

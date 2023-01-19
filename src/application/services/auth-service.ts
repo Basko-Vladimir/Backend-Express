@@ -1,7 +1,5 @@
 import {inject, injectable} from "inversify";
 import bcrypt from "bcrypt";
-import add from "date-fns/add";
-import {v4 as uuidv4} from "uuid";
 import {UsersService} from "./users-service";
 import {DevicesSessionsService} from "./devices-sessions-service";
 import {EmailManager} from "../managers/email-manager";
@@ -10,8 +8,8 @@ import {PasswordRecoveryConfirmationInputModel} from "../../api/models/auth-mode
 import {EntityWithoutId} from "../../common/interfaces";
 import {EMAIL_SERVICE_ERROR_MESSAGE} from "../../common/errors/error-messages";
 import {DeviceSession} from "../../domain/entities/devices-sessions";
-import {DbUser} from "../../infrastructure/repositories/interfaces/users-interfaces";
 import {NotFoundError} from "../../common/errors/errors-types";
+import { IUser } from "../../domain/users/UserTypes";
 
 @injectable()
 export class AuthService {
@@ -21,16 +19,14 @@ export class AuthService {
 		@inject(DevicesSessionsService) protected devicesSessionsService: DevicesSessionsService,
 	) {}
 	
-	async registerUser(userData: CreateUserInputModel, isConfirmedByDefault = false): Promise<string> {
+	async registerUser(userData: CreateUserInputModel, isConfirmedByDefault: boolean = false): Promise<string> {
 		const { password } = userData;
 		const passwordSalt = await bcrypt.genSalt(10);
 		const passwordHash = await this.generateHash(password, passwordSalt);
 		
-		const createdUserId = await this.usersService.createUser(
-			userData, passwordHash, passwordSalt, isConfirmedByDefault
-		);
+		const createdUserId = await this.usersService.createUser(userData, passwordHash, passwordSalt, isConfirmedByDefault);
 		const createdUser = await this.usersService.getUserById(createdUserId);
-		
+
 		if (!createdUser) throw new NotFoundError();
 		
 		try {
@@ -43,22 +39,15 @@ export class AuthService {
 		}
 	}
 	
-	async confirmRegistration(user: DbUser): Promise<void> {
-		return this.usersService.updateUserConfirmation(user);
+	async confirmRegistration(user: IUser): Promise<void> {
+		return this.usersService.confirmRegistration(user);
 	}
 	
-	async resendRegistrationEmail(user: DbUser): Promise<void> {
+	async resendRegistrationEmail(user: IUser): Promise<void> {
 		try {
-			const newConfirmationCode = uuidv4();
-			await this.usersService.updateUser(String(user._id), {
-				"emailConfirmation.confirmationCode": newConfirmationCode,
-				"emailConfirmation.expirationDate": add(new Date(), {hours: 1})
-			});
-			const updatedUser = await this.usersService.getUserById(String(user._id));
+			const updatedUser = await this.usersService.updateConfirmationCode(user);
 			
-			if (updatedUser) {
-				return this.emailManager.sendRegistrationEmail(updatedUser);
-			}
+			return this.emailManager.sendRegistrationEmail(updatedUser);
 		} catch (error) {
 			console.error(error);
 		}
@@ -91,28 +80,22 @@ export class AuthService {
 	}
 	
 	async recoverPassword(email: string): Promise<void> {
-		const passwordRecoveryCode = uuidv4();
-		const user = await this.usersService.getUserByFilter({email});
-		
-		if (user) {
-			await this.usersService.updateUser(String(user?._id), {passwordRecoveryCode});
-		}
+		const updatedUser = await this.usersService.updatePasswordRecoveryCode(email);
 		
 		try {
-			return this.emailManager.recoverPassword(email, passwordRecoveryCode);
+			return this.emailManager.recoverPassword(email, updatedUser.passwordRecoveryCode!);
 		} catch (error) {
 			throw new Error(EMAIL_SERVICE_ERROR_MESSAGE);
 		}
 	}
 	
 	async confirmPasswordRecovery(
-		user: DbUser,
+		user: IUser,
 		passwordRecoveryData: PasswordRecoveryConfirmationInputModel
 ): Promise<void> {
 		const { recoveryCode, newPassword } = passwordRecoveryData;
 		const newPasswordHash = await this.generateHash(newPassword, user.passwordSalt);
 		
-		return this.usersService
-			.updateUser(String(user._id), {passwordHash: newPasswordHash, passwordRecoveryCode: recoveryCode});
+		return this.usersService.updateUserPassword(user, newPasswordHash, recoveryCode);
 	}
 }

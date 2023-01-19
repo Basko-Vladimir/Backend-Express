@@ -1,9 +1,9 @@
 import {inject, injectable} from "inversify";
-import {User} from "../../domain/entities/users";
 import {UsersRepository} from "../../infrastructure/repositories/users/users-repository";
 import {CreateUserInputModel} from "../../api/models/users/input-models";
-import {DbUser, UserFilter} from "../../infrastructure/repositories/interfaces/users-interfaces";
-import {UpdateOrFilterModel} from "../../common/interfaces";
+import {UserFilter} from "../../infrastructure/repositories/interfaces/users-interfaces";
+import {IUser, UserModel} from "../../domain/users/UserTypes";
+import {NotFoundError} from "../../common/errors/errors-types";
 
 @injectable()
 export class UsersService {
@@ -11,11 +11,11 @@ export class UsersService {
 		@inject(UsersRepository) protected usersRepository: UsersRepository,
 	) {}
 	
-	async getUserById(userId: string): Promise<DbUser | null> {
+	async getUserById(userId: string): Promise<IUser | null> {
 		return this.usersRepository.getUserById(userId);
 	}
 	
-	async getUserByFilter(userFilter: UserFilter): Promise<DbUser | null> {
+	async getUserByFilter(userFilter: UserFilter): Promise<IUser | null> {
 		return this.usersRepository.getUserByFilter(userFilter);
 	}
 	
@@ -26,13 +26,17 @@ export class UsersService {
 		isConfirmedByDefault: boolean
 	): Promise<string> {
 		const {login, email} = userData;
-		const newUser = new User(login, email, passwordSalt, passwordHash, isConfirmedByDefault);
 		
-		return this.usersRepository.createUser(newUser);
-	}
-	
-	async updateUser(userId: string, updatedField: UpdateOrFilterModel): Promise<void> {
-		return this.usersRepository.updateUser(userId, updatedField);
+		const createdUser = await UserModel.createUserEntity(
+			login,
+			email,
+			passwordSalt,
+			passwordHash,
+			isConfirmedByDefault
+		);
+		const savedUser = await this.usersRepository.save(createdUser);
+		
+		return String(savedUser._id);
 	}
 	
 	async deleteUser(id: string): Promise<void> {
@@ -43,7 +47,27 @@ export class UsersService {
 		return this.usersRepository.deleteAllUsers();
 	}
 	
-	async updateUserConfirmation(user: User): Promise<void> {
-		return this.usersRepository.updateUserConfirmation(user);
+	async confirmRegistration(user: IUser): Promise<void> {
+		const confirmedUser = user.confirmUserRegistration();
+		await this.usersRepository.save(confirmedUser);
+	}
+	
+	async updateConfirmationCode(user: IUser): Promise<IUser> {
+		const updatedUser = user.updateConfirmationCode();
+		return this.usersRepository.save(updatedUser);
+	}
+	
+	async updatePasswordRecoveryCode(email: string): Promise<IUser> {
+		const targetUser = await this.getUserByFilter({email});
+		
+		if (!targetUser) throw new NotFoundError();
+		
+		const updatedTargetUser = targetUser.updatePasswordRecoveryCode();
+		return this.usersRepository.save(updatedTargetUser);
+	}
+	
+	async updateUserPassword(user: IUser, passwordHash: string, recoveryCode: string): Promise<void> {
+		const updatedUser = user.updateUserPassword(passwordHash, recoveryCode);
+		await this.usersRepository.save(updatedUser);
 	}
 }

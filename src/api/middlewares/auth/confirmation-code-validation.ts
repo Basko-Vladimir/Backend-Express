@@ -11,7 +11,7 @@ const usersService = iocContainer.resolve(UsersService);
 export const confirmationCodeValidation = body("code")
 	.exists().withMessage(generateMissedPropError("code"))
 	.custom(async (code, meta: Meta) => {
-		const user = await usersService.getUserByFilter({confirmationCode: code});
+		const user = await usersService.getUserByFilter({["emailConfirmation.confirmationCode"]: code});
 		const { INVALID_CONFIRMATION_CODE, EXISTED_CONFIRMATION_CODE } = confirmationCodeErrorMessages;
 		
 		if (user) {

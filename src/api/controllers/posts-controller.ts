@@ -16,6 +16,7 @@ import {
 	CommentQueryParamsOutputModel,
 	FullCommentOutputModel
 } from "../models/comments/output-models";
+import {UpdateLikeStatusInputModel} from "../models/likes/input-models";
 import {QueryPostsRepository} from "../../infrastructure/repositories/posts/query-posts-repository";
 import {QueryBlogsRepository} from "../../infrastructure/repositories/blogs/query-blogs-repository";
 import {QueryCommentsRepository} from "../../infrastructure/repositories/comments/query-comments-repository";
@@ -120,6 +121,18 @@ export class PostsController {
 					...allCommentsByPostId,
 					items: fullComments
 				});
+		} catch (err) {
+			res.sendStatus(getErrorStatus(err));
+		}
+	}
+	
+	async updatePostLikeStatus(
+		req: Request<ParamPostIdInputModel, {}, UpdateLikeStatusInputModel>,
+		res: Response<void>
+	) {
+		try {
+			await this.postsService.updatePostLikeStatus(String(req.context.user!._id), req.params.postId, req.body.likeStatus);
+			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));
 		}

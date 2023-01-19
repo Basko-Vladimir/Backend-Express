@@ -41,7 +41,7 @@ export class CommentsService {
 		return this.commentsRepository.getCommentById(id);
 	}
 	
-	async updateLikeStatus (userId: string, commentId: string, newStatus: LikeStatus): Promise<void> {
+	async updateCommentLikeStatus (userId: string, commentId: string, newStatus: LikeStatus): Promise<void> {
 		const existingLike = await this.likesService.getLikeByFilter({userId, commentId});
 		
 		if (existingLike) {

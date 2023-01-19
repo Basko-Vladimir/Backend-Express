@@ -35,5 +35,5 @@ commentsRouter.put(
 	bearerAuthValidation,
 	likesInputDataValidation,
 	requestErrorsValidation,
-	commentsController.updateLikeStatus.bind(commentsController)
+	commentsController.updateCommentLikeStatus.bind(commentsController)
 );

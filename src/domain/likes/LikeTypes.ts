@@ -5,8 +5,10 @@ import {likeSchema} from "./LikeSchema";
 
 export interface ILikeProps {
 	userId: ObjectId;
-	commentId: ObjectId;
+	commentId: ObjectId | null;
+	postId: ObjectId;
 	status: LikeStatus;
+	createdAt: Date;
 }
 
 export interface ILikeMethods {
@@ -16,7 +18,7 @@ export interface ILikeMethods {
 export interface ILike extends HydratedDocument<ILikeProps, ILikeMethods> {}
 
 export interface ILikeModel extends Model<ILikeProps, {}, ILikeMethods> {
-	createLikeEntity (userId: string, commentId: string, status: LikeStatus): ILike
+	createLikeEntity (userId: string, postId: string, status: LikeStatus, commentId?: string): ILike
 }
 
 export const LikeModel = model<ILikeProps, ILikeModel>("like", likeSchema);

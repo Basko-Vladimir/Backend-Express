@@ -9,12 +9,20 @@ export const likeSchema = new Schema<ILike, {}, ILikeModel>({
 	},
 	commentId: {
 		type: Types.ObjectId,
+		default: null
+	},
+	postId: {
+		type: Types.ObjectId,
 		required: true
 	},
 	status: {
 		type: String,
 		enum: [LikeStatus.LIKE, LikeStatus.DISLIKE, LikeStatus.NONE],
 		required: true
+	},
+	createdAt: {
+		type: Date,
+		default: new Date()
 	}
 });
 
@@ -26,6 +34,11 @@ likeSchema.method("updateLikeStatus", function (status: LikeStatus): ILike {
 	return that;
 });
 
-likeSchema.static("createLikeEntity", function(userId: string, commentId: string, status: LikeStatus): ILike {
-	return new LikeModel({userId, commentId, status});
+likeSchema.static("createLikeEntity", function(
+	userId: string,
+	postId: string,
+	status: LikeStatus,
+	commentId?: string
+): ILike {
+	return new LikeModel({userId, postId, status, commentId});
 });

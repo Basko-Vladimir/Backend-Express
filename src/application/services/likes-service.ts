@@ -16,10 +16,11 @@ export class LikesService {
 	
 	async createLike(
 		userId: string,
-		commentId: string,
-		status: LikeStatus = LikeStatus.NONE
+		postId: string,
+		status: LikeStatus = LikeStatus.NONE,
+		commentId?: string
 	): Promise<string> {
-		const createdLike = LikeModel.createLikeEntity(userId, commentId, status);
+		const createdLike = LikeModel.createLikeEntity(userId, postId, status, commentId);
 		const savedLike = await this.likesRepository.save(createdLike);
 		
 		return String(savedLike._id);
@@ -30,7 +31,7 @@ export class LikesService {
 		
 		if (!targetLike) throw new NotFoundError();
 		
-		const updatedLike = targetLike?.updateLikeStatus(status);
+		const updatedLike = targetLike.updateLikeStatus(status);
 		await this.likesRepository.save(updatedLike);
 	}
 	

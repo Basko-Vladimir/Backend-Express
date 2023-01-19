@@ -47,7 +47,8 @@ export class CommentsService {
 		if (existingLike) {
 			return this.likesService.updateLike(String(existingLike?._id), newStatus);
 		} else {
-			await this.likesService.createLike(userId, commentId, newStatus);
+			const targetComment = await this.commentsRepository.getCommentById(commentId);
+			await this.likesService.createLike(userId, String(targetComment.postId), newStatus, commentId);
 		}
 	}
 }

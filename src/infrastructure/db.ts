@@ -1,16 +1,11 @@
 import "dotenv/config";
 import mongoose from "mongoose";
 import { DataBaseError } from "../common/errors/errors-types";
-import {
-	clientRequestsSchema,
-	devicesSessionsSchema,
-	likesSchema
-} from "../domain/schemas";
+import { clientRequestsSchema, devicesSessionsSchema } from "../domain/schemas";
 import {settings} from "../settings";
 
 export const ClientRequestsModel = mongoose.model("requests", clientRequestsSchema);
 export const DevicesSessionsModel = mongoose.model("devices_sessions", devicesSessionsSchema);
-export const LikesModel = mongoose.model("likes", likesSchema);
 
 export async function runDb() {
 	try {

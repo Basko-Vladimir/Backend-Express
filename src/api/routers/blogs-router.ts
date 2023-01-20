@@ -35,7 +35,7 @@ blogsRouter.delete("/:id",
 );
 
 blogsRouter.post("/:blogId/posts",
-	basicAuthValidation,
+	// basicAuthValidation,
 	blogIdParamValidation,
 	postBodyCommonFieldsValidation,
 	requestErrorsValidation,

@@ -21,6 +21,8 @@ import {BlogsService} from "../../application/services/blogs-service";
 import {QueryBlogsRepository} from "../../infrastructure/repositories/blogs/query-blogs-repository";
 import {QueryPostsRepository} from "../../infrastructure/repositories/posts/query-posts-repository";
 import { QueryLikesRepository } from "../../infrastructure/repositories/likes/query-likes-repository";
+import {JwtService} from "../../application/services/jwt-service";
+import { UsersService } from "../../application/services/users-service";
 
 @injectable()
 export class BlogsController {
@@ -28,6 +30,8 @@ export class BlogsController {
 		@inject(BlogsService) protected blogsService: BlogsService,
 		@inject(QueryBlogsRepository) protected queryBlogsRepository: QueryBlogsRepository,
 		@inject(QueryPostsRepository) protected queryPostsRepository: QueryPostsRepository,
+		@inject(JwtService) protected jwtService: JwtService,
+		@inject(UsersService) protected usersService: UsersService,
 		@inject(QueryLikesRepository) protected queryLikesRepository: QueryLikesRepository
 	) {}
 	
@@ -83,9 +87,14 @@ export class BlogsController {
 	
 	async createPostByBlogId (req: Request<ParamBlogIdInputModel, {}, CreateBlogPostInputModel>, res: Response<PostOutputModel>) {
 		try {
+			const token = req.headers.authorization?.split(" ")[1];
+			const tokenPayload = token && await this.jwtService.getTokenPayload(token);
+			const user = tokenPayload && await this.usersService.getUserById(tokenPayload.userId);
+			const userId = user ? String(user._id) : null;
+			
 			const postId = await this.blogsService.createPostByBlogId(req.params.blogId, req.body);
 			const post = await this.queryPostsRepository.getPostById(postId);
-			const extendedLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(postId);
+			const extendedLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(postId, userId);
 			const result = getFullPostOutputModel(post, extendedLikesInfo);
 			
 			res.status(201).send(result);
@@ -99,12 +108,17 @@ export class BlogsController {
 		res: Response<BlogAllPostsOutputModel>
 	) {
 		try {
+			const token = req.headers.authorization?.split(" ")[1];
+			const tokenPayload = token && await this.jwtService.getTokenPayload(token);
+			const user = tokenPayload && await this.usersService.getUserById(tokenPayload.userId);
+			const userId = user ? String(user._id) : null;
+			
 			const allPostsByBlogId = await this.queryPostsRepository.getAllPostsByBlogId(req.query, req.params.blogId);
 			const posts = allPostsByBlogId.items;
 			const fullPosts = [];
 			
 			for (let i = 0; i < posts.length; i++) {
-				const extendedPostLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(posts[i].id)
+				const extendedPostLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(posts[i].id, userId)
 				fullPosts.push(getFullPostOutputModel(posts[i], extendedPostLikesInfo));
 			}
 			

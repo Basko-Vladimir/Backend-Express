@@ -28,7 +28,7 @@ export class QueryLikesRepository {
 		}
 	}
 	
-	async getExtendedLikesInfo(postId: string): Promise<ExtendedLikesInfoOutputModel> {
+	async getExtendedLikesInfo(postId: string, userId: string | null): Promise<ExtendedLikesInfoOutputModel> {
 		const likesCount = await LikeModel
 			.countDocuments({postId, commentId: null, status: LikeStatus.LIKE});
 		const dislikesCount = await LikeModel

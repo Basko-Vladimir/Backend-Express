@@ -19,7 +19,7 @@ postsRouter.get("/:id", postsController.getPostById.bind(postsController));
 
 postsRouter.post(
 	"/",
-	basicAuthValidation,
+	// basicAuthValidation,
 	postRequestFullBodyValidation,
 	requestErrorsValidation,
 	postsController.createPost.bind(postsController)
@@ -56,4 +56,4 @@ postsRouter.put(
 	likesInputDataValidation,
 	requestErrorsValidation,
 	postsController.updatePostLikeStatus.bind(postsController)
-)
+);

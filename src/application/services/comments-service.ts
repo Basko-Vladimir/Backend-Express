@@ -6,6 +6,7 @@ import {QueryLikesRepository} from "../../infrastructure/repositories/likes/quer
 import {IComment} from "../../domain/comments/CommentTypes";
 import {CommentDataDTO} from "../../api/models/comments/input-models";
 import {PostsService} from "./posts-service";
+import {IUser} from "../../domain/users/UserTypes";
 
 @injectable()
 export class CommentsService {
@@ -41,14 +42,14 @@ export class CommentsService {
 		return this.commentsRepository.getCommentById(id);
 	}
 	
-	async updateCommentLikeStatus (userId: string, commentId: string, newStatus: LikeStatus): Promise<void> {
-		const existingLike = await this.likesService.getLikeByFilter({userId, commentId});
+	async updateCommentLikeStatus (user: IUser, commentId: string, newStatus: LikeStatus): Promise<void> {
+		const existingLike = await this.likesService.getLikeByFilter({userId: user._id, commentId});
 		
 		if (existingLike) {
 			return this.likesService.updateLike(String(existingLike?._id), newStatus);
 		} else {
 			const targetComment = await this.commentsRepository.getCommentById(commentId);
-			await this.likesService.createLike(userId, String(targetComment.postId), newStatus, commentId);
+			await this.likesService.createLike(user, String(targetComment.postId), newStatus, commentId);
 		}
 	}
 }

@@ -62,7 +62,7 @@ export class CommentsController {
 	
 	async updateCommentLikeStatus (req: Request<ParamCommentIdInputModel, {}, UpdateLikeStatusInputModel>, res: Response<void>) {
 		try {
-			await this.commentsService.updateCommentLikeStatus(String(req.context.user!._id), req.params.commentId, req.body.likeStatus);
+			await this.commentsService.updateCommentLikeStatus(req.context.user!, req.params.commentId, req.body.likeStatus);
 			res.sendStatus(204);
 		} catch (err) {
 			res.sendStatus(getErrorStatus(err));

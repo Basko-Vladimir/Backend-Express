@@ -1,6 +1,6 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
-import {getErrorStatus} from "./utils";
+import {getErrorStatus, getFullPostOutputModel} from "./utils";
 import {EMPTY_SEARCH_VALUE} from "../../common/constants";
 import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../../common/interfaces";
 import {ParamIdInputModel} from "../models/common-models";
@@ -20,13 +20,15 @@ import {
 import {BlogsService} from "../../application/services/blogs-service";
 import {QueryBlogsRepository} from "../../infrastructure/repositories/blogs/query-blogs-repository";
 import {QueryPostsRepository} from "../../infrastructure/repositories/posts/query-posts-repository";
+import { QueryLikesRepository } from "../../infrastructure/repositories/likes/query-likes-repository";
 
 @injectable()
 export class BlogsController {
 	constructor(
 		@inject(BlogsService) protected blogsService: BlogsService,
 		@inject(QueryBlogsRepository) protected queryBlogsRepository: QueryBlogsRepository,
-		@inject(QueryPostsRepository) protected queryPostsRepository: QueryPostsRepository
+		@inject(QueryPostsRepository) protected queryPostsRepository: QueryPostsRepository,
+		@inject(QueryLikesRepository) protected queryLikesRepository: QueryLikesRepository
 	) {}
 	
 	async getAllBlogs (req: TypedRequestQuery<BlogsQueryParamsInputModel>, res: Response<AllBlogsOutputModel>) {
@@ -83,7 +85,10 @@ export class BlogsController {
 		try {
 			const postId = await this.blogsService.createPostByBlogId(req.params.blogId, req.body);
 			const post = await this.queryPostsRepository.getPostById(postId);
-			res.status(201).send(post);
+			const extendedLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(postId);
+			const result = getFullPostOutputModel(post, extendedLikesInfo);
+			
+			res.status(201).send(result);
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}
@@ -95,7 +100,20 @@ export class BlogsController {
 	) {
 		try {
 			const allPostsByBlogId = await this.queryPostsRepository.getAllPostsByBlogId(req.query, req.params.blogId);
-			res.status(200).send(allPostsByBlogId);
+			const posts = allPostsByBlogId.items;
+			const fullPosts = [];
+			
+			for (let i = 0; i < posts.length; i++) {
+				const extendedPostLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(posts[i].id)
+				fullPosts.push(getFullPostOutputModel(posts[i], extendedPostLikesInfo));
+			}
+			
+			res
+				.status(200)
+				.send({
+					...allPostsByBlogId,
+					items: fullPosts
+				});
 		} catch (error) {
 			res.sendStatus(getErrorStatus(error));
 		}

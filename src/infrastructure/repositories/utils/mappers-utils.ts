@@ -9,6 +9,8 @@ import {IBlog} from "../../../domain/blogs/BlogTypes";
 import {IPost} from "../../../domain/posts/PostTypes";
 import {IUser} from "../../../domain/users/UserTypes";
 import {IComment} from "../../../domain/comments/CommentTypes";
+import {ILike} from "../../../domain/likes/LikeTypes";
+import {LikeInfoOutputModel} from "../../../api/models/likes/output-models";
 
 export const getFilterByDbId = (id: string): {_id: ObjectId} => ({_id: new ObjectId(id)});
 
@@ -63,3 +65,13 @@ export const mapDbDeviceSessionToDeviceSessionOutputModel = (
 	 deviceId: deviceSession.deviceId || ""
  };
 };
+
+export const mapDbLikeToLikeInfoOutputModel = (
+	like: ILike
+): LikeInfoOutputModel => {
+	return {
+		userId: String(like.userId),
+		login: like.userLogin,
+		addedAt: like.createdAt.toISOString()
+	};
+}

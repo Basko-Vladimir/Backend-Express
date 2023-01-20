@@ -9,6 +9,7 @@ import {LikeStatus} from "../../common/enums";
 import {CreateBlogPostInputModel} from "../../api/models/blogs/input-models";
 import {CommentDataDTO} from "../../api/models/comments/input-models";
 import {CommentsRepository} from "../../infrastructure/repositories/comments/comments-repository";
+import {IUser} from "../../domain/users/UserTypes";
 
 @injectable()
 export class PostsService {
@@ -59,13 +60,13 @@ export class PostsService {
 		return String(savedComment._id);
 	}
 	
-	async updatePostLikeStatus (userId: string, postId: string, newStatus: LikeStatus): Promise<void> {
-		const existingLike = await this.likesService.getLikeByFilter({userId, postId, commentId: null});
+	async updatePostLikeStatus(user: IUser, postId: string, newStatus: LikeStatus): Promise<void> {
+		const existingLike = await this.likesService.getLikeByFilter({userId: user._id, postId, commentId: null});
 		
 		if (existingLike) {
 			return this.likesService.updateLike(String(existingLike._id), newStatus);
 		} else {
-			await this.likesService.createLike(userId, postId, newStatus);
+			await this.likesService.createLike(user, postId, newStatus);
 		}
 	}
 }

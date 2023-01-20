@@ -4,6 +4,7 @@ import {UpdateOrFilterModel} from "../../common/interfaces";
 import {LikeStatus} from "../../common/enums";
 import {ILike, LikeModel} from "../../domain/likes/LikeTypes";
 import {NotFoundError} from "../../common/errors/errors-types";
+import {IUser} from "../../domain/users/UserTypes";
 
 @injectable()
 export class LikesService {
@@ -15,12 +16,12 @@ export class LikesService {
 	}
 	
 	async createLike(
-		userId: string,
+		user: IUser,
 		postId: string,
 		status: LikeStatus = LikeStatus.NONE,
 		commentId?: string
 	): Promise<string> {
-		const createdLike = LikeModel.createLikeEntity(userId, postId, status, commentId);
+		const createdLike = LikeModel.createLikeEntity(String(user._id), user.login, postId, status, commentId);
 		const savedLike = await this.likesRepository.save(createdLike);
 		
 		return String(savedLike._id);

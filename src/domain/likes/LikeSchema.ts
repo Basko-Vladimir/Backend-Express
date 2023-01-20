@@ -7,6 +7,10 @@ export const likeSchema = new Schema<ILike, {}, ILikeModel>({
 		type: Types.ObjectId,
 		required: true
 	},
+	userLogin: {
+		type: String,
+		required: true
+	},
 	commentId: {
 		type: Types.ObjectId,
 		default: null
@@ -36,9 +40,10 @@ likeSchema.method("updateLikeStatus", function (status: LikeStatus): ILike {
 
 likeSchema.static("createLikeEntity", function(
 	userId: string,
+	userLogin: string,
 	postId: string,
 	status: LikeStatus,
 	commentId?: string
 ): ILike {
-	return new LikeModel({userId, postId, status, commentId});
+	return new LikeModel({userId, userLogin, postId, status, commentId});
 });

@@ -14,17 +14,17 @@ export class QueryLikesRepository {
 			.countDocuments({commentId, status: LikeStatus.LIKE});
 		const dislikesCount = await LikeModel
 			.countDocuments({commentId, status: LikeStatus.DISLIKE});
-		let likeStatus = LikeStatus.NONE;
+		let myStatus = LikeStatus.NONE;
 
 		if (userId) {
 			const like = await LikeModel.findOne({userId, commentId});
-			likeStatus = like ? like.status : likeStatus;
+			myStatus = like ? like.status : myStatus;
 		}
 		
 		return {
 			likesCount,
 			dislikesCount,
-			likeStatus
+			myStatus
 		}
 	}
 	
@@ -37,7 +37,7 @@ export class QueryLikesRepository {
 			.find({commentId: null, postId, status: LikeStatus.LIKE})
 			.sort("-createdAt")
 			.limit(3);
-		let likeStatus = LikeStatus.NONE;
+		let myStatus = LikeStatus.NONE;
 		
 		// if (userId) {
 		// 	const like = await LikeModel.findOne({userId, commentId});
@@ -47,7 +47,7 @@ export class QueryLikesRepository {
 		return {
 			likesCount,
 			dislikesCount,
-			likeStatus,
+			myStatus,
 			newestLikes: newestLikes.map(mapDbLikeToLikeInfoOutputModel)
 		}
 	}

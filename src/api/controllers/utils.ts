@@ -17,7 +17,7 @@ export const getFullCommentOutputModel = (
 	content: comment.content,
 	createdAt: comment.createdAt,
 	likesInfo: {
-		myStatus: like.likeStatus,
+		myStatus: like.myStatus,
 		likesCount: like.likesCount,
 		dislikesCount: like.dislikesCount
 	}

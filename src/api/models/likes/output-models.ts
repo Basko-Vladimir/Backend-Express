@@ -9,7 +9,7 @@ export interface LikeInfoOutputModel {
 export interface LikesInfoOutputModel {
 	likesCount: number;
 	dislikesCount: number;
-	likeStatus: LikeStatus
+	myStatus: LikeStatus
 }
 
 export interface ExtendedLikesInfoOutputModel extends LikesInfoOutputModel {

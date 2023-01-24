@@ -7,6 +7,7 @@ import {blogIdParamValidation} from "../middlewares/blogs/blog-id-param-validati
 import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitization";
 import {iocContainer} from "../../composition-root";
 import {BlogsController} from "../controllers/blogs-controller";
+import {parseUserToken} from "../middlewares/parse-user-token";
 
 export const blogsRouter = Router({});
 const blogsController = iocContainer.resolve(BlogsController);
@@ -35,15 +36,18 @@ blogsRouter.delete("/:id",
 );
 
 blogsRouter.post("/:blogId/posts",
-	// basicAuthValidation,
+	basicAuthValidation,
+	parseUserToken,
 	blogIdParamValidation,
 	postBodyCommonFieldsValidation,
 	requestErrorsValidation,
 	blogsController.createPostByBlogId.bind(blogsController)
 );
 
-blogsRouter.get("/:blogId/posts",
+blogsRouter.get(
+	"/:blogId/posts",
+	parseUserToken,
 	blogIdParamValidation,
 	commonQueryParamsSanitization,
-	blogsController.getAllPostsByBlogId.bind(blogsController)
+	blogsController.getAllPostsByBlogId.bind(blogsController) as any
 );

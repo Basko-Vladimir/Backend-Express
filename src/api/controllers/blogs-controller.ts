@@ -87,10 +87,7 @@ export class BlogsController {
 	
 	async createPostByBlogId (req: Request<ParamBlogIdInputModel, {}, CreateBlogPostInputModel>, res: Response<PostOutputModel>) {
 		try {
-			const token = req.headers.authorization?.split(" ")[1];
-			const tokenPayload = token && await this.jwtService.getTokenPayload(token);
-			const user = tokenPayload && await this.usersService.getUserById(tokenPayload.userId);
-			const userId = user ? String(user._id) : null;
+			const userId = req.context.user ? String(req.context.user._id) : null;
 			
 			const postId = await this.blogsService.createPostByBlogId(req.params.blogId, req.body);
 			const post = await this.queryPostsRepository.getPostById(postId);
@@ -108,10 +105,7 @@ export class BlogsController {
 		res: Response<BlogAllPostsOutputModel>
 	) {
 		try {
-			const token = req.headers.authorization?.split(" ")[1];
-			const tokenPayload = token && await this.jwtService.getTokenPayload(token);
-			const user = tokenPayload && await this.usersService.getUserById(tokenPayload.userId);
-			const userId = user ? String(user._id) : null;
+			const userId = req.context.user ? String(req.context.user._id) : null;
 			
 			const allPostsByBlogId = await this.queryPostsRepository.getAllPostsByBlogId(req.query, req.params.blogId);
 			const posts = allPostsByBlogId.items;

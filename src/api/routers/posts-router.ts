@@ -9,17 +9,30 @@ import {commonQueryParamsSanitization} from "../middlewares/query-params-sanitiz
 import {likesInputDataValidation} from "../middlewares/comments/likes-input-data-validation";
 import {iocContainer} from "../../composition-root";
 import {PostsController} from "../controllers/posts-controller";
+import {parseUserToken} from "../middlewares/parse-user-token";
 
 export const postsRouter = Router({});
 const postsController = iocContainer.resolve(PostsController);
 
-postsRouter.get("/", commonQueryParamsSanitization, postsController.getAllPosts.bind(postsController));
+postsRouter.get(
+	"/",
+	parseUserToken,
+	commonQueryParamsSanitization,
+	postsController.getAllPosts.bind(postsController) as any
+);
+
+postsRouter.get(
+	"/:id",
+	parseUserToken,
+	postsController.getPostById.bind(postsController)
+);
+
 postsRouter.delete("/:id", basicAuthValidation, postsController.deletePost.bind(postsController));
-postsRouter.get("/:id", postsController.getPostById.bind(postsController));
 
 postsRouter.post(
 	"/",
-	// basicAuthValidation,
+	basicAuthValidation,
+	parseUserToken,
 	postRequestFullBodyValidation,
 	requestErrorsValidation,
 	postsController.createPost.bind(postsController)

@@ -40,10 +40,7 @@ export class PostsController {
 	
 	async getAllPosts(req: TypedRequestQuery<PostsQueryParamsOutputModel>, res: Response<BlogAllPostsOutputModel>) {
 		try {
-			const token = req.headers.authorization?.split(" ")[1];
-			const tokenPayload = token && await this.jwtService.getTokenPayload(token);
-			const user = tokenPayload && await this.usersService.getUserById(tokenPayload.userId);
-			const userId = user ? String(user._id) : null;
+			const userId = req.context.user ? String(req.context.user._id) : null;
 			
 			const postsOutputModel = await this.queryPostsRepository.getAllPosts(req.query);
 			const posts = postsOutputModel.items;
@@ -67,11 +64,8 @@ export class PostsController {
 	
 	async getPostById (req: TypedRequestParams<ParamIdInputModel>, res: Response<PostOutputModel>) {
 		try {
-			const token = req.headers.authorization?.split(" ")[1];
-			const tokenPayload = token && await this.jwtService.getTokenPayload(token);
-			const user = tokenPayload && await this.usersService.getUserById(tokenPayload.userId);
-			const userId = user ? String(user._id) : null;
-			
+			const userId = req.context.user ? String(req.context.user._id) : null;
+
 			const post = await this.queryPostsRepository.getPostById(req.params.id);
 			const extendedLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(post.id, userId);
 			const result = getFullPostOutputModel(post, extendedLikesInfo);
@@ -84,10 +78,7 @@ export class PostsController {
 	
 	async createPost (req: TypedRequestBody<CreatePostInputModel>, res: Response<FullPostOutputModel>) {
 		try {
-			const token = req.headers.authorization?.split(" ")[1];
-			const tokenPayload = token && await this.jwtService.getTokenPayload(token);
-			const user = tokenPayload && await this.usersService.getUserById(tokenPayload.userId);
-			const userId = user ? String(user._id) : null;
+			const userId = req.context.user ? String(req.context.user._id) : null;
 			
 			const { blogId, ...restProps } = req.body;
 			const createdPostId = await this.postsService.createPost(blogId, restProps);

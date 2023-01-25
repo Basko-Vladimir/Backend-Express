@@ -78,12 +78,10 @@ export class PostsController {
 	
 	async createPost (req: TypedRequestBody<CreatePostInputModel>, res: Response<FullPostOutputModel>) {
 		try {
-			const userId = req.context.user ? String(req.context.user._id) : null;
-			
 			const { blogId, ...restProps } = req.body;
 			const createdPostId = await this.postsService.createPost(blogId, restProps);
 			const post = await this.queryPostsRepository.getPostById(createdPostId);
-			const extendedLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(createdPostId, userId);
+			const extendedLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(createdPostId, null);
 			const result = getFullPostOutputModel(post, extendedLikesInfo);
 			
 			res.status(201).send(result);

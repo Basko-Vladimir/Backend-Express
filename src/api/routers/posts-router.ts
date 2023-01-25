@@ -32,7 +32,6 @@ postsRouter.delete("/:id", basicAuthValidation, postsController.deletePost.bind(
 postsRouter.post(
 	"/",
 	basicAuthValidation,
-	parseUserToken,
 	postRequestFullBodyValidation,
 	requestErrorsValidation,
 	postsController.createPost.bind(postsController)

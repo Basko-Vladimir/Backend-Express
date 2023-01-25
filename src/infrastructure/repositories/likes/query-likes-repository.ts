@@ -40,7 +40,7 @@ export class QueryLikesRepository {
 		let myStatus = LikeStatus.NONE;
 		
 		if (userId) {
-			const like = await LikeModel.findOne({userId, commentId: null});
+			const like = await LikeModel.findOne({userId, commentId: null, postId});
 			myStatus = like ? like.status : myStatus;
 		}
 		

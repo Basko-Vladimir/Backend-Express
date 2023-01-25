@@ -35,7 +35,7 @@ export class QueryLikesRepository {
 			.countDocuments({postId, commentId: null, status: LikeStatus.DISLIKE});
 		const newestLikes = await LikeModel
 			.find({commentId: null, postId, status: LikeStatus.LIKE})
-			.sort("-updatedAt")
+			.sort("-createdAt")
 			.limit(3);
 		let myStatus = LikeStatus.NONE;
 		

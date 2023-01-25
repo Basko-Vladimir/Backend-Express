@@ -39,10 +39,10 @@ export class QueryLikesRepository {
 			.limit(3);
 		let myStatus = LikeStatus.NONE;
 		
-		// if (userId) {
-		// 	const like = await LikeModel.findOne({userId, commentId});
-		// 	likeStatus = like ? like.status : likeStatus;
-		// }
+		if (userId) {
+			const like = await LikeModel.findOne({userId, commentId: null});
+			myStatus = like ? like.status : myStatus;
+		}
 		
 		return {
 			likesCount,

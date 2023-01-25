@@ -61,7 +61,7 @@ export class PostsService {
 	}
 	
 	async updatePostLikeStatus(user: IUser, postId: string, newStatus: LikeStatus): Promise<void> {
-		const existingLike = await this.likesService.getLikeByFilter({userId: user._id, postId, commentId: null});
+		const existingLike = await this.likesService.getLikeByFilter({userId: String(user._id), postId, commentId: null});
 		
 		if (existingLike) {
 			return this.likesService.updateLike(String(existingLike._id), newStatus);

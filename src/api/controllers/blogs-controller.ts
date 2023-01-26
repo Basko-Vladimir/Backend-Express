@@ -111,7 +111,7 @@ export class BlogsController {
 			const posts = allPostsByBlogId.items;
 			const fullPosts = [];
 			
-			for (let i = 0; i < posts.length; i++) {
+			for (let i = posts.length - 1; i >= 0; i--) {
 				const extendedPostLikesInfo = await this.queryLikesRepository.getExtendedLikesInfo(posts[i].id, userId)
 				fullPosts.push(getFullPostOutputModel(posts[i], extendedPostLikesInfo));
 			}

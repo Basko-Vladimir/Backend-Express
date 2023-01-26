@@ -1,8 +1,6 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
 import {getErrorStatus, getFullPostOutputModel} from "./utils";
-import {EMPTY_SEARCH_VALUE} from "../../common/constants";
-import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../../common/interfaces";
 import {ParamIdInputModel} from "../models/common-models";
 import {PostOutputModel, PostsQueryParamsOutputModel} from "../models/posts/output-models";
 import {
@@ -18,11 +16,13 @@ import {
 	BlogOutputModel
 } from "../models/blogs/output-models";
 import {BlogsService} from "../../application/services/blogs-service";
+import {JwtService} from "../../application/services/jwt-service";
+import { UsersService } from "../../application/services/users-service";
 import {QueryBlogsRepository} from "../../infrastructure/repositories/blogs/query-blogs-repository";
 import {QueryPostsRepository} from "../../infrastructure/repositories/posts/query-posts-repository";
 import { QueryLikesRepository } from "../../infrastructure/repositories/likes/query-likes-repository";
-import {JwtService} from "../../application/services/jwt-service";
-import { UsersService } from "../../application/services/users-service";
+import {TypedRequestBody, TypedRequestParams, TypedRequestQuery} from "../../common/interfaces";
+import {EMPTY_SEARCH_VALUE} from "../../common/constants";
 
 @injectable()
 export class BlogsController {
